@@ -267,24 +267,30 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
 
   // On small screens labels can collide. A less important label first tries a spot just above or below;
   // if all are taken it fades (its 3D object stays clickable, and keyboard focus brings it back). Labels
-  // near an edge slide inside the screen. All rects are read first, then all styles written, so this
-  // costs one layout. A few times a second.
+  // that overhang an edge slide inside the screen; a label whose place is off screen fades. The top bar,
+  // the hint and an open panel count as taken space. All rects are read first, then all styles written,
+  // so this costs one layout. A few times a second.
   const PRIORITY: ZoneId[] = ['tree', 'greenhouse', 'workshop', 'hollow', 'garden', 'lookout', 'dog'];
   const EDGE = 8;
+  const root = labelsEl.parentElement ?? labelsEl;
   const declutter = () => {
     const bounds = labelsEl.getBoundingClientRect();
+    type Box = { left: number; right: number; top: number; bottom: number };
+    const kept: Box[] = [...root.querySelectorAll<HTMLElement>('.valley-brand, .valley-controls, .valley-hint, .vpanel:not([hidden])')]
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.width > 0);
     const measured = PRIORITY.map((id) => labelsEl.querySelector<HTMLElement>(`.valley-label[data-zone="${id}"]`))
       .filter((el): el is HTMLElement => !!el)
       .map((el) => ({ el, r: el.getBoundingClientRect(), dx: Number(el.dataset.dx ?? 0), dy: Number(el.dataset.dy ?? 0) }));
-    type Box = { left: number; right: number; top: number; bottom: number };
-    const kept: Box[] = [];
     const collides = (b: Box) => kept.some((k) => b.left < k.right + 4 && k.left < b.right + 4 && b.top < k.bottom + 2 && k.top < b.bottom + 2);
     for (const { el, r, dx, dy } of measured) {
       if (!r.width) continue;
       const left = r.left - dx, right = r.right - dx, top = r.top - dy, bottom = r.bottom - dy;
+      const centre = (left + right) / 2;
+      const onScreen = centre > bounds.left && centre < bounds.right;
       const x = Math.max(bounds.left + EDGE - left, 0) + Math.min(bounds.right - EDGE - right, 0);
       const step = r.height + 4;
-      const y = [0, -step, step].find((o) => !collides({ left: left + x, right: right + x, top: top + o, bottom: bottom + o }));
+      const y = onScreen ? [0, -step, step].find((o) => !collides({ left: left + x, right: right + x, top: top + o, bottom: bottom + o })) : undefined;
       const hidden = y === undefined;
       if (!hidden) kept.push({ left: left + x, right: right + x, top: top + y, bottom: bottom + y });
       el.dataset.dx = String(x);

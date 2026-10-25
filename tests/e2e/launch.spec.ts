@@ -98,3 +98,19 @@ test.describe('phone 375', () => {
     for (const r of rects) { expect(r.left).toBeGreaterThanOrEqual(0); expect(r.right).toBeLessThanOrEqual(375); }
   });
 });
+
+test('place labels never cover the top bar or an open panel', async ({ page }) => {
+  await page.addInitScript(() => { localStorage.setItem('ailula-mode', 'hifi'); localStorage.setItem('ailula-night', 'false'); });
+  await page.goto('/zh/');
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
+  await page.evaluate(() => (window as any).__valley.select('greenhouse'));
+  await page.waitForTimeout(3500);
+  const overlaps = await page.evaluate(() => {
+    const boxes = [...document.querySelectorAll<HTMLElement>('.valley-brand, .valley-controls, .vpanel:not([hidden])')].map((e) => e.getBoundingClientRect());
+    return [...document.querySelectorAll<HTMLElement>('.valley-label')]
+      .filter((e) => getComputedStyle(e).opacity !== '0' && e.getBoundingClientRect().width > 0)
+      .filter((e) => { const r = e.getBoundingClientRect(); return boxes.some((b) => r.left < b.right && b.left < r.right && r.top < b.bottom && b.top < r.bottom); })
+      .map((e) => e.dataset.zone);
+  });
+  expect(overlaps).toEqual([]);
+});

@@ -6,7 +6,7 @@ import type { Palette, Season } from './palette';
 import { SEQUOIA } from './sequoia';
 import { ZONES } from './zones';
 
-// Mariposa Grove understory, simplified: white firs and sugar pines (evergreen), Pacific dogwood
+// Mariposa Grove understory, simplified: white firs (evergreen, two silhouettes), Pacific dogwood
 // (the only thing that changes with the seasons), sword ferns, wildflowers, granite rocks and the
 // grey fallen sequoia logs that lie all over the real grove.
 
@@ -55,7 +55,6 @@ export function createFlora(p: Palette, ctx: { quality: 'high' | 'low' }): Part 
   }
   const firGeo = merge(firTiers);
   const trunkGeo = faceted(new THREE.CylinderGeometry(0.03, 0.05, 0.3, 5).translate(0, 0.12, 0), rnd, 0.1);
-  // Sugar pine: taller, sparser, flat-topped.
   // Tall, narrow fir for the rim (a slender silhouette rather than a second species model).
   const pineParts: THREE.BufferGeometry[] = [];
   for (let k = 0; k < 5; k++) {

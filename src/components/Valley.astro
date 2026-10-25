@@ -28,10 +28,10 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
       <span class="slogan">{t(lang, 'slogan')}</span>
     </div>
     <div class="valley-controls">
-      <div class="seasons" role="group" aria-label="Season">
-        {SEASONS.map((s) => <button type="button" data-season-pick={s}>{t(lang, s)}</button>)}
+      <div class="seasons" role="group" aria-label={t(lang, 'season')}>
+        {SEASONS.map((s) => <button type="button" data-season-pick={s} aria-pressed="false">{t(lang, s)}</button>)}
       </div>
-      <button type="button" class="pill" data-night-toggle aria-label={t(lang, 'dayNight')}>
+      <button type="button" class="pill" data-night-toggle aria-pressed="false" aria-label={t(lang, 'dayNight')}>
         <span class="sun">☀</span><span class="moon">☾</span>
       </button>
       <a class="pill" href={localizedPath('/', other)} hreflang={other}>{t(lang, 'langSwitch')}</a>
@@ -41,9 +41,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
 
   <p class="valley-hint">{t(lang, 'valleyHint')}</p>
 
-  <section class="vpanel" data-panel="tree" hidden>
+  <section class="vpanel" data-panel="tree" role="dialog" aria-labelledby="vp-tree" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>{label.tree}</h2>
+    <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <ol class="rings">
       {timeline.map((m) => (
@@ -52,18 +52,18 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     </ol>
   </section>
 
-  <section class="vpanel" data-panel="hollow" hidden>
+  <section class="vpanel" data-panel="hollow" role="dialog" aria-labelledby="vp-hollow" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>{label.hollow}</h2>
+    <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
     <p class="intro">{t(lang, 'hollowIntro')}</p>
     <h3>{t(lang, 'sectionTopTen')}</h3>
     <ol>{Array.from({ length: 10 }, (_, i) => <li><Placeholder note={lang === 'zh' ? `十佳第 ${i + 1} 部` : `top-10 film #${i + 1}`} /></li>)}</ol>
     <p class="muted">{t(lang, 'cinemaComing')} <a href={localizedPath('/cinema/', lang)}>{t(lang, 'readAll')} →</a></p>
   </section>
 
-  <section class="vpanel" data-panel="workshop" hidden>
+  <section class="vpanel" data-panel="workshop" role="dialog" aria-labelledby="vp-workshop" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>{label.workshop}</h2>
+    <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
     <p class="intro">{t(lang, 'workshopIntro')}</p>
     <ul class="cards">
       {projects.map(({ slug, entry, fallback }) => (
@@ -76,9 +76,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     </ul>
   </section>
 
-  <section class="vpanel" data-panel="garden" hidden>
+  <section class="vpanel" data-panel="garden" role="dialog" aria-labelledby="vp-garden" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>{label.garden}</h2>
+    <h2 id="vp-garden" tabindex="-1">{label.garden}</h2>
     <p class="intro">{t(lang, 'gardenIntro')}</p>
     {kinds.map((k) => {
       const group = posts.filter((p) => p.entry.data.kind === k).slice(0, 6);
@@ -96,9 +96,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>
   </section>
 
-  <section class="vpanel" data-panel="lookout" hidden>
+  <section class="vpanel" data-panel="lookout" role="dialog" aria-labelledby="vp-lookout" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>{label.lookout}</h2>
+    <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
     <p class="intro">{t(lang, 'lookoutIntro')}</p>
     <h3>{t(lang, 'sectionNow')}</h3>
     <p><Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} /></p>
@@ -110,9 +110,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     </p>
   </section>
 
-  <section class="vpanel small" data-panel="dog" hidden>
+  <section class="vpanel small" data-panel="dog" role="dialog" aria-labelledby="vp-dog" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
-    <h2>🐕 {label.dog}</h2>
+    <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
     <p>{t(lang, 'dogNote')} {t(lang, 'dogName')}: <Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></p>
   </section>
 </div>
@@ -137,48 +137,92 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   let night = read(NIGHT_KEY) ? read(NIGHT_KEY) === '1' : hour >= 19 || hour < 6;
 
   const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
-  let onPanel: (open: HTMLElement | null) => void = () => {};
-  const showPanel = (id: ZoneId | null) => {
-    panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
-    onPanel(panels.find((p) => !p.hidden) ?? null);
+  const seasonButtons = [...root.querySelectorAll<HTMLElement>('[data-season-pick]')];
+  const nightButton = root.querySelector<HTMLElement>('[data-night-toggle]')!;
+  const syncPressed = () => {
+    seasonButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.seasonPick === season)));
+    nightButton.setAttribute('aria-pressed', String(night));
+  };
+  syncPressed();
+
+  // While the valley is showing, the Lo-Fi page underneath is inert (no hidden tab stops).
+  const pageLayers = () => document.querySelectorAll<HTMLElement>('body > header, body > main, body > footer, body > .notice');
+  const syncInert = () => {
+    const showing = html.dataset.mode === 'hifi' && html.dataset.webgl !== 'false';
+    pageLayers().forEach((el) => (el.inert = showing));
+    root.inert = !showing;
   };
 
+  let openZone: ZoneId | null = null;
+  let onPanel: (open: HTMLElement | null) => void = () => {};
+  const showPanel = (id: ZoneId | null) => {
+    const previous = openZone;
+    openZone = id;
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+    const open = panels.find((p) => !p.hidden) ?? null;
+    onPanel(open);
+    // Focus moves into the panel, and back to the place's label when it closes.
+    if (open) open.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
+    else if (previous) root.querySelector<HTMLElement>(`.valley-label[data-zone="${previous}"]`)?.focus({ preventScroll: true });
+  };
+
+  let valley: any = null;
   let started = false;
   async function start() {
-    if (started || html.dataset.mode !== 'hifi' || html.dataset.webgl === 'false') return;
+    syncInert();
+    if (html.dataset.mode !== 'hifi' || html.dataset.webgl === 'false') {
+      valley?.pause();
+      return;
+    }
+    if (started) {
+      valley?.resume();
+      return;
+    }
     started = true;
-    const [{ createValley }, { VALLEY_PARTS }] = await Promise.all([import('../scenes/valley/createValley'), import('../scenes/valley/parts')]);
-    const v = createValley(root.querySelector('canvas')!, root.querySelector('.valley-labels')!, {
-      lang: (root.dataset.lang as 'en' | 'zh') ?? 'en',
-      quality: matchMedia('(max-width: 700px)').matches ? 'low' : 'high',
-      season,
-      night,
-      extraParts: VALLEY_PARTS,
-    });
-    // Keep the focused place out from under the panel: side panel on wide screens, bottom sheet on phones.
-    onPanel = (open) => {
-      if (!open) return v.setInset({ right: 0, bottom: 0 });
-      const r = open.getBoundingClientRect();
-      const sheet = r.left < 40;
-      v.setInset(sheet ? { right: 0, bottom: innerHeight - r.top } : { right: innerWidth - r.left, bottom: 0 });
-    };
-    const close = () => { showPanel(null); v.focus(null); };
-    v.onSelect((id) => { v.focus(id); showPanel(id); });
-    root.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
-    addEventListener('keydown', (e) => e.key === 'Escape' && close());
-    root.querySelectorAll<HTMLElement>('[data-season-pick]').forEach((b) =>
-      b.addEventListener('click', () => {
-        season = b.dataset.seasonPick as Season;
-        write(SEASON_KEY, season);
-        v.setSeason(season);
-      }),
-    );
-    root.querySelector('[data-night-toggle]')!.addEventListener('click', () => {
-      night = !night;
-      write(NIGHT_KEY, night ? '1' : '0');
-      v.setNight(night);
-    });
-    (window as any).__valley = v;
+    try {
+      const [{ createValley }, { VALLEY_PARTS }] = await Promise.all([import('../scenes/valley/createValley'), import('../scenes/valley/parts')]);
+      const v = createValley(root.querySelector('canvas')!, root.querySelector('.valley-labels')!, {
+        lang: (root.dataset.lang as 'en' | 'zh') ?? 'en',
+        quality: matchMedia('(max-width: 700px)').matches ? 'low' : 'high',
+        season,
+        night,
+        extraParts: VALLEY_PARTS,
+      });
+      valley = v;
+      // Keep the focused place out from under the panel: side panel on wide screens, bottom sheet on phones.
+      const phone = matchMedia('(max-width: 700px)');
+      onPanel = (open) => {
+        if (!open) return v.setInset({ right: 0, bottom: 0 });
+        const r = open.getBoundingClientRect();
+        v.setInset(phone.matches ? { right: 0, bottom: Math.max(0, innerHeight - r.top) } : { right: Math.max(0, innerWidth - r.left), bottom: 0 });
+      };
+      addEventListener('resize', () => openZone && onPanel(panels.find((p) => !p.hidden) ?? null));
+      const close = () => { v.focus(null); showPanel(null); };
+      v.onSelect((id) => { v.focus(id); showPanel(id); });
+      root.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+      addEventListener('keydown', (e) => e.key === 'Escape' && openZone && html.dataset.mode === 'hifi' && close());
+      seasonButtons.forEach((b) =>
+        b.addEventListener('click', () => {
+          season = b.dataset.seasonPick as Season;
+          write(SEASON_KEY, season);
+          v.setSeason(season);
+          syncPressed();
+        }),
+      );
+      nightButton.addEventListener('click', () => {
+        night = !night;
+        write(NIGHT_KEY, night ? '1' : '0');
+        v.setNight(night);
+        syncPressed();
+      });
+      (window as any).__valley = v;
+    } catch (e) {
+      // If the 3D scene cannot start, fall back to the Lo-Fi page rather than an empty screen.
+      console.warn('valley unavailable, switching to Lo-Fi', e);
+      html.dataset.mode = 'lofi';
+      html.dataset.modeAuto = 'true';
+      syncInert();
+    }
   }
   start();
   addEventListener('ailula:mode', start);
@@ -213,7 +257,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .vpanel.small { bottom: auto; }
   .vpanel[hidden] { display: none; }
   @keyframes vpanel-in { from { opacity: 0; transform: translateY(12px); } }
-  .vpanel h2 { font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 0 0 8px; padding-right: 64px; }
+  .vpanel h2 { font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 0 0 8px; padding-right: 64px; outline: none; }
   .vpanel h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #9a4f2e; margin: 18px 0 6px; }
   .vpanel .intro { color: #5b6157; margin: 0 0 8px; line-height: 1.6; }
   .vpanel .muted { color: #5b6157; font-size: 14px; }
@@ -234,6 +278,6 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     .valley-controls { gap: 4px; }
     .valley-label { font-size: 9px; padding: 6px 9px; letter-spacing: .08em; }
     .valley-label[data-zone='dog'] { display: none; }
-    .vpanel { top: auto; left: 12px; right: 12px; width: auto; bottom: 12px; max-height: 62vh; }
+    .vpanel, .vpanel.small { top: auto; left: 12px; right: 12px; width: auto; bottom: 12px; max-height: 62vh; }
   }
 </style>

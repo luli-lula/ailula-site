@@ -125,7 +125,8 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
 
   // The tree hollow: warm light inside the fire scar — the cinema.
   {
-    const r = trunkRadius(2, Math.PI / 2) * 0.5;
+    // Just in front of the scar's back wall so the whole opening (including its low part) picks 'hollow'.
+    const r = trunkRadius(2, Math.PI / 2) * 0.5 + 0.35;
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 4.2), new THREE.MeshStandardMaterial({ color: '#2a1810', emissive: WINDOW, emissiveIntensity: 0.05, side: THREE.DoubleSide, roughness: 1 }));
     glow.position.set(0, 2.1 + heightAt(0, 0), r - 0.15);
     group.add(glow);

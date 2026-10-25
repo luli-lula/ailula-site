@@ -70,7 +70,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
   </section>
 
   <!-- Hi-Fi home: rendered last so the Lo-Fi content above stays first in the document. -->
-  <Valley lang={lang} />
+  <Valley slot="overlay" lang={lang} />
 </Base>
 
 <style>

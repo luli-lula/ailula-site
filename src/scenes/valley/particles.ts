@@ -21,13 +21,15 @@ function dotTexture() {
   return t;
 }
 
-interface Mode { color: string; size: number; fall: number; sway: number; glow: boolean }
+// `top` is where particles start: petals and leaves come from the dogwood understory (the sequoia is
+// evergreen and sheds neither), snow falls from high above.
+interface Mode { color: string; size: number; fall: number; sway: number; glow: boolean; top: number }
 const MODES: Record<Season | 'fireflies', Mode> = {
-  spring: { color: '#fbf3f0', size: 0.45, fall: 0.9, sway: 1.2, glow: false },
-  summer: { color: '#f3e7a0', size: 0.22, fall: 0.05, sway: 0.6, glow: false },
-  fireflies: { color: '#e9ff8a', size: 0.5, fall: 0, sway: 0.9, glow: true },
-  autumn: { color: '#d9792f', size: 0.5, fall: 1.4, sway: 1.6, glow: false },
-  winter: { color: '#ffffff', size: 0.38, fall: 1.8, sway: 0.5, glow: false },
+  spring: { color: '#fbf3f0', size: 0.45, fall: 0.5, sway: 1.2, glow: false, top: 7 },
+  summer: { color: '#f3e7a0', size: 0.22, fall: 0.05, sway: 0.6, glow: false, top: 12 },
+  fireflies: { color: '#e9ff8a', size: 0.5, fall: 0, sway: 0.9, glow: true, top: 6 },
+  autumn: { color: '#d9792f', size: 0.5, fall: 0.8, sway: 1.6, glow: false, top: 7 },
+  winter: { color: '#ffffff', size: 0.38, fall: 1.8, sway: 0.5, glow: false, top: 42 },
 };
 
 export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): Part {
@@ -39,10 +41,12 @@ export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): 
 
   const pos = new Float32Array(count * 3);
   const seed = new Float32Array(count);
+  let top = 7;
   const reset = (i: number, anywhere: boolean) => {
-    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * 34;
+    // Keep clear of the sequoia's crown column.
+    const a = rnd() * Math.PI * 2, r = 9 + Math.sqrt(rnd()) * 25;
     pos[i * 3] = Math.cos(a) * r;
-    pos[i * 3 + 1] = anywhere ? rnd() * 40 : 36 + rnd() * 6;
+    pos[i * 3 + 1] = anywhere ? rnd() * top : top - rnd() * 2;
     pos[i * 3 + 2] = Math.sin(a) * r;
   };
   for (let i = 0; i < count; i++) { reset(i, true); seed[i] = rnd() * 100; }
@@ -71,6 +75,10 @@ export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): 
     group,
     setPalette(_next, night, season) {
       mode = season === 'summer' && night ? MODES.fireflies : MODES[season];
+      if (top !== mode.top) {
+        top = mode.top;
+        for (let i = 0; i < count; i++) reset(i, true);
+      }
       mat.color.set(mode.color);
       mat.size = mode.size;
       mat.blending = mode.glow ? THREE.AdditiveBlending : THREE.NormalBlending;
@@ -84,7 +92,7 @@ export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): 
         pos[k + 2] += Math.cos(t * 0.6 + s * 1.3) * mode.sway * dt;
         pos[k + 1] -= mode.fall * dt * (0.6 + (s % 1));
         if (mode.fall === 0) pos[k + 1] += Math.sin(t * 1.3 + s) * 0.4 * dt;
-        if (pos[k + 1] < -2) reset(i, false);
+        if (pos[k + 1] < 0) reset(i, false);
       }
       geo.attributes.position.needsUpdate = true;
       if (mode.glow) mat.opacity = 0.65 + 0.35 * Math.sin(t * 3);

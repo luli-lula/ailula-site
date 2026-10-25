@@ -69,6 +69,9 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
       <p><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a></p>
     </footer>
 
+    <!-- Full-screen Hi-Fi layers (the home valley) live outside <main> so the page under them can be made inert. -->
+    <slot name="overlay" />
+
     <script>
       import { MODE_STORAGE_KEY, type Mode } from '../lib/mode';
       const html = document.documentElement;

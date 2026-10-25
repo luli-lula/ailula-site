@@ -202,7 +202,8 @@ export function createIsland(p: Palette): Part {
       rockMat.color.set(next.rock);
       pathMat.color.set(next.path);
       waterMat.color.set(next.water);
-      cloudMat.color.set(night ? '#5d6690' : '#ffffff');
+      cloudMat.color.set(night ? '#8a90b4' : '#ffffff');
+      cloudMat.opacity = night ? 0.55 : 0.9;
     },
     update(t) {
       for (const c of clouds) {

@@ -56,3 +56,23 @@ describe('sequoia rings', () => {
     expect(SEQUOIA.totalHeight).toBeGreaterThanOrEqual(2.5 * SEQUOIA.maxOtherTreeHeight);
   });
 });
+
+import { keepOutsideTree } from '../../src/scenes/valley/clearance';
+import { trunkRadius } from '../../src/scenes/valley/sequoia';
+
+describe('camera clearance', () => {
+  test('a camera inside the trunk is pushed out past the bark', () => {
+    const p = keepOutsideTree({ x: 1, y: 10, z: 0.5 });
+    expect(Math.hypot(p.x, p.z)).toBeGreaterThan(trunkRadius(10, Math.atan2(0.5, 1)) + 0.5);
+    expect(p.y).toBe(10);
+  });
+
+  test('a camera inside the crown is pushed out of it', () => {
+    const p = keepOutsideTree({ x: 2, y: 34, z: 1 });
+    expect(Math.hypot(p.x, p.z)).toBeGreaterThan(8);
+  });
+
+  test('a camera already clear is left alone', () => {
+    expect(keepOutsideTree({ x: 30, y: 20, z: 30 })).toEqual({ x: 30, y: 20, z: 30 });
+  });
+});

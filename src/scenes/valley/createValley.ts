@@ -7,6 +7,7 @@ import { timeline } from '../../data/timeline';
 import { palette, type Palette, type Season } from './palette';
 import { HOME_VIEW, ZONES, type ZoneId } from './zones';
 import { createSequoia, SEQUOIA } from './sequoia';
+import { keepOutsideTree } from './clearance';
 
 export interface Part {
   group: THREE.Object3D;
@@ -34,7 +35,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = high;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
 
   const labelRenderer = new CSS2DRenderer({ element: labelsEl });
 
@@ -95,13 +96,15 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.enablePan = false;
-  controls.minDistance = 12;
+  controls.minDistance = 7; // clearance.ts keeps the camera out of the tree itself
   controls.maxDistance = 200;
   controls.minPolarAngle = 0.25;
   controls.maxPolarAngle = 1.38;
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.35;
   controls.update();
+  // Grabbing the view cancels any flight in progress, so a drag always works.
+  controls.addEventListener('start', () => flight?.kill());
 
   // Auto-rotate only while idle: any pointer movement holds the island still so labels are easy to hit.
   let focused: ZoneId | null = null;
@@ -131,13 +134,28 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     if (pick) select(pick.zone);
   });
 
-  // Camera flights. Any running flight is killed first so rapid clicks never stack.
+  // Camera flights travel in an arc around the sequoia (cylindrical coordinates around its axis), never
+  // through it. Any running flight is killed first so rapid clicks never stack.
   let flight: gsap.core.Timeline | null = null;
   const fly = (position: number[], target: number[], duration = 1.6) => {
     flight?.kill();
     controls.autoRotate = false;
-    flight = gsap.timeline({ defaults: { duration, ease: 'power2.inOut' }, onUpdate: () => controls.update() });
-    flight.to(camera.position, { x: position[0], y: position[1], z: position[2] }, 0);
+    const from = { r: Math.hypot(camera.position.x, camera.position.z), a: Math.atan2(camera.position.z, camera.position.x), y: camera.position.y };
+    const toA = Math.atan2(position[2], position[0]);
+    const da = Math.atan2(Math.sin(toA - from.a), Math.cos(toA - from.a));
+    const to = { r: Math.hypot(position[0], position[2]), a: from.a + da, y: position[1] };
+    const bulge = (Math.abs(da) / Math.PI) * 10; // swing wider the further round the tree we go
+    const path = { t: 0 };
+    flight = gsap.timeline({ defaults: { duration, ease: 'power2.inOut' } });
+    flight.to(path, {
+      t: 1,
+      onUpdate: () => {
+        const t = path.t;
+        const r = from.r + (to.r - from.r) * t + bulge * Math.sin(Math.PI * t);
+        const a = from.a + (to.a - from.a) * t;
+        camera.position.set(Math.cos(a) * r, from.y + (to.y - from.y) * t, Math.sin(a) * r);
+      },
+    }, 0);
     flight.to(controls.target, { x: target[0], y: target[1], z: target[2] }, 0);
     return flight;
   };
@@ -186,6 +204,8 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const homePosition = () => (portrait ? HOME_VIEW.position.map((v) => v * 1.4) : HOME_VIEW.position);
   const resize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return; // hidden (Lo-Fi): keep the last good size, resume() re-measures
+    const wasPortrait = portrait;
     renderer.setSize(w, h, false);
     labelRenderer.setSize(w, h);
     camera.aspect = w / h;
@@ -196,30 +216,43 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     (scene.fog as THREE.Fog).far = portrait ? 380 : 260;
     camera.updateProjectionMatrix();
     applyInset();
+    // Rotating a phone re-frames the island when nothing is focused.
+    if (!focused && wasPortrait !== portrait) camera.position.set(...(homePosition() as [number, number, number]));
   };
   resize();
-  if (portrait) camera.position.set(...(homePosition() as [number, number, number]));
   addEventListener('resize', resize);
 
-  const clock = new THREE.Clock();
+  // One render loop at most: a frame is only scheduled when none is pending. The loop stops while the
+  // tab is hidden or the page is in Lo-Fi (paused), and restarts on return.
   let raf = 0;
-  let running = true;
+  let paused = false;
+  let frames = 0;
+  let last = performance.now();
+  let elapsed = 0;
   const tick = () => {
-    if (!running) return;
-    const dt = Math.min(clock.getDelta(), 0.05);
-    const t = clock.elapsedTime;
-    parts.forEach((p) => p.update?.(t, dt));
+    raf = 0;
+    if (paused || document.hidden) return;
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    elapsed += dt;
+    parts.forEach((p) => p.update?.(elapsed, dt));
     controls.update();
+    const safe = keepOutsideTree(camera.position);
+    if (safe !== camera.position) camera.position.set(safe.x, safe.y, safe.z);
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
+    frames++;
     raf = requestAnimationFrame(tick);
   };
-  // Stop rendering while the tab is hidden.
-  document.addEventListener('visibilitychange', () => {
-    running = !document.hidden;
-    if (running) { clock.getDelta(); raf = requestAnimationFrame(tick); }
-  });
-  raf = requestAnimationFrame(tick);
+  const schedule = () => {
+    if (raf || paused || document.hidden) return;
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  };
+  const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0; };
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : schedule()));
+  schedule();
 
   return {
     scene,
@@ -229,9 +262,14 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     setInset(next: { right: number; bottom: number }) { inset = next; applyInset(); },
     setNight(n: boolean) { night = n; applyPalette(); },
     focus,
+    select,
     onSelect(cb: (id: ZoneId) => void) { selectHandlers.push(cb); },
+    pause() { paused = true; stop(); flight?.kill(); },
+    resume() { paused = false; resize(); schedule(); },
+    frames: () => frames,
+    cameraPosition: () => camera.position.toArray() as [number, number, number],
     drawCalls: () => renderer.info.render.calls,
     cameraTarget: () => controls.target.toArray() as [number, number, number],
-    dispose() { cancelAnimationFrame(raf); running = false; renderer.dispose(); },
+    dispose() { paused = true; stop(); flight?.kill(); clearTimeout(idleTimer); controls.dispose(); renderer.dispose(); },
   };
 }

@@ -1,23 +1,26 @@
 ---
 title: CELPIP12 - AI英语考试写作练习平台
-date: 2025-08-13T12:00:00.000Z
+date: 2025-08-13 12:00:00+00:00
 lang: zh
 summary: 一个产品经理从自身需求出发，边学边做的CELPIP写作练习平台，记录了从零开始学习Web开发的完整过程
-status: live
+status: paused
 tags:
-  - Next.js 14
-  - OpenAI API
-  - TypeScript
-  - Clerk Auth
-  - Vercel Postgres
-  - Tailwind CSS
+- Next.js 14
+- OpenAI API
+- TypeScript
+- Clerk Auth
+- Vercel Postgres
+- Tailwind CSS
 links:
-  - label: Demo
-    url: 'https://celpip12.vercel.app/'
-  - label: GitHub
-    url: 'https://github.com/luli-lula/celpip'
+- label: Demo
+  url: https://celpip12.vercel.app/
+- label: GitHub
+  url: https://github.com/luli-lula/celpip
 legacyPaths:
-  - /zh/projects/celpip12/
+- /zh/projects/celpip12/
+category: learning
+url: https://celpip.ailula.top/
+image: /assets/projects/celpip12.webp
 ---
 ## Why - 从痛点出发的产品思考
 

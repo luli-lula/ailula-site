@@ -5,14 +5,16 @@ import Placeholder from './Placeholder.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { localizedPath, t, type Lang } from '../lib/i18n';
-import { byDateDesc, localized } from '../lib/content';
+import { byDateDesc, localized, projectGroups, STATUS_KEY } from '../lib/content';
 import { ZONES } from '../scenes/valley/zones';
 import { SEASONS } from '../scenes/valley/palette';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const other: Lang = lang === 'zh' ? 'en' : 'zh';
-const projects = (await localized('projects', lang)).sort(byDateDesc);
+const groups = await projectGroups(lang);
+const workshopProjects = groups.filter((g) => g.category !== 'plants').flatMap((g) => g.items);
+const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
 const posts = (await localized('posts', lang)).sort(byDateDesc);
 const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
@@ -67,11 +69,11 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
     <p class="intro">{t(lang, 'workshopIntro')}</p>
     <ul class="cards">
-      {projects.map(({ slug, entry, fallback }) => (
+      {workshopProjects.map(({ slug, entry, fallback }) => (
         <li>
           <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
           <p>{entry.data.summary}</p>
-          <p class="meta">{t(lang, entry.data.status === 'live' ? 'statusLive' : 'statusWip')}{fallback && <span class="lang-label">{only}</span>}</p>
+          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <span class="lang-label">{only}</span>}</p>
         </li>
       ))}
     </ul>

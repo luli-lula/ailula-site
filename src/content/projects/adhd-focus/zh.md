@@ -1,21 +1,24 @@
 ---
 title: ADHDFocus - 专注计时器
-date: 2025-04-01T12:00:00.000Z
+date: 2025-04-01 12:00:00+00:00
 lang: zh
 summary: 一个以专为ADHD人群设计的简洁专注计时器，帮助提升注意力集中度
-status: live
+status: paused
 tags:
-  - Next.js 14
-  - React
-  - TypeScript
-  - Tailwind CSS
+- Next.js 14
+- React
+- TypeScript
+- Tailwind CSS
 links:
-  - label: Demo
-    url: 'https://www.adhd-focus.ailula.top/'
-  - label: GitHub
-    url: 'https://github.com/luli-lula/ADHDFocus'
+- label: Demo
+  url: https://www.adhd-focus.ailula.top/
+- label: GitHub
+  url: https://github.com/luli-lula/ADHDFocus
 legacyPaths:
-  - /zh/projects/adhd-focus/
+- /zh/projects/adhd-focus/
+category: tools
+url: https://adhd-focus.ailula.top/
+image: /assets/projects/adhd-focus.webp
 ---
 ## Why
 

@@ -1,25 +1,27 @@
 ---
 title: CELPIP12 - From Personal Pain Point to Full-Stack AI Solution
-date: 2025-08-13T12:00:00.000Z
+date: 2025-08-13 12:00:00+00:00
 lang: en
-summary: >-
-  A product manager's journey from identifying personal pain points to building
+summary: A product manager's journey from identifying personal pain points to building
   a full-stack AI-powered CELPIP writing practice platform
-status: live
+status: paused
 tags:
-  - Next.js 14
-  - OpenAI API
-  - TypeScript
-  - Clerk Auth
-  - Vercel Postgres
-  - Tailwind CSS
+- Next.js 14
+- OpenAI API
+- TypeScript
+- Clerk Auth
+- Vercel Postgres
+- Tailwind CSS
 links:
-  - label: Demo
-    url: 'https://celpip12.vercel.app/'
-  - label: GitHub
-    url: 'https://github.com/luli-lula/celpip'
+- label: Demo
+  url: https://celpip12.vercel.app/
+- label: GitHub
+  url: https://github.com/luli-lula/celpip
 legacyPaths:
-  - /projects/celpip12/
+- /projects/celpip12/
+category: learning
+url: https://celpip.ailula.top/
+image: /assets/projects/celpip12.webp
 ---
 ## Why - Product Thinking from Personal Pain Points
 

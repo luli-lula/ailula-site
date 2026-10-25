@@ -24,7 +24,14 @@ const projects = defineCollection({
     date: z.coerce.date().optional(),
     lang,
     summary: z.string(),
-    status: z.enum(['live', 'wip']),
+    status: z.enum(['live', 'wip', 'paused', 'done']),
+    // Grouping on the projects page and in the valley: plant work lives in the greenhouse.
+    category: z.enum(['plants', 'learning', 'tools']).default('tools'),
+    url: z.string().url().optional(),
+    image: z.string().optional(),
+    featured: z.boolean().default(false),
+    // Drafts are kept in the repo but not listed or built.
+    draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     links: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
     legacyPaths: z.array(z.string()).default([]),

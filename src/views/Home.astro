@@ -5,11 +5,11 @@ import Valley from '../components/Valley.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { localizedPath, t, type Lang } from '../lib/i18n';
-import { byDateDesc, localized } from '../lib/content';
+import { byDateDesc, localized, projectGroups } from '../lib/content';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const projects = (await localized('projects', lang)).sort(byDateDesc);
+const groups = await projectGroups(lang);
 const posts = (await localized('posts', lang)).sort(byDateDesc).slice(0, 5);
 const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
 ---
@@ -39,15 +39,20 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
 
   <section>
     <h2>{t(lang, 'sectionProjects')}</h2>
-    <ul class="list">
-      {projects.map(({ slug, entry, fallback }) => (
-        <li>
-          <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
-          <span class="muted">{entry.data.summary}</span>
-          {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
-        </li>
-      ))}
-    </ul>
+    {groups.map(({ category, items }) => (
+      <>
+        <h3>{t(lang, `cat_${category}`)}</h3>
+        <ul class="list">
+          {items.map(({ slug, entry, fallback }) => (
+            <li>
+              <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
+              <span class="muted">{entry.data.summary}</span>
+              {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
+            </li>
+          ))}
+        </ul>
+      </>
+    ))}
   </section>
 
   <section>

@@ -1,23 +1,25 @@
 ---
 title: ADHDFocus - Focus Timer
-date: 2025-04-01T12:00:00.000Z
+date: 2025-04-01 12:00:00+00:00
 lang: en
-summary: >-
-  A minimalist focus timer designed specifically for people with ADHD to help
+summary: A minimalist focus timer designed specifically for people with ADHD to help
   improve attention concentration
-status: live
+status: paused
 tags:
-  - Next.js 14
-  - React
-  - TypeScript
-  - Tailwind CSS
+- Next.js 14
+- React
+- TypeScript
+- Tailwind CSS
 links:
-  - label: Demo
-    url: 'https://www.adhd-focus.ailula.top/'
-  - label: GitHub
-    url: 'https://github.com/luli-lula/ADHDFocus'
+- label: Demo
+  url: https://www.adhd-focus.ailula.top/
+- label: GitHub
+  url: https://github.com/luli-lula/ADHDFocus
 legacyPaths:
-  - /projects/adhd-focus/
+- /projects/adhd-focus/
+category: tools
+url: https://adhd-focus.ailula.top/
+image: /assets/projects/adhd-focus.webp
 ---
 ## Why
 

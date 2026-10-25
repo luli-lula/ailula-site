@@ -29,6 +29,9 @@ export interface ValleyOptions {
 
 export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, opts: ValleyOptions) {
   const high = opts.quality === 'high';
+  // Visitors who asked their system for less motion get a still island and instant camera cuts.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.dataset.motion = reduced ? 'reduced' : 'full';
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, high ? 2 : 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -114,7 +117,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   controls.maxDistance = 200;
   controls.minPolarAngle = 0.25;
   controls.maxPolarAngle = 1.38;
-  controls.autoRotate = true;
+  controls.autoRotate = !reduced;
   controls.autoRotateSpeed = 0.35;
   controls.update();
   // Grabbing the view cancels any flight in progress, so a drag always works.
@@ -126,7 +129,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const onActivity = () => {
     controls.autoRotate = false;
     clearTimeout(idleTimer);
-    idleTimer = window.setTimeout(() => { if (!focused) controls.autoRotate = true; }, 8000);
+    idleTimer = window.setTimeout(() => { if (!focused && !reduced) controls.autoRotate = true; }, 8000);
   };
   addEventListener('pointermove', onActivity, { passive: true });
   addEventListener('pointerdown', onActivity, { passive: true });
@@ -173,7 +176,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   // Camera flights travel in an arc around the sequoia (cylindrical coordinates around its axis), never
   // through it. Any running flight is killed first so rapid clicks never stack.
   let flight: gsap.core.Timeline | null = null;
-  const fly = (position: number[], target: number[], duration = 1.6) => {
+  const fly = (position: number[], target: number[], duration = reduced ? 0 : 1.6) => {
     flight?.kill();
     controls.autoRotate = false;
     const from = { r: Math.hypot(camera.position.x, camera.position.z), a: Math.atan2(camera.position.z, camera.position.x), y: camera.position.y };
@@ -211,8 +214,9 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
       // Rise slowly along the trunk past the ring bands, from the roots (2017) to the crown (now).
       // Start close on the lowest rings (2017), then rise and pull back until the whole crown (now) is in view.
       const top = sequoia.ringHeights.at(-1)!;
-      f.to(camera.position, { x: 30, y: top + 12, z: 38, duration: 5.5, ease: 'sine.inOut', onStart: () => (rising = true) }, '>');
-      f.to(controls.target, { y: top + 2, duration: 5.5, ease: 'sine.inOut' }, '<');
+      const rise = reduced ? 0 : 5.5;
+      f.to(camera.position, { x: 30, y: top + 12, z: 38, duration: rise, ease: 'sine.inOut', onStart: () => (rising = true) }, '>');
+      f.to(controls.target, { y: top + 2, duration: rise, ease: 'sine.inOut' }, '<');
     }
   };
 
@@ -261,6 +265,24 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   resize();
   addEventListener('resize', resize);
 
+  // On small screens labels can collide: keep the more important one, fade the other (its 3D object stays
+  // clickable). Checked a few times a second, not every frame.
+  const PRIORITY: ZoneId[] = ['tree', 'greenhouse', 'workshop', 'garden', 'lookout', 'hollow', 'dog'];
+  const declutter = () => {
+    const kept: DOMRect[] = [];
+    for (const id of PRIORITY) {
+      const el = labelsEl.querySelector<HTMLElement>(`.valley-label[data-zone="${id}"]`);
+      if (!el) continue;
+      el.style.opacity = '';
+      const r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      const hit = kept.some((k) => r.left < k.right + 4 && k.left < r.right + 4 && r.top < k.bottom + 2 && k.top < r.bottom + 2);
+      el.style.opacity = hit ? '0' : '';
+      el.style.pointerEvents = hit ? 'none' : '';
+      if (!hit) kept.push(r);
+    }
+  };
+
   // One render loop at most: a frame is only scheduled when none is pending. The loop stops while the
   // tab is hidden or the page is in Lo-Fi (paused), and restarts on return.
   let raf = 0;
@@ -282,6 +304,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     const safe = keepOutsideTree(camera.position);
     if (safe !== camera.position) camera.position.set(safe.x, safe.y, safe.z);
     for (const tag of ringTags) tag.el.classList.toggle('on', focused === 'tree' && rising && camera.position.y >= tag.y - 3);
+    if (frames % 6 === 0) declutter();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
     if (frames++ === 0) firstFrame();

@@ -70,6 +70,8 @@ export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): 
   stars.visible = false;
   group.add(stars);
 
+  // Falling petals, leaves and snow are motion: off for visitors who asked for less of it.
+  points.visible = !matchMedia('(prefers-reduced-motion: reduce)').matches;
   let mode = MODES.spring;
   return {
     group,

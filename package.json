@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@dgreenheck/ez-tree": "^1.1.0",
     "astro": "^7.4.1",
     "gsap": "^3.15.0",

@@ -29,7 +29,17 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? t(lang, 'intro')} />
-    <link rel="alternate" hreflang={other} href={switchHref} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" hreflang={other} href={new URL(switchHref, Astro.site)} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="lula" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description ?? t(lang, 'intro')} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL('/og.jpg', Astro.site)} />
+    <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type="application/rss+xml" title="lula" href={lang === 'zh' ? '/zh/index.xml' : '/index.xml'} />
     <script is:inline set:html={modeScript} />
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${profile.gaId}`}></script>

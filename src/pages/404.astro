@@ -1,0 +1,23 @@
+---
+// Not found: both languages, since we cannot know which one the visitor came from.
+import Base from '../layouts/Base.astro';
+---
+<Base title="404">
+  <section class="lost">
+    <p class="ring" aria-hidden="true">◎</p>
+    <h1>这条小路还没长出来</h1>
+    <p>你找的页面不在这里。可能是旧博客的地址，也可能还在生长。</p>
+    <p><a href="/zh/">回到首页</a> · <a href="/zh/writing/">看看写作</a></p>
+    <hr />
+    <h2>This path hasn't grown yet</h2>
+    <p>The page you are looking for is not here.</p>
+    <p><a href="/">Back home</a> · <a href="/writing/">Read the writing</a></p>
+  </section>
+</Base>
+
+<style>
+  .lost { text-align: center; padding: 8vh 0; }
+  .lost .ring { font-size: 56px; color: var(--accent); margin: 0; }
+  .lost h1 { margin: 8px 0; }
+  .lost hr { border: 0; border-top: 1px solid var(--line); margin: 32px auto; width: 120px; }
+</style>

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /lab/
+
+Sitemap: https://ailula.top/sitemap-index.xml

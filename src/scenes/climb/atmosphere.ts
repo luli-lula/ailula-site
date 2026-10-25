@@ -57,7 +57,7 @@ function cloudMaterial(): THREE.ShaderMaterial {
         float dist = length(vWorld.xz);
         float fade = 1.0 - smoothstep(900.0, 1400.0, dist);
         float a = 0.93 + 0.07 * smoothstep(0.3, 0.7, n);
-        vec3 col = mix(uColor, vec3(1.0, 0.97, 0.92), smoothstep(0.3, 0.8, n));
+        vec3 col = mix(vec3(0.72, 0.76, 0.8), vec3(1.0, 0.97, 0.92), smoothstep(0.28, 0.78, n));
         gl_FragColor = vec4(col, a * fade);
       }`,
   });

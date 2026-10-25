@@ -20,3 +20,5 @@ Photo climb test (Unsplash License: free for commercial use, no attribution requ
 | `assets-src/photos/04-canopy.jpg` (web: `public/assets/photos/04-canopy.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/tall-redwood-trees-reaching-into-a-foggy-sky-s_zaahNg4q4 | Unsplash License |
 | `assets-src/photos/05-light.jpg` (web: `public/assets/photos/05-light.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/misty-pine-forest-on-hillside-TFyi0QOx08c | Unsplash License (not a redwood; stand-in for "above the fog") |
 | `assets-src/photos/one-tree.jpg` (web: `public/assets/photos/one-tree.webp`, depth map generated locally) | https://unsplash.com/photos/tall-redwood-trees-reaching-into-a-foggy-sky-s_zaahNg4q4 (full resolution) | Unsplash License |
+| `public/assets/ground/forest_floor_*_1k.jpg` | https://polyhaven.com/a/forest_floor | CC0 |
+| EZ-Tree bark/leaf textures (bundled from `@dgreenheck/ez-tree`) | https://github.com/dgreenheck/ez-tree | MIT |

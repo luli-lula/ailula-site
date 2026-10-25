@@ -40,3 +40,19 @@ describe('valley zones', () => {
     expect(ZONES.find((z) => z.id === 'tree')!.view.target[1]).toBeGreaterThan(0);
   });
 });
+
+import { ringHeightsFor, SEQUOIA } from '../../src/scenes/valley/sequoia';
+
+describe('sequoia rings', () => {
+  test('one ring per timeline year, rising up the trunk', () => {
+    const h = ringHeightsFor([2017, 2018, 2023, 2024, 2025]);
+    expect(h).toHaveLength(5);
+    for (let i = 1; i < h.length; i++) expect(h[i]).toBeGreaterThan(h[i - 1]);
+    expect(h[0]).toBeGreaterThan(0);
+    expect(h.at(-1)!).toBeLessThan(SEQUOIA.trunkHeight);
+  });
+
+  test('the sequoia dwarfs everything else in the valley', () => {
+    expect(SEQUOIA.totalHeight).toBeGreaterThanOrEqual(2.5 * SEQUOIA.maxOtherTreeHeight);
+  });
+});

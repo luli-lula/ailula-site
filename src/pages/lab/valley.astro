@@ -1,0 +1,48 @@
+---
+// Lab page for the valley diorama: scene only, no site chrome. The real home uses Valley.astro.
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Valley · lab</title>
+  </head>
+  <body>
+    <canvas id="valley"></canvas>
+    <div id="labels"></div>
+    <nav class="lab-bar">
+      <button data-season="spring">Spring</button><button data-season="summer">Summer</button>
+      <button data-season="autumn">Autumn</button><button data-season="winter">Winter</button>
+      <button data-night>Day / Night</button><button data-home>Home view</button>
+    </nav>
+    <script>
+      import { createValley } from '../../scenes/valley/createValley';
+      import { VALLEY_PARTS } from '../../scenes/valley/parts';
+      import type { Season } from '../../scenes/valley/palette';
+
+      const params = new URLSearchParams(location.search);
+      const v = createValley(document.getElementById('valley') as HTMLCanvasElement, document.getElementById('labels')!, {
+        lang: params.get('lang') === 'zh' ? 'zh' : 'en',
+        quality: matchMedia('(max-width: 700px)').matches ? 'low' : 'high',
+        season: (params.get('season') as Season) ?? 'spring',
+        night: params.get('night') === '1',
+        extraParts: VALLEY_PARTS,
+      });
+      let night = params.get('night') === '1';
+      v.onSelect((id) => v.focus(id));
+      document.querySelectorAll<HTMLElement>('[data-season]').forEach((b) => b.addEventListener('click', () => v.setSeason(b.dataset.season as Season)));
+      document.querySelector('[data-night]')!.addEventListener('click', () => v.setNight((night = !night)));
+      document.querySelector('[data-home]')!.addEventListener('click', () => v.focus(null));
+      (window as any).__valley = v;
+    </script>
+    <style is:global>
+      html, body { margin: 0; height: 100%; overflow: hidden; font-family: -apple-system, system-ui, sans-serif; }
+      #valley { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+      #labels { position: fixed; inset: 0; pointer-events: none; }
+      .valley-label { pointer-events: auto; font: 600 11px/1 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: #fdfaf3; background: rgba(28, 34, 30, 0.62); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 12px; border-radius: 999px; cursor: pointer; backdrop-filter: blur(6px); white-space: nowrap; }
+      .valley-label:hover { background: rgba(28, 34, 30, 0.85); }
+      .lab-bar { position: fixed; left: 12px; bottom: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+      .lab-bar button { font: 12px system-ui; padding: 6px 10px; border-radius: 8px; border: 0; background: #fffdf8; cursor: pointer; }
+    </style>
+  </body>
+</html>

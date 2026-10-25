@@ -285,7 +285,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
 
   .valley-bar { z-index: 3; position: absolute; top: 0; left: 0; right: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 16px clamp(12px, 3vw, 28px); pointer-events: none; }
   .valley-bar > * { pointer-events: auto; }
-  .valley-brand { display: flex; flex-direction: column; gap: 2px; }
+  /* A soft halo in the sky colour keeps the name readable over dark foliage. */
+  .valley-brand { display: flex; flex-direction: column; gap: 2px; --halo: rgba(240, 230, 214, 0.9); text-shadow: 0 0 3px var(--halo), 0 0 12px var(--halo); }
+  html[data-night='true'] .valley-brand { --halo: rgba(35, 42, 72, 0.9); }
   .valley-brand .name { font: 700 clamp(26px, 4vw, 40px)/1 Georgia, 'Songti SC', serif; letter-spacing: 0.04em; }
   .valley-brand .slogan { font: italic 13px/1.4 Georgia, 'Songti SC', serif; opacity: 0.8; }
   .valley-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }

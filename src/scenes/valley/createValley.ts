@@ -103,6 +103,17 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   controls.autoRotateSpeed = 0.35;
   controls.update();
 
+  // Auto-rotate only while idle: any pointer movement holds the island still so labels are easy to hit.
+  let focused: ZoneId | null = null;
+  let idleTimer = 0;
+  const onActivity = () => {
+    controls.autoRotate = false;
+    clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(() => { if (!focused) controls.autoRotate = true; }, 8000);
+  };
+  addEventListener('pointermove', onActivity, { passive: true });
+  addEventListener('pointerdown', onActivity, { passive: true });
+
   // Clicking scene objects (the tree, the cabin...) selects their zone.
   const ray = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
@@ -131,18 +142,20 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     return flight;
   };
   const focus = (id: ZoneId | null) => {
+    focused = id;
     document.documentElement.dataset.zone = id ?? '';
     if (!id) {
-      fly(homePosition(), HOME_VIEW.target).eventCallback('onComplete', () => (controls.autoRotate = true));
+      fly(homePosition(), HOME_VIEW.target);
       return;
     }
     const z = ZONES.find((zz) => zz.id === id)!;
     const f = fly(z.view.position, z.view.target);
     if (id === 'tree') {
       // Rise slowly along the trunk past the ring bands, from the roots (2017) to the crown (now).
-      const top = sequoia.ringHeights.at(-1)! + 6;
-      f.to(camera.position, { y: top + 4, duration: 5, ease: 'sine.inOut' }, '>');
-      f.to(controls.target, { y: top, duration: 5, ease: 'sine.inOut' }, '<');
+      // Start close on the lowest rings (2017), then rise and pull back until the whole crown (now) is in view.
+      const top = sequoia.ringHeights.at(-1)!;
+      f.to(camera.position, { x: 30, y: top + 12, z: 38, duration: 5.5, ease: 'sine.inOut' }, '>');
+      f.to(controls.target, { y: top + 2, duration: 5.5, ease: 'sine.inOut' }, '<');
     }
   };
 
@@ -209,6 +222,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     focus,
     onSelect(cb: (id: ZoneId) => void) { selectHandlers.push(cb); },
     drawCalls: () => renderer.info.render.calls,
+    cameraTarget: () => controls.target.toArray() as [number, number, number],
     dispose() { cancelAnimationFrame(raf); running = false; renderer.dispose(); },
   };
 }

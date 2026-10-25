@@ -18,6 +18,14 @@ const strip = (g: THREE.BufferGeometry) => {
   for (const n of Object.keys(g.attributes)) if (n !== 'position') g.deleteAttribute(n);
   return g.index ? g.toNonIndexed() : g;
 };
+// A gable roof: a triangular prism with its ridge along x.
+function gable(length: number, width: number, height: number) {
+  const shape = new THREE.Shape([new THREE.Vector2(-width / 2, 0), new THREE.Vector2(width / 2, 0), new THREE.Vector2(0, height)]);
+  const g = new THREE.ExtrudeGeometry(shape, { depth: length, bevelEnabled: false });
+  g.translate(0, 0, -length / 2);
+  g.rotateY(Math.PI / 2);
+  return g;
+}
 const zoneAt = (id: ZoneId) => {
   const t = ZONES.find((z) => z.id === id)!.view.target;
   return new THREE.Vector3(t[0], heightAt(t[0], t[2]), t[2]);
@@ -50,7 +58,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
     g.position.copy(at);
     g.rotation.y = facing(at);
     const walls = faceted(strip(box(4.6, 2.6, 3.6)), rnd, 0.12, (c) => (Math.abs(c.y % 0.5) < 0.25 ? 1 : 0.9));
-    const roof = new THREE.CylinderGeometry(3.1, 3.1, 5.2, 3, 1).rotateZ(Math.PI / 2).rotateX(0).scale(1, 0.62, 0.9).translate(0, 3.2, 0);
+    const roof = gable(5.4, 4.4, 1.9).translate(0, 2.6, 0);
     const chimney = box(0.6, 1.6, 0.6, 1.3, 3, -0.6);
     const door = box(0.9, 1.7, 0.1, -0.8, 0, 1.82);
     const win = box(1.1, 0.8, 0.1, 1.1, 1.1, 1.82);
@@ -80,7 +88,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
       }
     }
     const house = strip(box(3, 2.4, 2.4, 0, 0, 2.4));
-    const roofG = strip(new THREE.CylinderGeometry(1.75, 1.75, 2.6, 3, 1).rotateZ(Math.PI / 2).scale(1, 0.55, 0.8).translate(0, 2.85, 2.4));
+    const roofG = strip(gable(3.2, 2.6, 1.1).translate(0, 2.4, 2.4));
     g.add(mesh(faceted(merge(beds), rnd, 0.12), darkMat), mesh(faceted(merge(greens), rnd, 0.25), material('#6c9a55')));
     const glass = material('#d8efe9', { transparent: true, opacity: 0.35, roughness: 0.1, emissive: WINDOW, emissiveIntensity: 0 });
     g.add(mesh(faceted(merge([house, roofG]), rnd, 0), glass, false));
@@ -118,7 +126,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
   // The tree hollow: warm light inside the fire scar — the cinema.
   {
     const r = trunkRadius(2, Math.PI / 2) * 0.5;
-    const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 4.2), material(WINDOW, { emissive: WINDOW, emissiveIntensity: 0.25, side: THREE.DoubleSide }));
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 4.2), new THREE.MeshStandardMaterial({ color: '#2a1810', emissive: WINDOW, emissiveIntensity: 0.05, side: THREE.DoubleSide, roughness: 1 }));
     glow.position.set(0, 2.1 + heightAt(0, 0), r - 0.15);
     group.add(glow);
     group.userData.hollowGlow = glow;
@@ -172,7 +180,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
       glowMat.emissiveIntensity = night ? 1.6 : 0.2;
       lampMat.emissiveIntensity = night ? 2.2 : 0.05;
       (group.userData.glass as THREE.MeshStandardMaterial).emissiveIntensity = night ? 0.35 : 0;
-      ((group.userData.hollowGlow as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = night ? 2 : 0.25;
+      ((group.userData.hollowGlow as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.4 : 0.05;
       for (const l of nightLights) l.intensity = night ? (l.userData.on as number) : 0;
     },
     update(t) {

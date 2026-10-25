@@ -10,7 +10,7 @@ import { ZONES } from './zones';
 // (the only thing that changes with the seasons), sword ferns, wildflowers, granite rocks and the
 // grey fallen sequoia logs that lie all over the real grove.
 
-const KEEP_CLEAR = ZONES.filter((z) => z.id !== 'tree').map((z) => new THREE.Vector2(z.view.target[0], z.view.target[2]));
+const KEEP_CLEAR = ZONES.filter((z) => z.id !== 'tree').flatMap((z) => [new THREE.Vector2(z.view.target[0], z.view.target[2]), new THREE.Vector2(z.view.position[0], z.view.position[2])]);
 
 function spots(count: number, rnd: () => number, opts: { minR: number; maxR: number; clear: number; pathClear: number }) {
   const out: THREE.Vector3[] = [];

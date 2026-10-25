@@ -115,6 +115,13 @@ export function createSequoia(p: Palette, years: number[]) {
   const ringMat = material('#d9a978', { emissive: '#ffd08a', emissiveIntensity: 0, transparent: true, opacity: 0.55 });
   group.add(mesh(merge(rings), ringMat, false));
 
+  let isNight = false;
+  let highlighted = false;
+  const paintRings = () => {
+    ringMat.emissiveIntensity = highlighted ? 1.4 : isNight ? 1.2 : 0;
+    ringMat.opacity = highlighted || isNight ? 0.95 : 0.55;
+  };
+
   return {
     group,
     height: SEQUOIA.totalHeight,
@@ -125,8 +132,13 @@ export function createSequoia(p: Palette, years: number[]) {
     setPalette(next: Palette, night: boolean) {
       barkMat.color.set(next.sequoiaBark);
       crownMat.color.set(next.sequoiaCrown);
-      ringMat.emissiveIntensity = night ? 1.2 : 0;
-      ringMat.opacity = night ? 0.9 : 0.55;
+      isNight = night;
+      paintRings();
+    },
+    // While the tree's story is open, its rings glow like a timeline.
+    setHighlight(on: boolean) {
+      highlighted = on;
+      paintRings();
     },
   };
 }

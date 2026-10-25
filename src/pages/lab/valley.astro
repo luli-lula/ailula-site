@@ -41,6 +41,9 @@
       #labels { position: fixed; inset: 0; pointer-events: none; }
       .valley-label { pointer-events: auto; font: 600 11px/1 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: #fdfaf3; background: rgba(28, 34, 30, 0.62); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 12px; border-radius: 999px; cursor: pointer; backdrop-filter: blur(6px); white-space: nowrap; }
       @media (max-width: 700px) { .valley-label { font-size: 9px; padding: 6px 9px; letter-spacing: .08em; } .valley-label[data-zone='dog'] { display: none; } }
+      .ring-tag { font: 600 11px/1 ui-monospace, 'SF Mono', monospace; letter-spacing: .1em; color: #5a2a14; background: rgba(255, 236, 205, 0.92); padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(60, 30, 10, 0.25); opacity: 0; transform: translateX(-6px); transition: opacity .5s, transform .5s; pointer-events: none; }
+      .ring-tag.on { opacity: 1; transform: none; }
+      .valley-label.hover { background: rgba(28, 34, 30, 0.9); transform: scale(1.06); }
       .valley-label:hover { background: rgba(28, 34, 30, 0.85); }
       .lab-bar { position: fixed; left: 12px; bottom: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
       .lab-bar button { font: 12px system-ui; padding: 6px 10px; border-radius: 8px; border: 0; background: #fffdf8; cursor: pointer; }

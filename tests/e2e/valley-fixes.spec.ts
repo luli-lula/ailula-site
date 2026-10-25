@@ -117,3 +117,24 @@ test('keyboard: focus stays in the valley and moves into and out of panels', asy
   expect(await page.evaluate(() => (document.activeElement as HTMLElement)?.dataset.zone)).toBe('workshop');
   await expect(page.locator('.valley-root [data-season-pick="winter"]')).toHaveAttribute('aria-pressed', /true|false/);
 });
+
+test('opening the sequoia reveals the years on its rings as the camera rises', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.ring-tag.on')).toHaveCount(0);
+  await page.evaluate(() => (window as any).__valley.select('tree'));
+  // Still flying down to the roots: no years yet.
+  await page.waitForTimeout(800);
+  await expect(page.locator('.ring-tag.on')).toHaveCount(0);
+  await expect(page.locator('.ring-tag.on').first()).toBeVisible({ timeout: 6000 });
+  expect(await page.locator('.ring-tag.on').count()).toBeLessThan(6);
+  await expect(page.locator('.ring-tag.on')).toHaveCount(6, { timeout: 12_000 });
+  await expect(page.locator('.ring-tag').first()).toHaveText('2017');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.ring-tag.on')).toHaveCount(0);
+});
+
+test('the valley fades in once its first frame is drawn', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.valley-root')).toHaveClass(/\bready\b/, { timeout: 30_000 });
+});

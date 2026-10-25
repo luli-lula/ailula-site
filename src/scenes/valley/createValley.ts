@@ -6,7 +6,7 @@ import type { Lang } from '../../lib/i18n';
 import { timeline } from '../../data/timeline';
 import { palette, type Palette, type Season } from './palette';
 import { HOME_VIEW, ZONES, type ZoneId } from './zones';
-import { createSequoia, SEQUOIA } from './sequoia';
+import { createSequoia, SEQUOIA, trunkRadius } from './sequoia';
 import { keepOutsideTree } from './clearance';
 
 export interface Part {
@@ -72,6 +72,20 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   ];
   for (const part of parts.slice(1)) scene.add(part.group);
 
+  // Year tags on the sequoia's rings, revealed as the camera rises past them when the tree is open.
+  const TAG_ANGLE = Math.atan2(17, 13) + 0.35; // just beside the tree view's line of sight
+  const ringTags = sequoia.ringHeights.map((y, i) => {
+    const el = document.createElement('span');
+    el.className = 'ring-tag';
+    const year = years[i];
+    el.textContent = year >= 2026 ? (opts.lang === 'zh' ? '现在' : 'now') : String(year);
+    const obj = new CSS2DObject(el);
+    const r = trunkRadius(y, TAG_ANGLE) * 1.18;
+    obj.position.set(Math.cos(TAG_ANGLE) * r, y, Math.sin(TAG_ANGLE) * r);
+    scene.add(obj);
+    return { el, y };
+  });
+
   // Labels: pill buttons pinned to each zone.
   const selectHandlers: ((id: ZoneId) => void)[] = [];
   const select = (id: ZoneId) => selectHandlers.forEach((h) => h(id));
@@ -122,6 +136,28 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const ndc = new THREE.Vector2();
   let downAt: [number, number] | null = null;
   canvas.addEventListener('pointerdown', (e) => (downAt = [e.clientX, e.clientY]));
+  // Hover: a hand cursor and a highlighted label over anything that opens a place.
+  const labelFor = (zone: ZoneId) => labelsEl.querySelector<HTMLElement>(`.valley-label[data-zone="${zone}"]`);
+  let hovered: ZoneId | null = null;
+  let hoverQueued = false;
+  canvas.addEventListener('pointermove', (e) => {
+    if (hoverQueued || e.pointerType === 'touch') return;
+    hoverQueued = true;
+    requestAnimationFrame(() => {
+      hoverQueued = false;
+      const r = canvas.getBoundingClientRect();
+      ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ndc, camera);
+      const picks = parts.flatMap((p) => p.picks ?? []);
+      const hit = ray.intersectObjects(picks.map((p) => p.object), true)[0];
+      const zone = hit ? picks.find((p) => p.object === hit.object || p.object.getObjectById(hit.object.id))?.zone ?? null : null;
+      if (zone === hovered) return;
+      if (hovered) labelFor(hovered)?.classList.remove('hover');
+      hovered = zone;
+      if (zone) labelFor(zone)?.classList.add('hover');
+      canvas.style.cursor = zone ? 'pointer' : '';
+    });
+  });
   canvas.addEventListener('pointerup', (e) => {
     if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 6) return; // was a drag
     const r = canvas.getBoundingClientRect();
@@ -159,8 +195,11 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     flight.to(controls.target, { x: target[0], y: target[1], z: target[2] }, 0);
     return flight;
   };
+  let rising = false; // true once the tree flight reaches the roots and starts climbing
   const focus = (id: ZoneId | null) => {
     focused = id;
+    rising = false;
+    sequoia.setHighlight(id === 'tree');
     document.documentElement.dataset.zone = id ?? '';
     if (!id) {
       fly(homePosition(), HOME_VIEW.target);
@@ -172,7 +211,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
       // Rise slowly along the trunk past the ring bands, from the roots (2017) to the crown (now).
       // Start close on the lowest rings (2017), then rise and pull back until the whole crown (now) is in view.
       const top = sequoia.ringHeights.at(-1)!;
-      f.to(camera.position, { x: 30, y: top + 12, z: 38, duration: 5.5, ease: 'sine.inOut' }, '>');
+      f.to(camera.position, { x: 30, y: top + 12, z: 38, duration: 5.5, ease: 'sine.inOut', onStart: () => (rising = true) }, '>');
       f.to(controls.target, { y: top + 2, duration: 5.5, ease: 'sine.inOut' }, '<');
     }
   };
@@ -229,6 +268,8 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   let frames = 0;
   let last = performance.now();
   let elapsed = 0;
+  let firstFrame: () => void = () => {};
+  const ready = new Promise<void>((r) => (firstFrame = r));
   const tick = () => {
     raf = 0;
     if (paused || document.hidden) return;
@@ -240,9 +281,10 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     controls.update();
     const safe = keepOutsideTree(camera.position);
     if (safe !== camera.position) camera.position.set(safe.x, safe.y, safe.z);
+    for (const tag of ringTags) tag.el.classList.toggle('on', focused === 'tree' && rising && camera.position.y >= tag.y - 3);
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
-    frames++;
+    if (frames++ === 0) firstFrame();
     raf = requestAnimationFrame(tick);
   };
   const schedule = () => {
@@ -257,7 +299,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   return {
     scene,
     sequoiaHeight: SEQUOIA.totalHeight,
-    ready: Promise.resolve(),
+    ready,
     setSeason(s: Season) { season = s; applyPalette(); },
     setInset(next: { right: number; bottom: number }) { inset = next; applyInset(); },
     setNight(n: boolean) { night = n; applyPalette(); },

@@ -20,6 +20,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
 ---
 <div class="valley-root" data-lang={lang}>
   <canvas class="valley-canvas" aria-hidden="true"></canvas>
+  <p class="valley-loading">{lang === 'zh' ? '山谷正在醒来…' : 'The valley is waking up…'}</p>
   <div class="valley-labels"></div>
 
   <header class="valley-bar">
@@ -189,6 +190,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
         extraParts: VALLEY_PARTS,
       });
       valley = v;
+      v.ready.then(() => root.classList.add('ready'));
       // Keep the focused place out from under the panel: side panel on wide screens, bottom sheet on phones.
       const phone = matchMedia('(max-width: 700px)');
       onPanel = (open) => {
@@ -231,10 +233,16 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
 <style is:global>
   .valley-root { display: none; position: fixed; inset: 0; z-index: 50; background: #cfe2e6; color: #1c241f; }
   html[data-mode='hifi'] .valley-root { display: block; }
-  .valley-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  .valley-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; opacity: 0; transition: opacity 1.2s ease; }
+  .valley-root.ready .valley-canvas { opacity: 1; }
+  .valley-loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 15px Georgia, 'Songti SC', serif; opacity: 0.7; transition: opacity .8s; pointer-events: none; }
+  .valley-root.ready .valley-loading { opacity: 0; }
   /* z-index makes a stacking context, so the label renderer's own z-indexes never rise above panels. */
   .valley-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
   .valley-label { pointer-events: auto; font: 600 11px/1 ui-monospace, 'SF Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #fdfaf3; background: rgba(28, 34, 30, 0.62); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 12px; border-radius: 999px; cursor: pointer; backdrop-filter: blur(6px); white-space: nowrap; }
+  .ring-tag { font: 600 11px/1 ui-monospace, 'SF Mono', monospace; letter-spacing: .1em; color: #5a2a14; background: rgba(255, 236, 205, 0.92); padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(60, 30, 10, 0.25); opacity: 0; transform: translateX(-6px); transition: opacity .5s, transform .5s; pointer-events: none; }
+  .ring-tag.on { opacity: 1; transform: none; }
+  .valley-label.hover { background: rgba(28, 34, 30, 0.9); transform: scale(1.06); }
   .valley-label:hover, .valley-label:focus-visible { background: rgba(28, 34, 30, 0.88); outline: none; }
   html[data-night='true'] .valley-root { background: #232a48; color: #eef0f7; }
 

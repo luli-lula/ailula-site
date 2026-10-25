@@ -22,3 +22,4 @@ Photo climb test (Unsplash License: free for commercial use, no attribution requ
 | `assets-src/photos/one-tree.jpg` (web: `public/assets/photos/one-tree.webp`, depth map generated locally) | https://unsplash.com/photos/tall-redwood-trees-reaching-into-a-foggy-sky-s_zaahNg4q4 (full resolution) | Unsplash License |
 | `public/assets/ground/forest_floor_*_1k.jpg` | https://polyhaven.com/a/forest_floor | CC0 |
 | EZ-Tree bark/leaf textures (bundled from `@dgreenheck/ez-tree`) | https://github.com/dgreenheck/ez-tree | MIT |
+| `assets-src/photos/lula/*.jpg` (web: `public/assets/photos/lula/*`) | lula's own photos, Mariposa Grove | owned by lula |

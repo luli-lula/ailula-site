@@ -8,6 +8,12 @@ tags: []
 links: []
 legacyPaths: []
 featured: true
+image: /assets/projects/floradex.webp
+gallery:
+- /assets/projects/floradex/1.webp
+- /assets/projects/floradex/2.webp
+- /assets/projects/floradex/3.webp
+- /assets/projects/floradex/4.webp
 ---
 植物版宝可梦：一款收集植物的 iOS App，像豆瓣一样记录和整理自己见过的植物。
 

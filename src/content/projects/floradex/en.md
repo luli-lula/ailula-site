@@ -9,6 +9,12 @@ tags: []
 links: []
 legacyPaths: []
 featured: true
+image: /assets/projects/floradex.webp
+gallery:
+- /assets/projects/floradex/1.webp
+- /assets/projects/floradex/2.webp
+- /assets/projects/floradex/3.webp
+- /assets/projects/floradex/4.webp
 ---
 Pokédex for plants: an iOS app for collecting and organising the plants you have met, a little like Douban for plants.
 

@@ -23,6 +23,9 @@ const links = project?.links ?? [];
       {links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
     </p>
     {project?.image && <img class="shot" src={project.image} alt={`${entry.data.title} — screenshot`} width="960" height="600" />}
+    {project && project.gallery.length > 0 && (
+      <div class="gallery">{project.gallery.map((src) => <img src={src} alt={`${entry.data.title} — app screen`} loading="lazy" />)}</div>
+    )}
     <Content />
   </article>
 </Base>
@@ -30,5 +33,7 @@ const links = project?.links ?? [];
 <style>
   .meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 14px; }
   .status { padding: 1px 10px; border-radius: 999px; background: var(--line); color: var(--fg); }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 0 0 24px; }
+  .gallery img { width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--line); }
   .shot { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; margin: 8px 0 20px; }
 </style>

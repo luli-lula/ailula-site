@@ -29,6 +29,8 @@ const projects = defineCollection({
     category: z.enum(['plants', 'learning', 'tools']).default('tools'),
     url: z.string().url().optional(),
     image: z.string().optional(),
+    // Phone screenshots for app projects, shown as a strip on the project page.
+    gallery: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     // Drafts are kept in the repo but not listed or built.
     draft: z.boolean().default(false),

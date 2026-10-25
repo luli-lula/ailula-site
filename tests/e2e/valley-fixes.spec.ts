@@ -127,9 +127,9 @@ test('opening the sequoia reveals the years on its rings as the camera rises', a
   await page.waitForTimeout(800);
   await expect(page.locator('.ring-tag.on')).toHaveCount(0);
   await expect(page.locator('.ring-tag.on').first()).toBeVisible({ timeout: 6000 });
-  expect(await page.locator('.ring-tag.on').count()).toBeLessThan(6);
-  await expect(page.locator('.ring-tag.on')).toHaveCount(6, { timeout: 12_000 });
-  await expect(page.locator('.ring-tag').first()).toHaveText('2017');
+  expect(await page.locator('.ring-tag.on').count()).toBeLessThan(9);
+  await expect(page.locator('.ring-tag.on')).toHaveCount(9, { timeout: 12_000 });
+  await expect(page.locator('.ring-tag').first()).toHaveText('2011');
   await page.keyboard.press('Escape');
   await expect(page.locator('.ring-tag.on')).toHaveCount(0);
 });

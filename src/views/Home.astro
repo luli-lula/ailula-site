@@ -31,7 +31,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
       {timeline.map((m) => (
         <li>
           <time>{m.years}</time>
-          <span>{m.text[lang]} {!m.detailKnown && <Placeholder note={lang === 'zh' ? `${m.years} 的细节` : `details for ${m.years}`} />}</span>
+          <span><strong>{m.title[lang]}</strong><br /><span class="muted">{m.detail[lang]}</span></span>
         </li>
       ))}
     </ul>

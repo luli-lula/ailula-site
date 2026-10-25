@@ -13,12 +13,12 @@ export const SEQUOIA = {
   maxOtherTreeHeight: 15,
 };
 
-const FIRST_YEAR = 2017;
+const FIRST_YEAR = 2011;
 const LAST_YEAR = 2026;
-const RING_LOW = 6;
+const RING_LOW = 4;
 const RING_HIGH = 28;
 
-// One ring band per timeline year: the trunk is the timeline, roots are 2017, the crown is now.
+// One ring per timeline entry: the trunk is the timeline, the roots are 2011 (GIS at university), the crown is now.
 export function ringHeightsFor(years: number[]): number[] {
   return years.map((y) => RING_LOW + ((y - FIRST_YEAR) / (LAST_YEAR - FIRST_YEAR)) * (RING_HIGH - RING_LOW));
 }

@@ -61,7 +61,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   sun.shadow.radius = 3;
   scene.add(hemi, sun);
 
-  const years = timeline.map((m) => m.year).concat(2026).filter((y, i, a) => a.indexOf(y) === i);
+  const years = timeline.map((m) => m.start);
   const sequoia = createSequoia(pal, years);
   scene.add(sequoia.group);
 

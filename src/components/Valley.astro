@@ -48,7 +48,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <ol class="rings">
       {timeline.map((m) => (
-        <li><time>{m.years}</time><span>{m.text[lang]} {!m.detailKnown && <Placeholder note={lang === 'zh' ? `${m.years} 的细节` : `details for ${m.years}`} />}</span></li>
+        <li><time>{m.years}</time><strong>{m.title[lang]}</strong><p class="detail">{m.detail[lang]}</p></li>
       ))}
     </ol>
   </section>
@@ -274,6 +274,8 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .vpanel .rings li { position: relative; padding: 6px 0 10px 16px; line-height: 1.6; }
   .vpanel .rings li::before { content: ''; position: absolute; left: -6px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: #b4552e; }
   .vpanel .rings time { display: block; font: 600 12px ui-monospace, monospace; color: #9a4f2e; }
+  .vpanel .rings strong { display: block; font-weight: 600; }
+  .vpanel .rings .detail { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: #5b6157; }
   .vpanel .cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
   .vpanel .cards li { border: 1px solid #e6dccb; border-radius: 12px; padding: 10px 12px; }
   .vpanel .cards a { font-weight: 600; }

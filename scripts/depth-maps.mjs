@@ -9,7 +9,7 @@ import sharp from 'sharp';
 const dir = new URL('../assets-src/photos/', import.meta.url).pathname;
 const estimate = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small', { dtype: 'fp32' });
 
-for (const name of readdirSync(dir).filter((n) => /^\d\d-.*\.jpg$/.test(n) && !n.includes('-depth'))) {
+for (const name of readdirSync(dir).filter((n) => /^(\d\d-.*|one-tree)\.jpg$/.test(n) && !n.includes('-depth'))) {
   // Work on a 1024px copy; depth maps only need to be soft.
   const input = await sharp(join(dir, name)).resize({ width: 1024 }).jpeg().toBuffer();
   const blob = new Blob([input], { type: 'image/jpeg' });

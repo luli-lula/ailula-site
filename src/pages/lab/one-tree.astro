@@ -1,0 +1,183 @@
+---
+// Realism test A2: one photo of one redwood; the climb is one continuous camera move up its trunk.
+import RingCompass from '../../components/RingCompass.astro';
+
+// Only facts lula has published; everything else is marked 待补充.
+const cards = [
+  { id: 'pm', year: 2018.3, side: 'left', kind: '经历', title: '2018–2023 · 大厂产品经理', body: '策略产品方向，6 年换过 4 个团队。细节待补充 / TODO' },
+  { id: 'leave', year: 2024.1, side: 'right', kind: '经历', title: '2024 · 离开大厂', body: '开始自学 Next.js，自己动手做产品。' },
+  { id: 'adhd', year: 2025.1, side: 'left', kind: '项目', title: 'ADHDFocus', body: '极简专注计时器。介绍待补充 / TODO' },
+  { id: 'celpip', year: 2025.45, side: 'right', kind: '项目', title: 'CELPIP12', body: 'AI 英语写作练习平台。数据待补充 / TODO' },
+  { id: 'mg', year: 2025.7, side: 'left', kind: '经历', title: '2025 · Cornell Master Gardener', body: '搬到纽约州乡下，开始学习照顾一片森林。' },
+];
+---
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>One tree · realism test A2</title>
+    <link rel="preload" as="image" href="/assets/photos/one-tree.webp" />
+  </head>
+  <body>
+    <div class="stage" aria-hidden="true">
+      <img class="fallback" src="/assets/photos/one-tree.webp" alt="" />
+      <canvas id="tree"></canvas>
+      <img class="above" src="/assets/photos/05-light.webp" alt="" loading="lazy" />
+      <div class="grade"></div>
+      <div class="sun"></div>
+      <canvas id="fog"></canvas>
+    </div>
+    <div class="scroll-space"></div>
+
+    <header class="landing" data-fade="landing">
+      <h1>lula</h1>
+      <p class="slogan">耐心地，长成一棵大树。<br /><span>Growing slowly, like a redwood.</span></p>
+      <p class="hint">往下滑，开始往上爬 ↓</p>
+    </header>
+
+    <div class="meter" aria-hidden="true">
+      <div class="meter-line"><div class="meter-dot"></div></div>
+      <span class="meter-text" data-testid="altitude">0m · 2017</span>
+    </div>
+
+    {cards.map((c) => (
+      <article class={`card card-${c.side}`} data-card={c.id} data-year={c.year}>
+        <p class="kind">{c.kind}</p>
+        <h2>{c.title}</h2>
+        <p>{c.body}</p>
+      </article>
+    ))}
+
+    <section class="now" data-fade="now">
+      <p class="kind">此刻</p>
+      <h2>你爬到顶了 🌲</h2>
+      <p>此刻卡片和联系方式：待补充 / TODO</p>
+    </section>
+
+    <RingCompass />
+
+    <script>
+      import Lenis from 'lenis';
+      import { createFog } from '../../scenes/photo/fog';
+      import { createOneTree, shotAt, type Shot } from '../../scenes/photo/oneTree';
+      import { heightToYear, yearToHeight } from '../../lib/timeline';
+
+      // Camera path over the photo (image coords, y down). The hero trunk runs from about
+      // (0.12, 0.95) to its crown near (0.35, 0.3) and leans ~14°; the rotation straightens it.
+      const shots: Shot[] = [
+        { h: 0, cx: 0.5, cy: 0.5, zoom: 1.0, rot: 0 },
+        { h: 7, cx: 0.17, cy: 0.8, zoom: 2.1, rot: 13 },
+        { h: 40, cx: 0.22, cy: 0.64, zoom: 2.0, rot: 12 },
+        { h: 72, cx: 0.29, cy: 0.46, zoom: 1.85, rot: 9 },
+        { h: 94, cx: 0.34, cy: 0.27, zoom: 1.6, rot: 5 },
+        { h: 106, cx: 0.4, cy: 0.1, zoom: 1.45, rot: 2 },
+      ];
+      const stageEl = document.querySelector<HTMLElement>('.stage')!;
+      const above = document.querySelector<HTMLElement>('.above')!;
+      const sun = document.querySelector<HTMLElement>('.sun')!;
+      const fog = createFog(document.getElementById('fog') as HTMLCanvasElement);
+      let tree: ReturnType<typeof createOneTree> = null;
+      try {
+        tree = createOneTree(document.getElementById('tree') as HTMLCanvasElement, '/assets/photos/one-tree.webp', '/assets/photos/one-tree-depth.jpg');
+      } catch (e) {
+        console.warn('one-tree renderer unavailable, using the plain photo', e);
+      }
+      tree?.ready.then(() => stageEl.classList.add('gl')).catch((e) => console.warn(e));
+
+      const lenis = new Lenis({ lerp: 0.07 });
+      let height = 0;
+      lenis.on('scroll', ({ progress }: { progress: number }) => (height = progress * 115));
+      const pointer: [number, number] = [0, 0];
+      const target: [number, number] = [0, 0];
+      addEventListener('pointermove', (e) => {
+        target[0] = (e.clientX / innerWidth) * 2 - 1;
+        target[1] = -((e.clientY / innerHeight) * 2 - 1);
+      });
+      const smooth = (a: number, b: number, x: number) => {
+        const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+        return t * t * (3 - 2 * t);
+      };
+      // Light mist all the way up, thick as you dive to the base, a whiteout as you pass through the cloud.
+      const fogDensity = (h: number) =>
+        0.16 + Math.exp(-(((h - 4) / 2.5) ** 2)) * 0.45 + smooth(88, 104, h) * 0.5 + Math.exp(-(((h - 109) / 2.6) ** 2)) * 0.75 - smooth(110, 114, h) * 0.45;
+
+      const meterText = document.querySelector('.meter-text')!;
+      const dot = document.querySelector<HTMLElement>('.meter-dot')!;
+      const label = document.querySelector('.ring-label')!;
+      const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+      const landing = document.querySelector<HTMLElement>('[data-fade="landing"]')!;
+      const now = document.querySelector<HTMLElement>('[data-fade="now"]')!;
+      const rings = [...document.querySelectorAll<SVGPathElement>('[data-ring]')];
+      const marks = [...document.querySelectorAll<SVGPathElement>('[data-mark]')];
+      document.querySelector('.ring-compass')!.addEventListener('click', (e) => {
+        const mark = (e.target as Element).closest('[data-mark]');
+        if (mark) lenis.scrollTo((yearToHeight(Number(mark.getAttribute('data-mark'))) / 115) * lenis.limit);
+      });
+
+      const frame = (t: number) => {
+        lenis.raf(t);
+        const h = height;
+        pointer[0] += (target[0] - pointer[0]) * 0.05;
+        pointer[1] += (target[1] - pointer[1]) * 0.05;
+        tree?.render(shotAt(shots, h), 0.06 + smooth(0, 10, h) * 0.04, pointer);
+        const top = smooth(108, 111, h);
+        above.style.opacity = String(top);
+        above.style.transform = `translateY(${(1 - smooth(108, 115, h)) * 4}%) scale(1.08)`;
+        sun.style.opacity = String(smooth(104, 113, h));
+        const warm = smooth(100, 112, h);
+        fog?.set(fogDensity(h), h / 18, [0.93 + warm * 0.06, 0.94 + warm * 0.03, 0.92 - warm * 0.04]);
+
+        const year = Math.min(2026, Math.floor(heightToYear(h)));
+        meterText.textContent = `${Math.round(h)}m · ${h >= 112 ? 'now' : year}`;
+        dot.style.top = `${100 - (h / 115) * 100}%`;
+        label.textContent = String(year);
+        rings.forEach((r) => r.classList.toggle('reached', Number(r.dataset.ring) <= year));
+        marks.forEach((m) => m.classList.toggle('current', Number(m.dataset.mark) === year));
+        landing.style.opacity = String(Math.max(0, 1 - h / 4));
+        now.style.opacity = String(smooth(111, 114, h));
+        for (const el of cards) {
+          const d = Math.abs(yearToHeight(Number(el.dataset.year)) - h);
+          el.style.opacity = String((1 - smooth(3, 6, d)) * (1 - smooth(104, 107, h)));
+          el.style.transform = `translateY(${(yearToHeight(Number(el.dataset.year)) - h) * 6}px)`;
+        }
+        (window as any).__climb = { height: h };
+        requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    </script>
+
+    <style is:global>
+      @import 'lenis/dist/lenis.css';
+      html, body { margin: 0; background: #c9cfc4; color: #1d2a20; font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif; }
+      .stage { position: fixed; inset: 0; overflow: hidden; background: #c9cfc4; }
+      #tree, .fallback, .above { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .fallback { object-fit: cover; object-position: 30% 50%; }
+      #tree { display: none; }
+      .stage.gl #tree { display: block; }
+      .stage.gl .fallback { display: none; }
+      .above { object-fit: cover; opacity: 0; will-change: opacity, transform; }
+      .sun { position: absolute; inset: 0; opacity: 0; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(60% 45% at 72% 12%, rgba(255, 226, 170, 0.75), rgba(255, 210, 150, 0.25) 45%, transparent 75%); }
+      /* Shared grade so five photographers' photos read as one place. */
+      .grade { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(18, 24, 18, 0.45)), linear-gradient(180deg, rgba(220, 228, 222, 0.08), rgba(20, 28, 20, 0.18)); mix-blend-mode: multiply; pointer-events: none; }
+      #fog { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      .scroll-space { height: 1300vh; }
+      .landing { position: fixed; top: 12vh; left: 0; right: 0; text-align: center; pointer-events: none; }
+      .landing h1 { font: 800 clamp(48px, 9vw, 96px)/1 Georgia, 'Songti SC', serif; margin: 0 0 16px; letter-spacing: 0.02em; color: #f7f3ec; text-shadow: 0 2px 30px rgba(0,0,0,.45); }
+      .slogan { font-size: 18px; color: #f7f3ec; text-shadow: 0 1px 12px rgba(0,0,0,.6); margin: 0; }
+      .slogan span { font-size: 14px; opacity: 0.9; font-style: italic; }
+      .hint { position: fixed; bottom: 6vh; left: 0; right: 0; font-size: 13px; color: #f7f3ec; text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+      .meter { position: fixed; left: 22px; top: 12vh; bottom: 12vh; width: 120px; pointer-events: none; }
+      .meter-line { position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.6); }
+      .meter-dot { position: absolute; left: -4px; width: 9px; height: 9px; border-radius: 50%; background: #c0492c; transform: translateY(-50%); }
+      .meter-text { position: absolute; left: 12px; bottom: -22px; font: 600 12px ui-monospace, monospace; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.8); white-space: nowrap; }
+      .card { position: fixed; top: 38vh; width: min(270px, 64vw); background: rgba(255, 253, 248, 0.92); backdrop-filter: blur(6px); border-radius: 12px; padding: 14px 16px; box-shadow: 0 10px 30px rgba(20,30,20,.25); opacity: 0; will-change: transform, opacity; }
+      .card-left { left: max(48px, 12vw); }
+      .card-right { right: max(48px, 12vw); }
+      .card h2, .now h2 { margin: 2px 0 6px; font-size: 16px; }
+      .card p, .now p { margin: 0; font-size: 13px; line-height: 1.5; color: #4a4a44; }
+      .card .kind, .now .kind { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: #9a4f2e; }
+      .now { position: fixed; left: 50%; top: 14vh; transform: translateX(-50%); width: min(420px, 86vw); background: rgba(255,253,248,.95); border-radius: 14px; padding: 18px 20px; opacity: 0; box-shadow: 0 10px 40px rgba(20,30,20,.25); }
+      @media (max-width: 700px) { .card-left, .card-right { left: 50%; right: auto; transform: translateX(-50%); } .card { top: auto; bottom: 18vh; } }
+    </style>
+  </body>
+</html>

@@ -59,8 +59,7 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
       <button type="button" data-set-mode="hifi">{t(lang, 'tryHifi')}</button>
     </p>
     <p class="notice hifi-notice">
-      {lang === 'zh' ? 'Hi-Fi 森林还在试验中，先看看爬树的效果：' : 'The Hi-Fi forest is still being grown. Preview the climb:'}
-      <a href="/lab/climb/">/lab/climb/</a>
+      {t(lang, 'hifiElsewhere')} <a href={home}>{t(lang, 'navHome')}</a>
     </p>
 
     <main><slot /></main>
@@ -78,6 +77,7 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
         html.dataset.mode = mode;
         html.dataset.modeAuto = 'false';
         try { localStorage.setItem(MODE_STORAGE_KEY, mode); } catch {}
+        dispatchEvent(new CustomEvent('ailula:mode', { detail: mode }));
       };
       document.querySelector('[data-mode-toggle]')?.addEventListener('click', () => set(html.dataset.mode === 'hifi' ? 'lofi' : 'hifi'));
       document.querySelectorAll<HTMLElement>('[data-set-mode]').forEach((b) => b.addEventListener('click', () => set(b.dataset.setMode as Mode)));
@@ -111,7 +111,8 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
       .when-hifi, .when-lofi { display: none; }
       .notice { display: none; max-width: 728px; margin: 0 auto 8px; padding: 8px 14px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); font-size: 14px; }
       html[data-mode='lofi'][data-mode-auto='true'] .auto-notice { display: block; }
-      html[data-mode='hifi'] .hifi-notice { display: block; }
+      html[data-mode='hifi']:not(.has-valley) .hifi-notice { display: block; }
+      html.has-valley[data-mode='hifi'] body { overflow: hidden; }
       html[data-webgl='false'] [data-mode-toggle], html[data-webgl='false'] [data-set-mode='hifi'] { display: none; }
       .notice button { font: inherit; margin-left: 8px; border: 0; background: var(--accent); color: #fff; border-radius: 999px; padding: 2px 10px; cursor: pointer; }
       .site-footer { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }

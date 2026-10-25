@@ -29,7 +29,7 @@ test.describe('reduced motion', () => {
 test('home shows who lula is and the plain-text essentials', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('lula');
-  await expect(page.getByRole('main').getByText('Growing slowly, like a redwood.')).toBeVisible();
+  await expect(page.locator('.hero').getByText('Growing slowly, like a redwood.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'CELPIP12' }).first()).toBeVisible();
   await expect(page.locator('[data-todo]').first()).toBeVisible();
 });

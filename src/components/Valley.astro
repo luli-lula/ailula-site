@@ -1,0 +1,239 @@
+---
+// Hi-Fi home: the valley diorama with a giant sequoia at its centre. Each place opens a panel built
+// from the same content as the Lo-Fi pages. The 3D code loads only in Hi-Fi mode with WebGL.
+import Placeholder from './Placeholder.astro';
+import { timeline } from '../data/timeline';
+import { profile } from '../data/profile';
+import { localizedPath, t, type Lang } from '../lib/i18n';
+import { byDateDesc, localized } from '../lib/content';
+import { ZONES } from '../scenes/valley/zones';
+import { SEASONS } from '../scenes/valley/palette';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const other: Lang = lang === 'zh' ? 'en' : 'zh';
+const projects = (await localized('projects', lang)).sort(byDateDesc);
+const posts = (await localized('posts', lang)).sort(byDateDesc);
+const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
+const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
+const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
+---
+<div class="valley-root" data-lang={lang}>
+  <canvas class="valley-canvas" aria-hidden="true"></canvas>
+  <div class="valley-labels"></div>
+
+  <header class="valley-bar">
+    <div class="valley-brand">
+      <span class="name">lula</span>
+      <span class="slogan">{t(lang, 'slogan')}</span>
+    </div>
+    <div class="valley-controls">
+      <div class="seasons" role="group" aria-label="Season">
+        {SEASONS.map((s) => <button type="button" data-season-pick={s}>{t(lang, s)}</button>)}
+      </div>
+      <button type="button" class="pill" data-night-toggle aria-label={t(lang, 'dayNight')}>
+        <span class="sun">☀</span><span class="moon">☾</span>
+      </button>
+      <a class="pill" href={localizedPath('/', other)} hreflang={other}>{t(lang, 'langSwitch')}</a>
+      <button type="button" class="pill" data-set-mode="lofi">{t(lang, 'modeLofi')}</button>
+    </div>
+  </header>
+
+  <p class="valley-hint">{t(lang, 'valleyHint')}</p>
+
+  <section class="vpanel" data-panel="tree" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>{label.tree}</h2>
+    <p class="intro">{t(lang, 'treeIntro')}</p>
+    <ol class="rings">
+      {timeline.map((m) => (
+        <li><time>{m.years}</time><span>{m.text[lang]} {!m.detailKnown && <Placeholder note={lang === 'zh' ? `${m.years} 的细节` : `details for ${m.years}`} />}</span></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="vpanel" data-panel="hollow" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>{label.hollow}</h2>
+    <p class="intro">{t(lang, 'hollowIntro')}</p>
+    <h3>{t(lang, 'sectionTopTen')}</h3>
+    <ol>{Array.from({ length: 10 }, (_, i) => <li><Placeholder note={lang === 'zh' ? `十佳第 ${i + 1} 部` : `top-10 film #${i + 1}`} /></li>)}</ol>
+    <p class="muted">{t(lang, 'cinemaComing')} <a href={localizedPath('/cinema/', lang)}>{t(lang, 'readAll')} →</a></p>
+  </section>
+
+  <section class="vpanel" data-panel="workshop" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>{label.workshop}</h2>
+    <p class="intro">{t(lang, 'workshopIntro')}</p>
+    <ul class="cards">
+      {projects.map(({ slug, entry, fallback }) => (
+        <li>
+          <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
+          <p>{entry.data.summary}</p>
+          <p class="meta">{t(lang, entry.data.status === 'live' ? 'statusLive' : 'statusWip')}{fallback && <span class="lang-label">{only}</span>}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="vpanel" data-panel="garden" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>{label.garden}</h2>
+    <p class="intro">{t(lang, 'gardenIntro')}</p>
+    {kinds.map((k) => {
+      const group = posts.filter((p) => p.entry.data.kind === k).slice(0, 6);
+      return group.length > 0 && (
+        <>
+          <h3>{t(lang, `kind_${k}`)}</h3>
+          <ul class="list">
+            {group.map(({ slug, entry, fallback }) => (
+              <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>{fallback && <span class="lang-label">{only}</span>}</li>
+            ))}
+          </ul>
+        </>
+      );
+    })}
+    <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>
+  </section>
+
+  <section class="vpanel" data-panel="lookout" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>{label.lookout}</h2>
+    <p class="intro">{t(lang, 'lookoutIntro')}</p>
+    <h3>{t(lang, 'sectionNow')}</h3>
+    <p><Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} /></p>
+    <h3>{t(lang, 'sectionContact')}</h3>
+    <p>
+      {t(lang, 'email')}: {profile.email ? <a href={`mailto:${profile.email}`}>{profile.email}</a> : <Placeholder note={lang === 'zh' ? '联系邮箱' : 'contact email'} />}
+      <br />{t(lang, 'resume')}: {profile.resumePdf ? <a href={profile.resumePdf}>PDF</a> : <Placeholder note={lang === 'zh' ? '简历 PDF' : 'résumé PDF'} />}
+      <br /><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a>
+    </p>
+  </section>
+
+  <section class="vpanel small" data-panel="dog" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2>🐕 {label.dog}</h2>
+    <p>{t(lang, 'dogNote')} {t(lang, 'dogName')}: <Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></p>
+  </section>
+</div>
+
+<script>
+  import type { Season } from '../scenes/valley/palette';
+  import type { ZoneId } from '../scenes/valley/zones';
+
+  const html = document.documentElement;
+  html.classList.add('has-valley');
+  const root = document.querySelector<HTMLElement>('.valley-root')!;
+  const SEASON_KEY = 'ailula-season';
+  const NIGHT_KEY = 'ailula-night';
+  const read = (k: string) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const write = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch {} };
+
+  // Default to the real season and time of day; a visitor's own choice is remembered (also across languages).
+  const month = new Date().getMonth();
+  const realSeason: Season = month < 2 || month === 11 ? 'winter' : month < 5 ? 'spring' : month < 8 ? 'summer' : 'autumn';
+  const hour = new Date().getHours();
+  let season = (read(SEASON_KEY) as Season | null) ?? realSeason;
+  let night = read(NIGHT_KEY) ? read(NIGHT_KEY) === '1' : hour >= 19 || hour < 6;
+
+  const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+  let onPanel: (open: HTMLElement | null) => void = () => {};
+  const showPanel = (id: ZoneId | null) => {
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+    onPanel(panels.find((p) => !p.hidden) ?? null);
+  };
+
+  let started = false;
+  async function start() {
+    if (started || html.dataset.mode !== 'hifi' || html.dataset.webgl === 'false') return;
+    started = true;
+    const [{ createValley }, { VALLEY_PARTS }] = await Promise.all([import('../scenes/valley/createValley'), import('../scenes/valley/parts')]);
+    const v = createValley(root.querySelector('canvas')!, root.querySelector('.valley-labels')!, {
+      lang: (root.dataset.lang as 'en' | 'zh') ?? 'en',
+      quality: matchMedia('(max-width: 700px)').matches ? 'low' : 'high',
+      season,
+      night,
+      extraParts: VALLEY_PARTS,
+    });
+    // Keep the focused place out from under the panel: side panel on wide screens, bottom sheet on phones.
+    onPanel = (open) => {
+      if (!open) return v.setInset({ right: 0, bottom: 0 });
+      const r = open.getBoundingClientRect();
+      const sheet = r.left < 40;
+      v.setInset(sheet ? { right: 0, bottom: innerHeight - r.top } : { right: innerWidth - r.left, bottom: 0 });
+    };
+    const close = () => { showPanel(null); v.focus(null); };
+    v.onSelect((id) => { v.focus(id); showPanel(id); });
+    root.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+    addEventListener('keydown', (e) => e.key === 'Escape' && close());
+    root.querySelectorAll<HTMLElement>('[data-season-pick]').forEach((b) =>
+      b.addEventListener('click', () => {
+        season = b.dataset.seasonPick as Season;
+        write(SEASON_KEY, season);
+        v.setSeason(season);
+      }),
+    );
+    root.querySelector('[data-night-toggle]')!.addEventListener('click', () => {
+      night = !night;
+      write(NIGHT_KEY, night ? '1' : '0');
+      v.setNight(night);
+    });
+    (window as any).__valley = v;
+  }
+  start();
+  addEventListener('ailula:mode', start);
+</script>
+
+<style is:global>
+  .valley-root { display: none; position: fixed; inset: 0; z-index: 50; background: #cfe2e6; color: #1c241f; }
+  html[data-mode='hifi'] .valley-root { display: block; }
+  .valley-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  /* z-index makes a stacking context, so the label renderer's own z-indexes never rise above panels. */
+  .valley-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+  .valley-label { pointer-events: auto; font: 600 11px/1 ui-monospace, 'SF Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #fdfaf3; background: rgba(28, 34, 30, 0.62); border: 1px solid rgba(255, 255, 255, 0.25); padding: 8px 12px; border-radius: 999px; cursor: pointer; backdrop-filter: blur(6px); white-space: nowrap; }
+  .valley-label:hover, .valley-label:focus-visible { background: rgba(28, 34, 30, 0.88); outline: none; }
+  html[data-night='true'] .valley-root { background: #232a48; color: #eef0f7; }
+
+  .valley-bar { z-index: 3; position: absolute; top: 0; left: 0; right: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 16px clamp(12px, 3vw, 28px); pointer-events: none; }
+  .valley-bar > * { pointer-events: auto; }
+  .valley-brand { display: flex; flex-direction: column; gap: 2px; }
+  .valley-brand .name { font: 700 clamp(26px, 4vw, 40px)/1 Georgia, 'Songti SC', serif; letter-spacing: 0.04em; }
+  .valley-brand .slogan { font: italic 13px/1.4 Georgia, 'Songti SC', serif; opacity: 0.8; }
+  .valley-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .seasons { display: flex; background: rgba(255, 253, 248, 0.72); border-radius: 999px; padding: 3px; backdrop-filter: blur(8px); }
+  .seasons button { font: 600 11px ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; border: 0; background: transparent; color: #3b4038; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
+  html[data-season='spring'] [data-season-pick='spring'], html[data-season='summer'] [data-season-pick='summer'],
+  html[data-season='autumn'] [data-season-pick='autumn'], html[data-season='winter'] [data-season-pick='winter'] { background: #2d3a30; color: #fdfaf3; }
+  .valley-root .pill { font: 600 12px system-ui, sans-serif; border: 0; background: rgba(255, 253, 248, 0.72); color: #2d3a30; padding: 8px 12px; border-radius: 999px; cursor: pointer; text-decoration: none; backdrop-filter: blur(8px); }
+  [data-night-toggle] .moon, html[data-night='true'] [data-night-toggle] .sun { display: none; }
+  html[data-night='true'] [data-night-toggle] .moon { display: inline; }
+  .valley-hint { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; margin: 0; font: 12px system-ui, sans-serif; opacity: 0.65; pointer-events: none; }
+
+  .vpanel { z-index: 4; position: absolute; top: 96px; right: clamp(12px, 3vw, 28px); bottom: 24px; width: min(400px, calc(100vw - 24px)); overflow-y: auto; background: rgba(255, 253, 248, 0.95); color: #1d2a20; border-radius: 16px; padding: 20px 22px; box-shadow: 0 18px 50px rgba(20, 30, 20, 0.25); backdrop-filter: blur(10px); box-sizing: border-box; animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
+  .vpanel.small { bottom: auto; }
+  .vpanel[hidden] { display: none; }
+  @keyframes vpanel-in { from { opacity: 0; transform: translateY(12px); } }
+  .vpanel h2 { font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 0 0 8px; padding-right: 64px; }
+  .vpanel h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #9a4f2e; margin: 18px 0 6px; }
+  .vpanel .intro { color: #5b6157; margin: 0 0 8px; line-height: 1.6; }
+  .vpanel .muted { color: #5b6157; font-size: 14px; }
+  .vclose { position: absolute; top: 16px; right: 16px; font: 600 12px system-ui, sans-serif; border: 1px solid #ddd3c3; background: #fff; border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+  .vpanel .rings { list-style: none; padding: 0; margin: 0; border-left: 2px solid #d9a978; }
+  .vpanel .rings li { position: relative; padding: 6px 0 10px 16px; line-height: 1.6; }
+  .vpanel .rings li::before { content: ''; position: absolute; left: -6px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: #b4552e; }
+  .vpanel .rings time { display: block; font: 600 12px ui-monospace, monospace; color: #9a4f2e; }
+  .vpanel .cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .vpanel .cards li { border: 1px solid #e6dccb; border-radius: 12px; padding: 10px 12px; }
+  .vpanel .cards a { font-weight: 600; }
+  .vpanel .cards p { margin: 4px 0 0; font-size: 14px; color: #4a4a44; }
+  .vpanel .meta { display: flex; gap: 8px; font-size: 12px !important; color: #7b7f75 !important; }
+  @media (max-width: 700px) {
+    .valley-brand .slogan { display: none; }
+    .seasons button { padding: 6px 7px; font-size: 10px; letter-spacing: .04em; }
+    .valley-root .pill { padding: 7px 9px; font-size: 11px; }
+    .valley-controls { gap: 4px; }
+    .valley-label { font-size: 9px; padding: 6px 9px; letter-spacing: .08em; }
+    .valley-label[data-zone='dog'] { display: none; }
+    .vpanel { top: auto; left: 12px; right: 12px; width: auto; bottom: 12px; max-height: 62vh; }
+  }
+</style>

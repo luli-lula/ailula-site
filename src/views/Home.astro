@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
+import Valley from '../components/Valley.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { localizedPath, t, type Lang } from '../lib/i18n';
@@ -67,6 +68,9 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
       <br /><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a>
     </p>
   </section>
+
+  <!-- Hi-Fi home: rendered last so the Lo-Fi content above stays first in the document. -->
+  <Valley lang={lang} />
 </Base>
 
 <style>

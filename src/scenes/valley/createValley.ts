@@ -176,6 +176,13 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   applyPalette();
 
   let portrait = false;
+  // Space covered by an open panel (px); the view centre shifts so the focused place stays visible.
+  let inset = { right: 0, bottom: 0 };
+  const applyInset = () => {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!inset.right && !inset.bottom) camera.clearViewOffset();
+    else camera.setViewOffset(w, h, inset.right / 2, inset.bottom / 2, w, h);
+  };
   const homePosition = () => (portrait ? HOME_VIEW.position.map((v) => v * 1.4) : HOME_VIEW.position);
   const resize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -188,6 +195,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     (scene.fog as THREE.Fog).near = portrait ? 150 : 90;
     (scene.fog as THREE.Fog).far = portrait ? 380 : 260;
     camera.updateProjectionMatrix();
+    applyInset();
   };
   resize();
   if (portrait) camera.position.set(...(homePosition() as [number, number, number]));
@@ -218,6 +226,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     sequoiaHeight: SEQUOIA.totalHeight,
     ready: Promise.resolve(),
     setSeason(s: Season) { season = s; applyPalette(); },
+    setInset(next: { right: number; bottom: number }) { inset = next; applyInset(); },
     setNight(n: boolean) { night = n; applyPalette(); },
     focus,
     onSelect(cb: (id: ZoneId) => void) { selectHandlers.push(cb); },

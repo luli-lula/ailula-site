@@ -1,8 +1,24 @@
 # 待补充内容
 
-由 `node scripts/content-todo.mjs` 根据构建结果生成。另外，项目页正文里写着「待补充 / TODO」的地方也需要补。
+由 `node scripts/content-todo.mjs` 根据构建结果生成。这些标记只在本地开发时显示，正式网站上看不到。
 
-- `/cinema/`: top-10 film #1；top-10 film #2；top-10 film #3；top-10 film #4；top-10 film #5；top-10 film #6；top-10 film #7；top-10 film #8；top-10 film #9；top-10 film #10
-- `/`: "Right now": what I am doing and looking for；details for 2017；details for 2018–2023；details for 2023；details for 2024；details for 2025；contact email；résumé PDF；top-10 film #1；top-10 film #2；top-10 film #3；top-10 film #4；top-10 film #5；top-10 film #6；top-10 film #7；top-10 film #8；top-10 film #9；top-10 film #10；the dog's name
-- `/zh/cinema/`: 十佳第 1 部；十佳第 2 部；十佳第 3 部；十佳第 4 部；十佳第 5 部；十佳第 6 部；十佳第 7 部；十佳第 8 部；十佳第 9 部；十佳第 10 部
-- `/zh/`: 此刻卡片：正在做什么、在找什么；2017 的细节；2018–2023 的细节；2023 的细节；2024 的细节；2025 的细节；联系邮箱；简历 PDF；十佳第 1 部；十佳第 2 部；十佳第 3 部；十佳第 4 部；十佳第 5 部；十佳第 6 部；十佳第 7 部；十佳第 8 部；十佳第 9 部；十佳第 10 部；小狗的名字
+- `/cinema/`: top-10 films
+- `/`: "Right now": what I am doing and looking for；contact email；résumé PDF；top-10 films；more botanical garden photos；the dog's name
+- `/projects/factreview/`: Project story: why, how, results, lessons；My role in the FactReview paper
+- `/projects/floradex/`: Project story: why, how, results, lessons
+- `/projects/justsay/`: Project story: why, how, results, lessons
+- `/projects/piano-trainer/`: Project story: why, how, results, lessons
+- `/projects/plant-care-signs/`: Project story: why, how, results, lessons
+- `/projects/toefl/`: Project story: why, how, results, lessons
+- `/projects/wildcard/`: Project story: why, how, results, lessons
+- `/projects/wildones-guide/`: Project story: why, how, results, lessons
+- `/zh/cinema/`: 个人十佳电影（10 部）
+- `/zh/`: 此刻卡片：正在做什么、在找什么；联系邮箱；简历 PDF；个人十佳电影（10 部）；更多植物园照片；小狗的名字
+- `/zh/projects/factreview/`: 项目故事：为什么做、怎么做、结果、学到了什么；我在 FactReview 论文里的角色
+- `/zh/projects/floradex/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/justsay/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/piano-trainer/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/plant-care-signs/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/toefl/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/wildcard/`: 项目故事：为什么做、怎么做、结果、学到了什么
+- `/zh/projects/wildones-guide/`: 项目故事：为什么做、怎么做、结果、学到了什么

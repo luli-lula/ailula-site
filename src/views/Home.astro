@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
 import Valley from '../components/Valley.astro';
+import Contact from '../components/Contact.astro';
 import { timeline } from '../data/timeline';
+import { community } from '../data/community';
 import { profile } from '../data/profile';
 import { localizedPath, t, type Lang } from '../lib/i18n';
 import { byDateDesc, localized, projectGroups } from '../lib/content';
@@ -20,10 +22,12 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
     <p>{t(lang, 'intro')}</p>
   </section>
 
-  <section>
-    <h2>{t(lang, 'sectionNow')}</h2>
-    <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />
-  </section>
+  {profile.now[lang] ? (
+    <section>
+      <h2>{t(lang, 'sectionNow')}</h2>
+      <p>{profile.now[lang]}</p>
+    </section>
+  ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
 
   <section>
     <h2>{t(lang, 'sectionTimeline')}</h2>
@@ -35,6 +39,11 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
         </li>
       ))}
     </ul>
+  </section>
+
+  <section>
+    <h2>{t(lang, 'communityTitle')}</h2>
+    <ul class="plain">{community[lang].map((c) => <li>{c}</li>)}</ul>
   </section>
 
   <section>
@@ -67,11 +76,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
 
   <section>
     <h2>{t(lang, 'sectionContact')}</h2>
-    <p>
-      {t(lang, 'email')}: {profile.email ? <a href={`mailto:${profile.email}`}>{profile.email}</a> : <Placeholder note={lang === 'zh' ? '联系邮箱' : 'contact email'} />}
-      <br />{t(lang, 'resume')}: {profile.resumePdf ? <a href={profile.resumePdf}>PDF</a> : <Placeholder note={lang === 'zh' ? '简历 PDF' : 'résumé PDF'} />}
-      <br /><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a>
-    </p>
+    <Contact lang={lang} />
   </section>
 
   <!-- Hi-Fi home: rendered last so the Lo-Fi content above stays first in the document. -->
@@ -83,4 +88,5 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
   .hero h1 { font-size: clamp(44px, 10vw, 72px); margin: 0; }
   .slogan { font-size: 20px; margin: 4px 0 12px; color: var(--accent); }
   .muted { color: var(--muted); font-size: 14px; }
+  .plain { padding-left: 1.2em; line-height: 1.7; }
 </style>

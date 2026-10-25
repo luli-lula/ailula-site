@@ -1,8 +1,9 @@
 ---
 // Shared reading page for posts and projects.
 import Base from '../layouts/Base.astro';
+import Placeholder from '../components/Placeholder.astro';
 import { render, type CollectionEntry } from 'astro:content';
-import { t, type Lang } from '../lib/i18n';
+import { localizedPath, t, type Lang } from '../lib/i18n';
 import { hostOf, STATUS_KEY } from '../lib/content';
 
 interface Props { lang: Lang; entry: CollectionEntry<'posts'> | CollectionEntry<'projects'>; fallback: boolean }
@@ -12,7 +13,7 @@ const date = entry.data.date?.toISOString().slice(0, 10);
 const project = 'summary' in entry.data ? entry.data : null;
 const links = project?.links ?? [];
 ---
-<Base title={entry.data.title} description={project?.summary}>
+<Base title={entry.data.title} description={project?.summary} original={fallback ? localizedPath(Astro.url.pathname, entry.data.lang as Lang) : undefined}>
   <article lang={entry.data.lang}>
     <h1>{entry.data.title}</h1>
     <p class="meta">
@@ -27,6 +28,7 @@ const links = project?.links ?? [];
       <div class="gallery">{project.gallery.map((src) => <img src={src} alt={`${entry.data.title} — app screen`} loading="lazy" />)}</div>
     )}
     <Content />
+    {project?.todo.map((note) => <p><Placeholder note={note} /></p>)}
   </article>
 </Base>
 

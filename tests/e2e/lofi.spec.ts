@@ -31,7 +31,9 @@ test('home shows who lula is and the plain-text essentials', async ({ page }) =>
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('lula');
   await expect(page.locator('.hero').getByText('Growing slowly, like a redwood.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'CELPIP12' }).first()).toBeVisible();
-  await expect(page.locator('[data-todo]').first()).toBeVisible();
+  // Unfinished content is still marked in the built page (for scripts/content-todo.mjs) but never shown.
+  expect(await page.locator('[data-todo]').count()).toBeGreaterThan(0);
+  await expect(page.locator('[data-todo]').first()).toBeHidden();
 });
 
 test.describe('phone width', () => {

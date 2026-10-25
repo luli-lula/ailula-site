@@ -2,8 +2,11 @@
 // Hi-Fi home: the valley diorama with a giant sequoia at its centre. Each place opens a panel built
 // from the same content as the Lo-Fi pages. The 3D code loads only in Hi-Fi mode with WebGL.
 import Placeholder from './Placeholder.astro';
+import Contact from './Contact.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
+import { community } from '../data/community';
+import { topTen } from '../data/films';
 import { localizedPath, t, type Lang } from '../lib/i18n';
 import { byDateDesc, localized, projectGroups, STATUS_KEY } from '../lib/content';
 import { ZONES } from '../scenes/valley/zones';
@@ -15,10 +18,6 @@ const other: Lang = lang === 'zh' ? 'en' : 'zh';
 const groups = await projectGroups(lang);
 const workshopProjects = groups.filter((g) => g.category !== 'plants').flatMap((g) => g.items);
 const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
-// Community roles, from lula's CV.
-const timelineCommunity = lang === 'zh'
-  ? ['Cornell 合作推广站奥尔巴尼县 Master Gardener 志愿者（2025 年 9 月起）：完成园艺培训，第一年服务 60 小时社区教育。', 'Wild Ones 首府地区分会志愿者（2024 年 12 月起）：设计活动海报和本土植物义卖的印刷卡片，并做了扫码就能打开物种页的配套网站。']
-  : ['Master Gardener Volunteer, Cornell Cooperative Extension Albany County (since Sep 2025): horticulture training done; 60 hours of community education in the first year.', 'Volunteer, Wild Ones Capital Region (since Dec 2024): event posters and printed plant ID cards for native plant sales, with a companion site you reach by scanning a card.'];
 const posts = (await localized('posts', lang)).sort(byDateDesc);
 const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
@@ -63,8 +62,12 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
     <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
     <p class="intro">{t(lang, 'hollowIntro')}</p>
-    <h3>{t(lang, 'sectionTopTen')}</h3>
-    <ol>{Array.from({ length: 10 }, (_, i) => <li><Placeholder note={lang === 'zh' ? `十佳第 ${i + 1} 部` : `top-10 film #${i + 1}`} /></li>)}</ol>
+    {topTen.length > 0 ? (
+      <>
+        <h3>{t(lang, 'sectionTopTen')}</h3>
+        <ol>{topTen.map((f) => <li>{f.title}{f.year && <span class="muted"> ({f.year})</span>}</li>)}</ol>
+      </>
+    ) : <Placeholder note={lang === 'zh' ? '个人十佳电影（10 部）' : 'top-10 films'} />}
     <p class="muted">{t(lang, 'cinemaComing')} <a href={localizedPath('/cinema/', lang)}>{t(lang, 'readAll')} →</a></p>
   </section>
 
@@ -119,33 +122,34 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     </ul>
     <h3>{t(lang, 'communityTitle')}</h3>
     <ul class="plain">
-      {timelineCommunity.map((c) => <li>{c}</li>)}
+      {community[lang].map((c) => <li>{c}</li>)}
     </ul>
     <h3>{t(lang, 'photosTitle')}</h3>
     <div class="photos">
       {['1', '2', '3'].map((n) => <img src={`/assets/photos/lula/${n}.webp`} alt={t(lang, 'photosCaption')} loading="lazy" />)}
     </div>
-    <p class="muted">{t(lang, 'photosCaption')} · <Placeholder note={lang === 'zh' ? '更多植物园照片' : 'more botanical garden photos'} /></p>
+    <p class="muted">{t(lang, 'photosCaption')}</p>
+    <Placeholder note={lang === 'zh' ? '更多植物园照片' : 'more botanical garden photos'} />
   </section>
 
   <section class="vpanel" data-panel="lookout" role="dialog" aria-labelledby="vp-lookout" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
     <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
     <p class="intro">{t(lang, 'lookoutIntro')}</p>
-    <h3>{t(lang, 'sectionNow')}</h3>
-    <p><Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} /></p>
+    {profile.now[lang] ? (
+      <>
+        <h3>{t(lang, 'sectionNow')}</h3>
+        <p>{profile.now[lang]}</p>
+      </>
+    ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
     <h3>{t(lang, 'sectionContact')}</h3>
-    <p>
-      {t(lang, 'email')}: {profile.email ? <a href={`mailto:${profile.email}`}>{profile.email}</a> : <Placeholder note={lang === 'zh' ? '联系邮箱' : 'contact email'} />}
-      <br />{t(lang, 'resume')}: {profile.resumePdf ? <a href={profile.resumePdf}>PDF</a> : <Placeholder note={lang === 'zh' ? '简历 PDF' : 'résumé PDF'} />}
-      <br /><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a>
-    </p>
+    <Contact lang={lang} />
   </section>
 
   <section class="vpanel small" data-panel="dog" role="dialog" aria-labelledby="vp-dog" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
     <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
-    <p>{t(lang, 'dogNote')} {t(lang, 'dogName')}: <Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></p>
+    <p>{t(lang, 'dogNote')}{profile.dogName ? ` ${t(lang, 'dogName')}: ${profile.dogName}` : <Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} />}</p>
   </section>
 </div>
 
@@ -275,6 +279,8 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .ring-tag.on { opacity: 1; transform: none; }
   .valley-label.hover { background: rgba(28, 34, 30, 0.9); transform: scale(1.06); }
   .valley-label:hover, .valley-label:focus-visible { background: rgba(28, 34, 30, 0.88); outline: none; }
+  /* A label faded by declutter comes back while it has keyboard focus. */
+  .valley-label:focus-visible { opacity: 1 !important; z-index: 2; box-shadow: 0 0 0 2px #fdfaf3; }
   html[data-night='true'] .valley-root { background: #232a48; color: #eef0f7; }
 
   .valley-bar { z-index: 3; position: absolute; top: 0; left: 0; right: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 16px clamp(12px, 3vw, 28px); pointer-events: none; }

@@ -59,3 +59,42 @@ test.describe('small phone', () => {
       }
   });
 });
+
+test('an English page that only has the Chinese original points search engines at the original', async ({ page, request }) => {
+  await page.goto('/writing/029-好的产品遍地都是/');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://ailula.top/zh/writing/029-%E5%A5%BD%E7%9A%84%E4%BA%A7%E5%93%81%E9%81%8D%E5%9C%B0%E9%83%BD%E6%98%AF/');
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  const xml = await (await request.get('/sitemap-0.xml')).text();
+  expect(xml).not.toContain('https://ailula.top/writing/029-');
+  expect(xml).toContain('https://ailula.top/zh/writing/029-');
+});
+
+test('old post images still load', async ({ page }) => {
+  await page.goto('/zh/writing/032-拖延了一年时间项目花了5天上线了/');
+  const imgs = page.locator('article img[src^="/images/"]');
+  expect(await imgs.count()).toBeGreaterThan(0);
+  for (const ok of await imgs.evaluateAll((els) => els.map((e) => (e as HTMLImageElement).complete && (e as HTMLImageElement).naturalWidth > 0))) expect(ok).toBe(true);
+});
+
+test('visitors never see unfinished-content markers', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('ailula-mode', 'lofi'));
+  for (const path of ['/', '/zh/', '/projects/floradex/', '/zh/projects/toefl/', '/cinema/']) {
+    await page.goto(path);
+    const text = await page.locator('body').innerText();
+    expect(text, path).not.toMatch(/待补充|TODO|To be added/);
+  }
+});
+
+test.describe('phone 375', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+  test('the cinema label stays visible and no label leaves the screen', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('ailula-mode', 'hifi'));
+    await page.goto('/');
+    await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(900);
+    await expect(page.locator('.valley-label[data-zone="hollow"]')).not.toHaveCSS('opacity', '0');
+    const rects = await page.$$eval('.valley-label', (els) => els.filter((e) => getComputedStyle(e).display !== 'none' && getComputedStyle(e).opacity !== '0').map((e) => e.getBoundingClientRect().toJSON()));
+    for (const r of rects) { expect(r.left).toBeGreaterThanOrEqual(0); expect(r.right).toBeLessThanOrEqual(375); }
+  });
+});

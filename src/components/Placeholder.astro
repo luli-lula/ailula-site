@@ -1,9 +1,11 @@
 ---
-// Visible marker for content lula still has to provide. Collected into CONTENT-TODO.md at build.
+// Marker for content lula still has to provide. Visible while developing; in the built site it is an
+// empty hidden span, so visitors never see it but scripts/content-todo.mjs still collects the note.
 interface Props { note: string }
 const { note } = Astro.props;
+const show = import.meta.env.DEV;
 ---
-<span class="todo" data-todo={note}>待补充 / TODO · {note}</span>
+{show ? <span class="todo" data-todo={note}>待补充 / TODO · {note}</span> : <span hidden data-todo={note}></span>}
 
 <style>
   .todo { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--todo); color: var(--todo); font-size: 0.85em; }

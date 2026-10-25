@@ -40,7 +40,7 @@ export const timeline: Milestone[] = [
     title: { zh: '滴滴出行 · 地图与导航 产品经理', en: 'DiDi · Product Manager, Map & Navigation' },
     detail: {
       zh: '把路网拓扑和交通规则编进路径规划，基础路网改为周更、动态图层分钟级更新；司机违章下降 63%，每年少交约 3,000 万元罚款。',
-      en: 'Encoded road topology and traffic rules into routing; weekly base-map and minute-level rule updates cut driver violations by 63%, about RMB 30M a year in fines.',
+      en: 'Encoded road topology and traffic rules into routing; weekly base-map and minute-level rule updates cut driver violations by 63%, saving about RMB 30M a year in fines.',
     },
   },
   {
@@ -49,7 +49,7 @@ export const timeline: Milestone[] = [
     title: { zh: 'Shopee · ShopeeFood 物流策略 高级产品经理', en: 'Shopee · Senior PM, ShopeeFood Logistics Strategy' },
     detail: {
       zh: '派单团队的创始成员，从零搭建印尼的订单分配，业务增长到日均 100 万单以上；ETA 预估改为数据模型，5 分钟准确率提升 22%。',
-      en: 'Founding member of the dispatch team: built order assignment for Indonesia from scratch as it grew past 1M daily orders; ETA accuracy +22%.',
+      en: 'Founding member of the dispatch team: built order assignment for Indonesia from scratch as it grew past 1M daily orders; 5-minute ETA accuracy +22%.',
     },
   },
   {

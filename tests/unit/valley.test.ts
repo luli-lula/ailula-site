@@ -52,6 +52,10 @@ describe('sequoia rings', () => {
     expect(h.at(-1)!).toBeLessThan(SEQUOIA.trunkHeight);
   });
 
+  test('every ring, and its year tag, sits on bare trunk below the lowest limb', () => {
+    expect(ringHeightsFor([2026]).at(-1)! + 0.5).toBeLessThan(SEQUOIA.limbBase);
+  });
+
   test('the sequoia dwarfs everything else in the valley', () => {
     expect(SEQUOIA.totalHeight).toBeGreaterThanOrEqual(2.5 * SEQUOIA.maxOtherTreeHeight);
   });

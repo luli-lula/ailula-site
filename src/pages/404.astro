@@ -2,16 +2,18 @@
 // Not found: both languages, since we cannot know which one the visitor came from.
 import Base from '../layouts/Base.astro';
 ---
-<Base title="404">
+<Base title="404" single>
   <section class="lost">
     <p class="ring" aria-hidden="true">◎</p>
-    <h1>这条小路还没长出来</h1>
-    <p>你找的页面不在这里。可能是旧博客的地址，也可能还在生长。</p>
-    <p><a href="/zh/">回到首页</a> · <a href="/zh/writing/">看看写作</a></p>
-    <hr />
-    <h2>This path hasn't grown yet</h2>
-    <p>The page you are looking for is not here.</p>
+    <h1>This path hasn't grown yet</h1>
+    <p>The page you are looking for is not here. It may be an old blog address, or it is still growing.</p>
     <p><a href="/">Back home</a> · <a href="/writing/">Read the writing</a></p>
+    <hr />
+    <div lang="zh">
+      <h2>这条小路还没长出来</h2>
+      <p>你找的页面不在这里。可能是旧博客的地址，也可能还在生长。</p>
+      <p><a href="/zh/">回到首页</a> · <a href="/zh/writing/">看看写作</a></p>
+    </div>
   </section>
 </Base>
 

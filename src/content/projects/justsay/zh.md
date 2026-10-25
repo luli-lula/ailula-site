@@ -9,12 +9,7 @@ links: []
 legacyPaths: []
 url: https://interview-vert-chi.vercel.app/
 image: /assets/projects/justsay.webp
+todo:
+  - "项目故事：为什么做、怎么做、结果、学到了什么"
 ---
 上传简历，用 AI 文字和语音练英语面试。
-
-## 待补充
-
-- 为什么做：待补充 / TODO
-- 怎么做的：待补充 / TODO
-- 结果和数据：待补充 / TODO
-- 学到了什么：待补充 / TODO

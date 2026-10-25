@@ -13,6 +13,6 @@ for (const f of files(dist).sort()) {
 }
 writeFileSync(
   new URL('../CONTENT-TODO.md', import.meta.url),
-  `# 待补充内容\n\n由 \`node scripts/content-todo.mjs\` 根据构建结果生成。另外，项目页正文里写着「待补充 / TODO」的地方也需要补。\n\n${rows.join('\n')}\n`,
+  `# 待补充内容\n\n由 \`node scripts/content-todo.mjs\` 根据构建结果生成。这些标记只在本地开发时显示，正式网站上看不到。\n\n${rows.join('\n')}\n`,
 );
 console.log(`${rows.length} pages with placeholders`);

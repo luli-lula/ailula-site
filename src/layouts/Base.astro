@@ -3,8 +3,11 @@ import { MODE_STORAGE_KEY, detectMode } from '../lib/mode';
 import { langFromPath, localizedPath, t, type Lang } from '../lib/i18n';
 import { profile } from '../data/profile';
 
-interface Props { title?: string; description?: string }
-const { title, description } = Astro.props;
+// original: for a page shown in the other language's copy, the path of the original. Search engines are
+// pointed there (canonical only: adding noindex too would send mixed signals). single: a page with no
+// twin in the other language (the 404).
+interface Props { title?: string; description?: string; original?: string; single?: boolean }
+const { title, description, original, single } = Astro.props;
 const lang: Lang = langFromPath(Astro.url.pathname);
 const other: Lang = lang === 'zh' ? 'en' : 'zh';
 const switchHref = localizedPath(Astro.url.pathname, other);
@@ -30,8 +33,9 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? t(lang, 'intro')} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate" hreflang={other} href={new URL(switchHref, Astro.site)} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {!original && !single && <link rel="alternate" hreflang={other} href={new URL(switchHref, Astro.site)} />}
+    <link rel="canonical" href={new URL(original ?? Astro.url.pathname, Astro.site)} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="lula" />
     <meta property="og:title" content={pageTitle} />

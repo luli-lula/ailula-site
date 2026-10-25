@@ -12,11 +12,7 @@ tags:
 - Clerk Auth
 - Vercel Postgres
 - Tailwind CSS
-links:
-- label: Demo
-  url: https://celpip12.vercel.app/
-- label: GitHub
-  url: https://github.com/luli-lula/celpip
+links: []
 legacyPaths:
 - /projects/celpip12/
 category: learning

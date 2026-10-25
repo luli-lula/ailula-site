@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /lab/
 
 Sitemap: https://ailula.top/sitemap-index.xml
+Sitemap: https://ailula.top/plant-care-signs/sitemap.xml

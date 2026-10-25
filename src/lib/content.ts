@@ -29,14 +29,19 @@ export const byDateDesc = (a: { entry: { data: { date?: Date } } }, b: { entry: 
 export const CATEGORY_ORDER = ['plants', 'learning', 'tools'] as const;
 export type Category = (typeof CATEGORY_ORDER)[number];
 
-// Projects grouped for display: plants first, featured first inside a group, then newest.
+// Projects grouped for display: plants first; inside a group featured first, then by order, then newest.
 export async function projectGroups(lang: Lang) {
   const items = await localized('projects', lang);
   return CATEGORY_ORDER.map((category) => ({
     category,
     items: items
       .filter((p) => p.entry.data.category === category)
-      .sort((a, b) => Number(b.entry.data.featured) - Number(a.entry.data.featured) || byDateDesc(a, b)),
+      .sort(
+        (a, b) =>
+          Number(b.entry.data.featured) - Number(a.entry.data.featured) ||
+          (a.entry.data.order ?? Infinity) - (b.entry.data.order ?? Infinity) ||
+          byDateDesc(a, b),
+      ),
   })).filter((g) => g.items.length > 0);
 }
 

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/plant-care-signs/:path*", "destination": "https://luli-lula.github.io/plant-care-signs/:path*" },
+    { "source": "/wildcard-support/:path*", "destination": "https://luli-lula.github.io/wildcard-support/:path*" }
+  ],
+  "redirects": [
+    { "source": "/sitemap.xml", "destination": "/sitemap-index.xml", "permanent": true }
+  ]
+}

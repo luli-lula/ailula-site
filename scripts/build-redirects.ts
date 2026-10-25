@@ -14,7 +14,9 @@ const entries = (Object.keys(routeOf) as (keyof typeof routeOf)[]).flatMap((col)
     readdirSync(join(CONTENT, col, slug)).map((file) => {
       const { data } = matter(readFileSync(join(CONTENT, col, slug, file), 'utf8'));
       const prefix = data.lang === 'zh' ? '/zh' : '';
-      return { legacyPaths: (data.legacyPaths ?? []) as string[], newPath: `${prefix}/${routeOf[col]}/${slug}/` };
+      // Drafts are not built, so their old addresses go to the section list instead.
+      const newPath = data.draft ? `${prefix}/${routeOf[col]}/` : `${prefix}/${routeOf[col]}/${slug}/`;
+      return { legacyPaths: (data.legacyPaths ?? []) as string[], newPath };
     }),
   ),
 );

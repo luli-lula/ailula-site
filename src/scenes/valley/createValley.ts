@@ -265,21 +265,34 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   resize();
   addEventListener('resize', resize);
 
-  // On small screens labels can collide: keep the more important one, fade the other (its 3D object stays
-  // clickable). Checked a few times a second, not every frame.
-  const PRIORITY: ZoneId[] = ['tree', 'greenhouse', 'workshop', 'garden', 'lookout', 'hollow', 'dog'];
+  // On small screens labels can collide. A less important label first tries a spot just above or below;
+  // if all are taken it fades (its 3D object stays clickable, and keyboard focus brings it back). Labels
+  // near an edge slide inside the screen. All rects are read first, then all styles written, so this
+  // costs one layout. A few times a second.
+  const PRIORITY: ZoneId[] = ['tree', 'greenhouse', 'workshop', 'hollow', 'garden', 'lookout', 'dog'];
+  const EDGE = 8;
   const declutter = () => {
-    const kept: DOMRect[] = [];
-    for (const id of PRIORITY) {
-      const el = labelsEl.querySelector<HTMLElement>(`.valley-label[data-zone="${id}"]`);
-      if (!el) continue;
-      el.style.opacity = '';
-      const r = el.getBoundingClientRect();
+    const bounds = labelsEl.getBoundingClientRect();
+    const measured = PRIORITY.map((id) => labelsEl.querySelector<HTMLElement>(`.valley-label[data-zone="${id}"]`))
+      .filter((el): el is HTMLElement => !!el)
+      .map((el) => ({ el, r: el.getBoundingClientRect(), dx: Number(el.dataset.dx ?? 0), dy: Number(el.dataset.dy ?? 0) }));
+    type Box = { left: number; right: number; top: number; bottom: number };
+    const kept: Box[] = [];
+    const collides = (b: Box) => kept.some((k) => b.left < k.right + 4 && k.left < b.right + 4 && b.top < k.bottom + 2 && k.top < b.bottom + 2);
+    for (const { el, r, dx, dy } of measured) {
       if (!r.width) continue;
-      const hit = kept.some((k) => r.left < k.right + 4 && k.left < r.right + 4 && r.top < k.bottom + 2 && k.top < r.bottom + 2);
-      el.style.opacity = hit ? '0' : '';
-      el.style.pointerEvents = hit ? 'none' : '';
-      if (!hit) kept.push(r);
+      const left = r.left - dx, right = r.right - dx, top = r.top - dy, bottom = r.bottom - dy;
+      const x = Math.max(bounds.left + EDGE - left, 0) + Math.min(bounds.right - EDGE - right, 0);
+      const step = r.height + 4;
+      const y = [0, -step, step].find((o) => !collides({ left: left + x, right: right + x, top: top + o, bottom: bottom + o }));
+      const hidden = y === undefined;
+      if (!hidden) kept.push({ left: left + x, right: right + x, top: top + y, bottom: bottom + y });
+      el.dataset.dx = String(x);
+      el.dataset.dy = String(y ?? 0);
+      el.style.marginLeft = x ? `${x}px` : '';
+      el.style.marginTop = y ? `${y}px` : '';
+      el.style.opacity = hidden ? '0' : '';
+      el.style.pointerEvents = hidden ? 'none' : '';
     }
   };
 
@@ -299,7 +312,8 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     elapsed += dt;
-    parts.forEach((p) => p.update?.(elapsed, dt));
+    // Reduced motion: decorative motion (clouds, the dog's tail) holds still; fades still run on dt.
+    parts.forEach((p) => p.update?.(reduced ? 0 : elapsed, dt));
     controls.update();
     const safe = keepOutsideTree(camera.position);
     if (safe !== camera.position) camera.position.set(safe.x, safe.y, safe.z);

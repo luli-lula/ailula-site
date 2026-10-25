@@ -11,6 +11,7 @@ const posts = defineCollection({
     lang,
     kind: z.enum(['essay', 'notes', 'weekly', 'old-notes']),
     maturity: z.enum(['seedling', 'growing', 'mature']),
+    draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     legacyPaths: z.array(z.string()).default([]),
   }),
@@ -32,6 +33,10 @@ const projects = defineCollection({
     // Phone screenshots for app projects, shown as a strip on the project page.
     gallery: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
+    // Position inside its group (lower first); unordered projects follow, newest first.
+    order: z.number().optional(),
+    // Content lula still has to write; shown while developing, collected into CONTENT-TODO.md.
+    todo: z.array(z.string()).default([]),
     // Drafts are kept in the repo but not listed or built.
     draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),

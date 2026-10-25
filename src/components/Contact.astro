@@ -1,0 +1,14 @@
+---
+// Contact lines shared by the Lo-Fi home and the valley lookout. Email and résumé appear once filled in.
+import Placeholder from './Placeholder.astro';
+import { profile } from '../data/profile';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<p>
+  {profile.email ? <>{t(lang, 'email')}: <a href={`mailto:${profile.email}`}>{profile.email}</a><br /></> : <Placeholder note={lang === 'zh' ? '联系邮箱' : 'contact email'} />}
+  {profile.resumePdf ? <>{t(lang, 'resume')}: <a href={profile.resumePdf}>PDF</a><br /></> : <Placeholder note={lang === 'zh' ? '简历 PDF' : 'résumé PDF'} />}
+  <a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a>
+</p>

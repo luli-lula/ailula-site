@@ -10,8 +10,6 @@ tags:
 - TypeScript
 - Tailwind CSS
 links:
-- label: Demo
-  url: https://www.adhd-focus.ailula.top/
 - label: GitHub
   url: https://github.com/luli-lula/ADHDFocus
 legacyPaths:

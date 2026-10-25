@@ -9,6 +9,8 @@ export const SEQUOIA = {
   trunkHeight: 34,
   totalHeight: 44,
   baseRadius: 3.7,
+  // Height of the lowest limb; the year rings stay below it so their tags are not lost in the crown.
+  limbBase: 21,
   // Tallest of the other trees (white firs / sugar pines) in flora.ts.
   maxOtherTreeHeight: 15,
 };
@@ -16,7 +18,7 @@ export const SEQUOIA = {
 const FIRST_YEAR = 2011;
 const LAST_YEAR = 2026;
 const RING_LOW = 4;
-const RING_HIGH = 28;
+const RING_HIGH = 20;
 
 // One ring per timeline entry: the trunk is the timeline, the roots are 2011 (GIS at university), the crown is now.
 export function ringHeightsFor(years: number[]): number[] {
@@ -66,7 +68,7 @@ export function createSequoia(p: Palette, years: number[]) {
   const limbCount = 7;
   for (let i = 0; i < limbCount; i++) {
     const a = (i / limbCount) * Math.PI * 2 + rnd() * 0.6;
-    const y0 = 21 + (i / limbCount) * 12 + rnd() * 2;
+    const y0 = SEQUOIA.limbBase + (i / limbCount) * 12 + rnd() * 2;
     const reach = 3 + rnd() * 2.5 - (i / limbCount) * 1.2;
     const r0 = trunkRadius(y0, a) * 0.85;
     const start = new THREE.Vector3(Math.cos(a) * r0, y0, Math.sin(a) * r0);

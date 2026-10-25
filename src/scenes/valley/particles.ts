@@ -88,6 +88,7 @@ export function createParticles(_p: unknown, ctx: { quality: 'high' | 'low' }): 
       stars.visible = night;
     },
     update(t, dt) {
+      if (!points.visible) return;
       for (let i = 0; i < count; i++) {
         const k = i * 3, s = seed[i];
         pos[k] += Math.sin(t * 0.7 + s) * mode.sway * dt;

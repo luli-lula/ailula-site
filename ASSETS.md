@@ -14,8 +14,8 @@ Note: metasequoia (dawn redwood) bark is the closest CC0 match to coast redwood 
 
 Photo climb test (Unsplash License: free for commercial use, no attribution required):
 
-| `public/assets/photos/01-floor.jpg` | https://unsplash.com/photos/sunlight-in-misty-redwood-forest-GxFv5_1fDUY | Unsplash License |
-| `public/assets/photos/02-trunks.jpg` | https://unsplash.com/photos/a-group-of-tall-trees-standing-in-a-forest-tEWF0EiXyUQ | Unsplash License |
-| `public/assets/photos/03-mist.jpg` | https://unsplash.com/photos/tall-redwood-trees-in-a-misty-forest-leeHbTl9qqI | Unsplash License |
-| `public/assets/photos/04-canopy.jpg` | https://unsplash.com/photos/tall-redwood-trees-reaching-into-a-foggy-sky-s_zaahNg4q4 | Unsplash License |
-| `public/assets/photos/05-light.jpg` | https://unsplash.com/photos/misty-pine-forest-on-hillside-TFyi0QOx08c | Unsplash License (not a redwood; stand-in for "above the fog") |
+| `assets-src/photos/01-floor.jpg` (web: `public/assets/photos/01-floor.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/sunlight-in-misty-redwood-forest-GxFv5_1fDUY | Unsplash License |
+| `assets-src/photos/02-trunks.jpg` (web: `public/assets/photos/02-trunks.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/a-group-of-tall-trees-standing-in-a-forest-tEWF0EiXyUQ | Unsplash License |
+| `assets-src/photos/03-mist.jpg` (web: `public/assets/photos/03-mist.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/tall-redwood-trees-in-a-misty-forest-leeHbTl9qqI | Unsplash License |
+| `assets-src/photos/04-canopy.jpg` (web: `public/assets/photos/04-canopy.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/tall-redwood-trees-reaching-into-a-foggy-sky-s_zaahNg4q4 | Unsplash License |
+| `assets-src/photos/05-light.jpg` (web: `public/assets/photos/05-light.webp`; depth map generated locally with Depth Anything V2 small, Apache-2.0) | https://unsplash.com/photos/misty-pine-forest-on-hillside-TFyi0QOx08c | Unsplash License (not a redwood; stand-in for "above the fog") |

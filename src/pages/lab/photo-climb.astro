@@ -3,13 +3,15 @@
 import RingCompass from '../../components/RingCompass.astro';
 
 // Each photo covers a height band (metres); neighbours overlap where the fog thickens.
+// grade nudges five photographers' shots toward one light and one palette.
 const scenes = [
-  { src: '/assets/photos/01-floor.jpg', from: 0, to: 22, pos: '50% 70%' },
-  { src: '/assets/photos/02-trunks.jpg', from: 18, to: 46, pos: '50% 60%' },
-  { src: '/assets/photos/03-mist.jpg', from: 42, to: 76, pos: '50% 50%' },
-  { src: '/assets/photos/04-canopy.jpg', from: 72, to: 102, pos: '50% 35%' },
-  { src: '/assets/photos/05-light.jpg', from: 98, to: 115, pos: '50% 40%' },
-];
+  { src: '/assets/photos/01-floor.webp', from: 0, to: 22, focus: [0.5, 0.55], grade: { exposure: 1.0, saturation: 0.88, warmth: 0.03 } },
+  { src: '/assets/photos/02-trunks.webp', from: 18, to: 46, focus: [0.5, 0.6], grade: { exposure: 1.02, saturation: 0.82, warmth: 0.0 } },
+  { src: '/assets/photos/03-mist.webp', from: 42, to: 76, focus: [0.5, 0.5], grade: { exposure: 1.06, saturation: 0.85, warmth: 0.0 } },
+  { src: '/assets/photos/04-canopy.webp', from: 72, to: 102, focus: [0.5, 0.35], grade: { exposure: 1.04, saturation: 0.82, warmth: 0.01 } },
+  { src: '/assets/photos/05-light.webp', from: 98, to: 115, focus: [0.5, 0.4], grade: { exposure: 1.1, saturation: 0.9, warmth: 0.07 } },
+].map((s) => ({ ...s, pos: `${s.focus[0] * 100}% ${s.focus[1] * 100}%`, depth: s.src.replace('.webp', '-depth.jpg') }));
+const photos = scenes.map(({ src, depth, focus, grade }) => ({ color: src, depth, focus, grade }));
 // Only facts lula has published; everything else is marked 待补充.
 const cards = [
   { id: 'pm', year: 2018.3, side: 'left', kind: '经历', title: '2018–2023 · 大厂产品经理', body: '策略产品方向，6 年换过 4 个团队。细节待补充 / TODO' },
@@ -28,12 +30,14 @@ const cards = [
   </head>
   <body>
     <div class="stage" aria-hidden="true">
+      <canvas id="photos"></canvas>
       {scenes.map((s, i) => (
         <div class="scene" data-scene={i} data-from={s.from} data-to={s.to}>
           <img src={s.src} alt="" style={`object-position:${s.pos}`} decoding="async" loading={i < 2 ? 'eager' : 'lazy'} />
         </div>
       ))}
       <div class="grade"></div>
+      <div class="sun"></div>
       <canvas id="fog"></canvas>
     </div>
     <div class="scroll-space"></div>
@@ -65,8 +69,12 @@ const cards = [
 
     <RingCompass />
 
+    <script define:vars={{ photos }}>
+      window.__photos = photos;
+    </script>
     <script>
       import Lenis from 'lenis';
+      import { createDepthStage, type StagePhoto } from '../../scenes/photo/depthStage';
       import { createFog } from '../../scenes/photo/fog';
       import { heightToYear, yearToHeight } from '../../lib/timeline';
 
@@ -77,6 +85,23 @@ const cards = [
         to: Number(el.dataset.to),
       }));
       const fog = createFog(document.getElementById('fog') as HTMLCanvasElement);
+      const stageEl = document.querySelector<HTMLElement>('.stage')!;
+      let stage: ReturnType<typeof createDepthStage> = null;
+      try {
+        stage = createDepthStage(document.getElementById('photos') as HTMLCanvasElement, (window as any).__photos as StagePhoto[]);
+      } catch (e) {
+        console.warn('depth stage unavailable, using plain photos', e);
+      }
+      // Plain <img> layers stay as the fallback until the first depth photo is on the GPU.
+      stage?.first.then(() => stageEl.classList.add('gl'));
+      stage?.ready.catch((e) => console.warn(e));
+      const sun = document.querySelector<HTMLElement>('.sun')!;
+      const pointer: [number, number] = [0, 0];
+      const target: [number, number] = [0, 0];
+      addEventListener('pointermove', (e) => {
+        target[0] = (e.clientX / innerWidth) * 2 - 1;
+        target[1] = -((e.clientY / innerHeight) * 2 - 1);
+      });
       const lenis = new Lenis({ lerp: 0.07 });
       let height = 0;
       lenis.on('scroll', ({ progress }: { progress: number }) => (height = progress * 115));
@@ -109,15 +134,22 @@ const cards = [
       const frame = (t: number) => {
         lenis.raf(t);
         const h = height;
-        for (const s of scenes) {
-          const fadeIn = s.from === 0 ? 1 : smooth(s.from, s.from + 4, h);
-          const fadeOut = s.to === 115 ? 1 : 1 - smooth(s.to - 4, s.to, h);
+        // The upper photo fades in over a fully opaque lower one, so the hand-over never dims.
+        const fadeIns = scenes.map((s) => (s.from === 0 ? 1 : smooth(s.from, s.from + 4, h)));
+        const states = scenes.map((s, i) => {
+          const covered = i + 1 < scenes.length && fadeIns[i + 1] >= 0.999;
+          const opacity = covered ? 0 : fadeIns[i];
           const local = Math.min(1, Math.max(0, (h - s.from) / (s.to - s.from)));
-          s.el.style.opacity = String(fadeIn * fadeOut);
-          s.el.style.visibility = fadeIn * fadeOut > 0.001 ? 'visible' : 'hidden';
+          s.el.style.opacity = String(opacity);
+          s.el.style.visibility = opacity > 0.001 ? 'visible' : 'hidden';
           // Climbing up: the world slides down past you and grows slightly closer.
           s.img.style.transform = `translate3d(0, ${-9 + local * 18}%, 0) scale(${1.22 + local * 0.06})`;
-        }
+          return { opacity, local };
+        });
+        pointer[0] += (target[0] - pointer[0]) * 0.05;
+        pointer[1] += (target[1] - pointer[1]) * 0.05;
+        stage?.render(states, pointer);
+        sun.style.opacity = String(smooth(100, 113, h));
         const warm = smooth(95, 112, h);
         fog?.set(fogDensity(h), h / 20, [0.93 + warm * 0.06, 0.94 + warm * 0.03, 0.92 - warm * 0.04]);
 
@@ -145,6 +177,10 @@ const cards = [
       html, body { margin: 0; background: #c9cfc4; color: #1d2a20; font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif; }
       .stage { position: fixed; inset: 0; overflow: hidden; background: #c9cfc4; }
       .scene { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+      #photos { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+      .stage.gl #photos { display: block; }
+      .stage.gl .scene { display: none; }
+      .sun { position: absolute; inset: 0; opacity: 0; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(60% 45% at 72% 12%, rgba(255, 226, 170, 0.75), rgba(255, 210, 150, 0.25) 45%, transparent 75%); }
       .scene img { width: 100%; height: 100%; object-fit: cover; display: block; will-change: transform; }
       /* Shared grade so five photographers' photos read as one place. */
       .grade { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(18, 24, 18, 0.45)), linear-gradient(180deg, rgba(220, 228, 222, 0.08), rgba(20, 28, 20, 0.18)); mix-blend-mode: multiply; pointer-events: none; }

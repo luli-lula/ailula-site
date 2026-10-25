@@ -1,7 +1,22 @@
-.superpowers/
-node_modules/
-dist/
-.astro/
-test-results/
-playwright-report/
+
+# build output
+# dependencies
+# environment variables
+# generated types
+# jetbrains setting folder
+# logs
+# macOS-specific files
 .DS_Store
+.astro/
+.env
+.env.production
+.idea/
+.superpowers/
+dist/
+node_modules/
+npm-debug.log*
+playwright-report/
+pnpm-debug.log*
+test-results/
+yarn-debug.log*
+yarn-error.log*

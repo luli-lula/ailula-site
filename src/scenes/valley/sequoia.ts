@@ -66,8 +66,8 @@ export function createSequoia(p: Palette, years: number[]) {
   const limbCount = 7;
   for (let i = 0; i < limbCount; i++) {
     const a = (i / limbCount) * Math.PI * 2 + rnd() * 0.6;
-    const y0 = 22 + rnd() * 9;
-    const reach = 4 + rnd() * 3.5;
+    const y0 = 21 + (i / limbCount) * 12 + rnd() * 2;
+    const reach = 3 + rnd() * 2.5 - (i / limbCount) * 1.2;
     const r0 = trunkRadius(y0, a) * 0.85;
     const start = new THREE.Vector3(Math.cos(a) * r0, y0, Math.sin(a) * r0);
     // Old sequoia limbs are thick and crooked: a kink sideways, then a turn upwards.
@@ -93,12 +93,14 @@ export function createSequoia(p: Palette, years: number[]) {
     g.translate(c.x, c.y, c.z);
     clumps.push(faceted(g, rnd, 0.22, (cc) => 0.82 + 0.25 * Math.min(1, Math.max(0, (cc.y - c.y) / r + 0.5))));
   };
-  for (const c of crownSpots) addClump(c, 3.2 + rnd() * 1.6);
-  for (let i = 0; i < 9; i++) {
-    const a = rnd() * Math.PI * 2, y = 28 + rnd() * 9, d = 2 + rnd() * 3;
-    addClump(new THREE.Vector3(Math.cos(a) * d, y, Math.sin(a) * d), 3.2 + rnd() * 1.4);
+  for (const c of crownSpots) addClump(c, 2.4 + rnd() * 1.1);
+  for (let i = 0; i < 14; i++) {
+    // Clumps stack up the upper trunk and narrow towards the top: a tall, ragged dome.
+    const t = i / 13;
+    const a = rnd() * Math.PI * 2, y = 25 + t * 16 + rnd() * 1.5, d = (1 - t * 0.6) * (2.2 + rnd() * 2.2);
+    addClump(new THREE.Vector3(Math.cos(a) * d, y, Math.sin(a) * d), (2.9 - t * 1.0) + rnd() * 0.9);
   }
-  addClump(new THREE.Vector3(0.4, SEQUOIA.totalHeight - 3.4, -0.3), 4.2);
+  addClump(new THREE.Vector3(0.4, SEQUOIA.totalHeight - 2.2, -0.3), 2.2);
   const crownMat = material(p.sequoiaCrown);
   group.add(mesh(merge(clumps), crownMat));
 

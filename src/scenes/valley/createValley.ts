@@ -10,7 +10,7 @@ import { createSequoia, SEQUOIA } from './sequoia';
 
 export interface Part {
   group: THREE.Object3D;
-  setPalette(p: Palette, night: boolean): void;
+  setPalette(p: Palette, night: boolean, season: Season): void;
   update?(t: number, dt: number): void;
   // Objects that select a zone when clicked.
   picks?: { object: THREE.Object3D; zone: ZoneId }[];
@@ -96,7 +96,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   controls.dampingFactor = 0.06;
   controls.enablePan = false;
   controls.minDistance = 12;
-  controls.maxDistance = 120;
+  controls.maxDistance = 200;
   controls.minPolarAngle = 0.25;
   controls.maxPolarAngle = 1.38;
   controls.autoRotate = true;
@@ -133,7 +133,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const focus = (id: ZoneId | null) => {
     document.documentElement.dataset.zone = id ?? '';
     if (!id) {
-      fly(HOME_VIEW.position, HOME_VIEW.target).eventCallback('onComplete', () => (controls.autoRotate = true));
+      fly(homePosition(), HOME_VIEW.target).eventCallback('onComplete', () => (controls.autoRotate = true));
       return;
     }
     const z = ZONES.find((zz) => zz.id === id)!;
@@ -152,26 +152,32 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     (scene.fog as THREE.Fog).color.set(pal.fog);
     hemi.color.set(pal.ambient);
     hemi.groundColor.set(pal.ground);
-    hemi.intensity = night ? 0.45 : 1.1;
+    hemi.intensity = night ? 0.75 : 1.1;
     sun.color.set(pal.sun);
-    sun.intensity = night ? 0.55 : 2.4;
+    sun.intensity = night ? 0.9 : 2.4;
     renderer.toneMappingExposure = night ? 1.25 : 1.05;
-    parts.forEach((p) => p.setPalette(pal, night));
+    parts.forEach((p) => p.setPalette(pal, night, season));
     document.documentElement.dataset.season = season;
     document.documentElement.dataset.night = String(night);
   };
   applyPalette();
 
+  let portrait = false;
+  const homePosition = () => (portrait ? HOME_VIEW.position.map((v) => v * 1.4) : HOME_VIEW.position);
   const resize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     labelRenderer.setSize(w, h);
     camera.aspect = w / h;
-    // Keep the whole sequoia in frame on tall phone screens.
-    camera.fov = w / h < 0.8 ? 50 : 35;
+    // Tall phone screens: wider lens, and the home view pulls back so the whole island fits.
+    portrait = w / h < 0.8;
+    camera.fov = portrait ? 48 : 35;
+    (scene.fog as THREE.Fog).near = portrait ? 150 : 90;
+    (scene.fog as THREE.Fog).far = portrait ? 380 : 260;
     camera.updateProjectionMatrix();
   };
   resize();
+  if (portrait) camera.position.set(...(homePosition() as [number, number, number]));
   addEventListener('resize', resize);
 
   const clock = new THREE.Clock();

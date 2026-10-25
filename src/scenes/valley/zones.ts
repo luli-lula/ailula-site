@@ -4,7 +4,7 @@ type V3 = [number, number, number];
 
 export interface Zone { id: ZoneId; label: { en: string; zh: string }; anchor: V3; view: { position: V3; target: V3 } }
 
-export const HOME_VIEW = { position: [62, 38, 72] as V3, target: [0, 13, 0] as V3 };
+export const HOME_VIEW = { position: [72, 44, 84] as V3, target: [0, 8, 0] as V3 };
 
 export const ZONES: Zone[] = [
   { id: 'tree', label: { en: 'The Sequoia · Story', zh: '巨杉 · 经历' }, anchor: [0, 30, 0], view: { position: [22, 20, 26], target: [0, 18, 0] } },

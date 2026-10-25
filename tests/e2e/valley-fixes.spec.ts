@@ -138,3 +138,15 @@ test('the valley fades in once its first frame is drawn', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.valley-root')).toHaveClass(/\bready\b/, { timeout: 30_000 });
 });
+
+test('trunk rings stay hidden in the home view and fade in only for the tree story', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('ailula-night', '1'));
+  await page.goto('/');
+  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => (window as any).__valley.ringOpacity())).toBe(0);
+  await page.evaluate(() => (window as any).__valley.select('tree'));
+  await expect.poll(() => page.evaluate(() => (window as any).__valley.ringOpacity()), { timeout: 8000 }).toBeGreaterThan(0.3);
+  await page.keyboard.press('Escape');
+  await expect.poll(() => page.evaluate(() => (window as any).__valley.ringOpacity()), { timeout: 5000 }).toBe(0);
+});

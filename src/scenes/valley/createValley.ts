@@ -67,7 +67,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
 
   const ctx = { quality: opts.quality, night };
   const parts: Part[] = [
-    { group: sequoia.group, setPalette: (p, n) => sequoia.setPalette(p, n), picks: [{ object: sequoia.pickTree, zone: 'tree' }] },
+    { group: sequoia.group, setPalette: (p, n) => sequoia.setPalette(p, n), update: (_t, dt) => sequoia.update(dt), picks: [{ object: sequoia.pickTree, zone: 'tree' }] },
     ...(opts.extraParts ?? []).map((build) => build(pal, ctx)),
   ];
   for (const part of parts.slice(1)) scene.add(part.group);
@@ -309,6 +309,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     pause() { paused = true; stop(); flight?.kill(); },
     resume() { paused = false; resize(); schedule(); },
     frames: () => frames,
+    ringOpacity: () => sequoia.ringOpacity(),
     cameraPosition: () => camera.position.toArray() as [number, number, number],
     drawCalls: () => renderer.info.render.calls,
     cameraTarget: () => controls.target.toArray() as [number, number, number],

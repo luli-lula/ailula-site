@@ -104,22 +104,31 @@ export function createSequoia(p: Palette, years: number[]) {
   const crownMat = material(p.sequoiaCrown);
   group.add(mesh(merge(clumps), crownMat));
 
-  // Faint ring bands: the timeline years climbing the trunk.
+  // Growth rings for the timeline years. Hidden in the home view (they read as tape around the trunk);
+  // they fade in, thin and warm, only while the tree's story is open.
   const ringHeights = ringHeightsFor(years);
   const rings = ringHeights.map((y) => {
-    const g = new THREE.TorusGeometry(trunkRadius(y, 0) * 1.06, 0.035, 3, 28);
+    const g = new THREE.TorusGeometry(trunkRadius(y, 0) * 1.05, 0.022, 3, 36);
     g.rotateX(Math.PI / 2);
     g.translate(0, y, 0);
     return faceted(g, rnd, 0);
   });
-  const ringMat = material('#d9a978', { emissive: '#ffd08a', emissiveIntensity: 0, transparent: true, opacity: 0.55 });
-  group.add(mesh(merge(rings), ringMat, false));
+  const ringMat = material('#f0c890', { emissive: '#ffcf86', emissiveIntensity: 0.6, transparent: true, opacity: 0, depthWrite: false });
+  const ringMesh = mesh(merge(rings), ringMat, false);
+  ringMesh.visible = false;
+  group.add(ringMesh);
 
   let isNight = false;
   let highlighted = false;
   const paintRings = () => {
-    ringMat.emissiveIntensity = highlighted ? 1.4 : isNight ? 1.2 : 0;
-    ringMat.opacity = highlighted || isNight ? 0.95 : 0.55;
+    ringMat.emissiveIntensity = isNight ? 1.3 : 0.6;
+  };
+  // Fade towards the target each frame.
+  const fadeRings = (dt: number) => {
+    const target = highlighted ? 0.8 : 0;
+    const next = ringMat.opacity + (target - ringMat.opacity) * Math.min(1, dt * 2.5);
+    ringMat.opacity = Math.abs(next - target) < 0.01 ? target : next;
+    ringMesh.visible = ringMat.opacity > 0;
   };
 
   return {
@@ -135,6 +144,8 @@ export function createSequoia(p: Palette, years: number[]) {
       isNight = night;
       paintRings();
     },
+    update: fadeRings,
+    ringOpacity: () => ringMat.opacity,
     // While the tree's story is open, its rings glow like a timeline.
     setHighlight(on: boolean) {
       highlighted = on;

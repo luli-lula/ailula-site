@@ -1,0 +1,122 @@
+---
+import { MODE_STORAGE_KEY, detectMode } from '../lib/mode';
+import { langFromPath, localizedPath, t, type Lang } from '../lib/i18n';
+import { profile } from '../data/profile';
+
+interface Props { title?: string; description?: string }
+const { title, description } = Astro.props;
+const lang: Lang = langFromPath(Astro.url.pathname);
+const other: Lang = lang === 'zh' ? 'en' : 'zh';
+const switchHref = localizedPath(Astro.url.pathname, other);
+const home = localizedPath('/', lang);
+const nav = [
+  { href: localizedPath('/', lang), label: t(lang, 'navHome') },
+  { href: localizedPath('/writing/', lang), label: t(lang, 'navWriting') },
+  { href: localizedPath('/projects/', lang), label: t(lang, 'navProjects') },
+  { href: localizedPath('/cinema/', lang), label: t(lang, 'navCinema') },
+];
+const pageTitle = title ? `${title} · lula` : `lula · ${t(lang, 'slogan')}`;
+// The same detectMode used in tests runs inline in <head>, before first paint.
+const modeScript = `(function(){var detect=${detectMode.toString()};var k=${JSON.stringify(MODE_STORAGE_KEY)};var stored=null;try{stored=localStorage.getItem(k)}catch(e){}
+var webgl=false;try{var c=document.createElement('canvas');webgl=!!(c.getContext('webgl2')||c.getContext('webgl'))}catch(e){}
+var r=detect({webgl:webgl,reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches,lowPower:(navigator.deviceMemory||8)<=2||(navigator.hardwareConcurrency||8)<=2,stored:stored==='hifi'||stored==='lofi'?stored:null});
+var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r.auto);h.dataset.webgl=String(webgl)})();`;
+---
+<!doctype html>
+<html lang={lang} data-mode="lofi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description ?? t(lang, 'intro')} />
+    <link rel="alternate" hreflang={other} href={switchHref} />
+    <link rel="alternate" type="application/rss+xml" title="lula" href={lang === 'zh' ? '/zh/index.xml' : '/index.xml'} />
+    <script is:inline set:html={modeScript} />
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${profile.gaId}`}></script>
+    <script is:inline define:vars={{ gaId: profile.gaId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', gaId);
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href={home}>lula</a>
+      <nav aria-label="Main">
+        {nav.map((n) => <a href={n.href} aria-current={Astro.url.pathname === n.href ? 'page' : undefined}>{n.label}</a>)}
+      </nav>
+      <div class="toggles">
+        <a class="toggle" href={switchHref} hreflang={other}>{t(lang, 'langSwitch')}</a>
+        <button class="toggle" type="button" data-mode-toggle>
+          <span class="when-lofi">{t(lang, 'modeHifi')}</span><span class="when-hifi">{t(lang, 'modeLofi')}</span>
+        </button>
+      </div>
+    </header>
+
+    <p class="notice auto-notice" data-testid="lofi-notice">
+      {t(lang, 'autoLofiNotice')}
+      <button type="button" data-set-mode="hifi">{t(lang, 'tryHifi')}</button>
+    </p>
+    <p class="notice hifi-notice">
+      {lang === 'zh' ? 'Hi-Fi 森林还在试验中，先看看爬树的效果：' : 'The Hi-Fi forest is still being grown. Preview the climb:'}
+      <a href="/lab/climb/">/lab/climb/</a>
+    </p>
+
+    <main><slot /></main>
+
+    <footer class="site-footer">
+      <p>{t(lang, 'slogan')}</p>
+      <p><a href={profile.github}>GitHub</a> · <a href={profile.x}>X</a></p>
+    </footer>
+
+    <script>
+      import { MODE_STORAGE_KEY, type Mode } from '../lib/mode';
+      const html = document.documentElement;
+      const set = (mode: Mode) => {
+        html.dataset.mode = mode;
+        html.dataset.modeAuto = 'false';
+        try { localStorage.setItem(MODE_STORAGE_KEY, mode); } catch {}
+      };
+      document.querySelector('[data-mode-toggle]')?.addEventListener('click', () => set(html.dataset.mode === 'hifi' ? 'lofi' : 'hifi'));
+      document.querySelectorAll<HTMLElement>('[data-set-mode]').forEach((b) => b.addEventListener('click', () => set(b.dataset.setMode as Mode)));
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #f6f2ea; --fg: #1d2a20; --muted: #5b6157; --line: #ddd3c3; --accent: #9a4f2e; --card: #fffdf8; --todo: #b5482c;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #141a15; --fg: #e9e4da; --muted: #a3a89c; --line: #2c352d; --accent: #d98a5f; --card: #1b221c; --todo: #e0896a; }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--bg); color: var(--fg); }
+      body { font: 16px/1.7 -apple-system, 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif; overflow-wrap: anywhere; }
+      a { color: var(--accent); }
+      img, video, iframe, pre, table { max-width: 100%; }
+      pre { overflow-x: auto; }
+      main { max-width: 760px; margin: 0 auto; padding: 8px 16px 48px; }
+      h1, h2, h3 { line-height: 1.3; }
+      h1 { font-family: Georgia, 'Songti SC', serif; }
+      .site-header { max-width: 760px; margin: 0 auto; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+      .brand { font: 700 22px Georgia, serif; color: var(--fg); text-decoration: none; margin-right: auto; }
+      .site-header nav { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+      .site-header nav a { color: var(--muted); text-decoration: none; }
+      .site-header nav a[aria-current] { color: var(--fg); font-weight: 600; }
+      .toggles { display: flex; gap: 8px; }
+      .toggle { font: inherit; font-size: 13px; padding: 2px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--fg); text-decoration: none; cursor: pointer; }
+      html[data-mode='hifi'] .when-hifi, html[data-mode='lofi'] .when-lofi { display: inline; }
+      .when-hifi, .when-lofi { display: none; }
+      .notice { display: none; max-width: 728px; margin: 0 auto 8px; padding: 8px 14px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); font-size: 14px; }
+      html[data-mode='lofi'][data-mode-auto='true'] .auto-notice { display: block; }
+      html[data-mode='hifi'] .hifi-notice { display: block; }
+      .notice button { font: inherit; margin-left: 8px; border: 0; background: var(--accent); color: #fff; border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+      .site-footer { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+      .lang-label { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; background: var(--line); color: var(--muted); }
+      .list { list-style: none; padding: 0; margin: 0; }
+      .list li { padding: 8px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+      .list time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; min-width: 6.5em; }
+    </style>
+  </body>
+</html>

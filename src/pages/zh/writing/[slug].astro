@@ -1,0 +1,11 @@
+---
+import Article from '../../../views/Article.astro';
+import { localized } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const items = await localized('posts', 'zh');
+  return items.map(({ slug, entry, fallback }) => ({ params: { slug }, props: { entry, fallback } }));
+}
+const { entry, fallback } = Astro.props;
+---
+<Article lang="zh" entry={entry} fallback={fallback} />

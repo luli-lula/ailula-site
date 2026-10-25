@@ -1,0 +1,27 @@
+---
+// Shared reading page for posts and projects.
+import Base from '../layouts/Base.astro';
+import { render, type CollectionEntry } from 'astro:content';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang; entry: CollectionEntry<'posts'> | CollectionEntry<'projects'>; fallback: boolean }
+const { lang, entry, fallback } = Astro.props;
+const { Content } = await render(entry);
+const date = entry.data.date?.toISOString().slice(0, 10);
+const links = 'links' in entry.data ? entry.data.links : [];
+---
+<Base title={entry.data.title}>
+  <article lang={entry.data.lang}>
+    <h1>{entry.data.title}</h1>
+    <p class="meta">
+      {date && <time>{date}</time>}
+      {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
+      {links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
+    </p>
+    <Content />
+  </article>
+</Base>
+
+<style>
+  .meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 14px; }
+</style>

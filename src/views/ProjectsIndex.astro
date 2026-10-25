@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import { localizedPath, t, type Lang } from '../lib/i18n';
+import { byDateDesc, localized } from '../lib/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const projects = (await localized('projects', lang)).sort(byDateDesc);
+---
+<Base title={t(lang, 'navProjects')}>
+  <h1>{t(lang, 'navProjects')}</h1>
+  <ul class="cards">
+    {projects.map(({ slug, entry, fallback }) => (
+      <li>
+        <h2><a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a></h2>
+        <p>{entry.data.summary}</p>
+        <p class="meta">
+          <span>{t(lang, entry.data.status === 'live' ? 'statusLive' : 'statusWip')}</span>
+          {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
+        </p>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  .cards { list-style: none; padding: 0; display: grid; gap: 12px; }
+  .cards li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px 16px 8px; }
+  .cards h2 { font-size: 18px; margin: 12px 0 4px; }
+  .cards p { margin: 4px 0; }
+  .meta { display: flex; gap: 10px; color: var(--muted); font-size: 13px; }
+</style>

@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { localizedPath, t, type Lang } from '../lib/i18n';
+import { byDateDesc, localized } from '../lib/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const posts = (await localized('posts', lang)).sort(byDateDesc);
+const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
+---
+<Base title={t(lang, 'navWriting')}>
+  <h1>{t(lang, 'navWriting')}</h1>
+  {kinds.map((k) => {
+    const group = posts.filter((p) => p.entry.data.kind === k);
+    return group.length > 0 && (
+      <section>
+        <h2>{t(lang, `kind_${k}`)} <small>({group.length})</small></h2>
+        <ul class="list">
+          {group.map(({ slug, entry, fallback }) => (
+            <li>
+              <time>{entry.data.date.toISOString().slice(0, 10)}</time>
+              <a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>
+              {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  })}
+</Base>

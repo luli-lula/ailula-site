@@ -1,0 +1,10 @@
+---
+// Visible marker for content lula still has to provide. Collected into CONTENT-TODO.md at build.
+interface Props { note: string }
+const { note } = Astro.props;
+---
+<span class="todo" data-todo={note}>待补充 / TODO · {note}</span>
+
+<style>
+  .todo { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px dashed var(--todo); color: var(--todo); font-size: 0.85em; }
+</style>

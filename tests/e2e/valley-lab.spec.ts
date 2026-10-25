@@ -6,7 +6,7 @@ test('valley lab renders six places and flies to the one clicked', async ({ page
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   await page.goto('/lab/valley/');
   await expect(page.locator('canvas#valley')).toBeVisible();
-  await expect(page.locator('.valley-label')).toHaveCount(6);
+  await expect(page.locator('.valley-label')).toHaveCount(7);
   await page.mouse.move(200, 200); // a visitor moving the pointer stops the idle rotation
   await page.locator('.valley-label[data-zone="workshop"]').click();
   await expect(page.locator('html')).toHaveAttribute('data-zone', 'workshop');

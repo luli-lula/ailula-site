@@ -41,7 +41,7 @@ test.beforeEach(async ({ page }) => {
 test('switching tabs never multiplies the render loop', async ({ page }) => {
   await page.addInitScript(fakeTabVisibility);
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   const before = await framesPerSecond(page);
   for (let i = 0; i < 3; i++) {
     await page.evaluate(() => (window as any).__hide());
@@ -55,7 +55,7 @@ test('switching tabs never multiplies the render loop', async ({ page }) => {
 
 test('lo-fi pauses the valley; resizing meanwhile does not break it on return', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.locator('.valley-root').getByRole('button', { name: 'Lo-Fi' }).click();
   expect(await framesPerSecond(page)).toBeLessThanOrEqual(1);
   await page.setViewportSize({ width: 900, height: 700 });
@@ -70,7 +70,7 @@ test('lo-fi pauses the valley; resizing meanwhile does not break it on return', 
 
 test('flights curve around the sequoia instead of passing through its trunk', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.evaluate(() => (window as any).__valley.focus('lookout'));
   await page.waitForTimeout(2200);
   const samples: number[][] = await page.evaluate(async () => {
@@ -92,7 +92,7 @@ test.describe('phone', () => {
   test.use({ viewport: { width: 375, height: 812 } });
   test('the dog panel sits at the bottom and leaves the top bar usable', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+    await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
     await page.evaluate(() => (window as any).__valley.select('dog'));
     const panel = page.locator('[data-panel="dog"]');
     await expect(panel).toBeVisible();
@@ -105,7 +105,7 @@ test.describe('phone', () => {
 
 test('keyboard: focus stays in the valley and moves into and out of panels', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => !!document.activeElement?.closest('.valley-root'))).toBe(true);
   await page.mouse.move(300, 300);
@@ -120,7 +120,7 @@ test('keyboard: focus stays in the valley and moves into and out of panels', asy
 
 test('opening the sequoia reveals the years on its rings as the camera rises', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await expect(page.locator('.ring-tag.on')).toHaveCount(0);
   await page.evaluate(() => (window as any).__valley.select('tree'));
   // Still flying down to the roots: no years yet.
@@ -142,7 +142,7 @@ test('the valley fades in once its first frame is drawn', async ({ page }) => {
 test('trunk rings stay hidden in the home view and fade in only for the tree story', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('ailula-night', '1'));
   await page.goto('/');
-  await expect(page.locator('.valley-label')).toHaveCount(6, { timeout: 30_000 });
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.waitForTimeout(600);
   expect(await page.evaluate(() => (window as any).__valley.ringOpacity())).toBe(0);
   await page.evaluate(() => (window as any).__valley.select('tree'));

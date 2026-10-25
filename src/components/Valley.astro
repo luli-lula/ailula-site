@@ -15,6 +15,10 @@ const other: Lang = lang === 'zh' ? 'en' : 'zh';
 const groups = await projectGroups(lang);
 const workshopProjects = groups.filter((g) => g.category !== 'plants').flatMap((g) => g.items);
 const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
+// Community roles, from lula's CV.
+const timelineCommunity = lang === 'zh'
+  ? ['Cornell 合作推广站奥尔巴尼县 Master Gardener 志愿者（2025 年 9 月起）：完成园艺培训，第一年服务 60 小时社区教育。', 'Wild Ones 首府地区分会志愿者（2024 年 12 月起）：设计活动海报和本土植物义卖的印刷卡片，并做了扫码就能打开物种页的配套网站。']
+  : ['Master Gardener Volunteer, Cornell Cooperative Extension Albany County (since Sep 2025): horticulture training done; 60 hours of community education in the first year.', 'Volunteer, Wild Ones Capital Region (since Dec 2024): event posters and printed plant ID cards for native plant sales, with a companion site you reach by scanning a card.'];
 const posts = (await localized('posts', lang)).sort(byDateDesc);
 const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
@@ -97,6 +101,31 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
       );
     })}
     <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>
+  </section>
+
+  <section class="vpanel" data-panel="greenhouse" role="dialog" aria-labelledby="vp-greenhouse" hidden>
+    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <h2 id="vp-greenhouse" tabindex="-1">{label.greenhouse}</h2>
+    <p class="intro">{t(lang, 'greenhouseIntro')}</p>
+    <ul class="cards">
+      {plantProjects.map(({ slug, entry, fallback }) => (
+        <li class={entry.data.featured ? 'featured' : ''}>
+          {entry.data.image && <img src={entry.data.image} alt="" loading="lazy" />}
+          <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
+          <p>{entry.data.summary}</p>
+          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <span class="lang-label">{only}</span>}</p>
+        </li>
+      ))}
+    </ul>
+    <h3>{t(lang, 'communityTitle')}</h3>
+    <ul class="plain">
+      {timelineCommunity.map((c) => <li>{c}</li>)}
+    </ul>
+    <h3>{t(lang, 'photosTitle')}</h3>
+    <div class="photos">
+      {['1', '2', '3'].map((n) => <img src={`/assets/photos/lula/${n}.webp`} alt={t(lang, 'photosCaption')} loading="lazy" />)}
+    </div>
+    <p class="muted">{t(lang, 'photosCaption')} · <Placeholder note={lang === 'zh' ? '更多植物园照片' : 'more botanical garden photos'} /></p>
   </section>
 
   <section class="vpanel" data-panel="lookout" role="dialog" aria-labelledby="vp-lookout" hidden>
@@ -282,6 +311,11 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .vpanel .cards li { border: 1px solid #e6dccb; border-radius: 12px; padding: 10px 12px; }
   .vpanel .cards a { font-weight: 600; }
   .vpanel .cards p { margin: 4px 0 0; font-size: 14px; color: #4a4a44; }
+  .vpanel .cards li.featured { border-color: #b4552e; background: #fff8ef; }
+  .vpanel .cards img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 8px; margin-bottom: 8px; }
+  .vpanel .plain { padding-left: 18px; margin: 0; font-size: 14px; line-height: 1.6; color: #4a4a44; }
+  .vpanel .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .vpanel .photos img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 8px; }
   .vpanel .meta { display: flex; gap: 8px; font-size: 12px !important; color: #7b7f75 !important; }
   @media (max-width: 700px) {
     .valley-brand .slogan { display: none; }

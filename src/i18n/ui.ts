@@ -56,6 +56,10 @@ export const ui = {
     readAll: 'See all',
     hifiElsewhere: 'The Hi-Fi valley lives on the home page:',
     season: 'Season',
+    greenhouseIntro: 'Plants are where I most want to go now. This is the plant work: an app in progress, a few that shipped, and what I do as a volunteer.',
+    communityTitle: 'In the community',
+    photosTitle: 'From the gardens I have visited',
+    photosCaption: 'Giant sequoias, Mariposa Grove, Yosemite',
   },
   zh: {
     siteName: 'lula',
@@ -113,6 +117,10 @@ export const ui = {
     readAll: '查看全部',
     hifiElsewhere: 'Hi-Fi 的山谷在首页：',
     season: '季节',
+    greenhouseIntro: '植物是我现在最想走的方向。这里是和植物有关的作品：一个正在做的 App，几个已经上线的，还有我做志愿者的地方。',
+    communityTitle: '社区',
+    photosTitle: '去过的植物园',
+    photosCaption: '优胜美地 Mariposa Grove 的巨杉（Giant sequoia）',
   },
 } as const;
 

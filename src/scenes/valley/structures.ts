@@ -102,6 +102,45 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
     addLight(at.clone().add(new THREE.Vector3(0, 1.5, 0)), 10, 12);
   }
 
+  // Greenhouse: a large glasshouse full of plants — the plant work (Floradex, WildCard, Wild Ones…).
+  {
+    const at = zoneAt('greenhouse');
+    const g = new THREE.Group();
+    g.position.copy(at);
+    g.rotation.y = facing(at);
+    const body = strip(box(6.4, 3, 4.2));
+    const roof = strip(gable(6.4, 4.2, 1.7).translate(0, 3, 0));
+    const glassHouse = merge([body, roof]);
+    const glass = material('#dff1ec', { transparent: true, opacity: 0.32, roughness: 0.08, emissive: '#ffe0a3', emissiveIntensity: 0, depthWrite: false });
+    g.add(mesh(faceted(glassHouse, rnd, 0), glass, false));
+    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(glassHouse), new THREE.LineBasicMaterial({ color: '#f6f1e8' })));
+    // Mullions every metre along the long walls.
+    const bars = [];
+    for (let x = -3; x <= 3; x += 1) bars.push(strip(box(0.06, 3, 0.06, x, 0, 2.1)), strip(box(0.06, 3, 0.06, x, 0, -2.1)));
+    g.add(mesh(faceted(merge(bars), rnd, 0), material('#efe8dc'), false));
+    // Plants inside: a bench of pots and a few tall specimens.
+    const pots = [], leaves = [], blooms = [];
+    for (let i = 0; i < 7; i++) {
+      const x = -2.6 + i * 0.85;
+      pots.push(strip(new THREE.CylinderGeometry(0.22, 0.17, 0.32, 6).translate(x, 0.95, -1.3)));
+      const l = new THREE.IcosahedronGeometry(0.32 + rnd() * 0.18, 0);
+      l.translate(x, 1.35 + rnd() * 0.2, -1.3);
+      leaves.push(strip(l));
+      if (i % 2 === 0) blooms.push(strip(new THREE.IcosahedronGeometry(0.12, 0).translate(x + 0.1, 1.65, -1.2)));
+    }
+    const bench = strip(box(6, 0.12, 0.8, 0, 0.75, -1.3));
+    for (const [x, z, h] of [[-2, 1, 2.2], [1.6, 0.8, 1.8], [2.6, 1.2, 1.4]]) {
+      leaves.push(strip(new THREE.ConeGeometry(0.55, h, 6).translate(x, h / 2 + 0.3, z)));
+      pots.push(strip(new THREE.CylinderGeometry(0.4, 0.3, 0.5, 6).translate(x, 0.25, z)));
+    }
+    g.add(mesh(faceted(merge(pots), rnd, 0.15), material('#b0643c')), mesh(faceted(bench, rnd, 0.1), darkMat));
+    g.add(mesh(faceted(merge(leaves), rnd, 0.25), material('#5f9a58')), mesh(faceted(merge(blooms), rnd, 0.1), material('#e88aa8'), false));
+    group.add(g);
+    picks.push({ object: g, zone: 'greenhouse' });
+    group.userData.greenhouseGlass = glass;
+    addLight(at.clone().add(new THREE.Vector3(0, 2, 0)), 12, 14);
+  }
+
   // Lookout: a wooden tower on the rise at the island's edge — now and contact.
   {
     const at = zoneAt('lookout');
@@ -181,6 +220,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
       glowMat.emissiveIntensity = night ? 1.6 : 0.2;
       lampMat.emissiveIntensity = night ? 2.2 : 0.05;
       (group.userData.glass as THREE.MeshStandardMaterial).emissiveIntensity = night ? 0.35 : 0;
+      (group.userData.greenhouseGlass as THREE.MeshStandardMaterial).emissiveIntensity = night ? 0.45 : 0;
       ((group.userData.hollowGlow as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.4 : 0.05;
       for (const l of nightLights) l.intensity = night ? (l.userData.on as number) : 0;
     },

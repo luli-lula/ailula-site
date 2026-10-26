@@ -17,7 +17,7 @@ export interface Part {
   picks?: { object: THREE.Object3D; zone: ZoneId }[];
 }
 
-export type PartBuilder = (p: Palette, ctx: { quality: 'high' | 'low'; night: boolean }) => Part;
+export type PartBuilder = (p: Palette, ctx: { quality: 'high' | 'low'; night: boolean; season: Season }) => Part;
 
 export interface ValleyOptions {
   lang: Lang;
@@ -68,7 +68,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const sequoia = createSequoia(pal, years);
   scene.add(sequoia.group);
 
-  const ctx = { quality: opts.quality, night };
+  const ctx = { quality: opts.quality, night, season };
   const parts: Part[] = [
     { group: sequoia.group, setPalette: (p, n) => sequoia.setPalette(p, n), update: (_t, dt) => sequoia.update(dt), picks: [{ object: sequoia.pickTree, zone: 'tree' }] },
     ...(opts.extraParts ?? []).map((build) => build(pal, ctx)),

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { Part } from './createValley';
 import { heightAt, PATHS } from './island';
 import { faceted, jitter, material, merge, mesh, rng } from './lowpoly';
-import type { Palette } from './palette';
+import type { Palette, Season } from './palette';
 import { trunkRadius } from './sequoia';
 import { ZONES, type ZoneId } from './zones';
 
@@ -32,7 +32,69 @@ const zoneAt = (id: ZoneId) => {
 };
 const facing = (from: THREE.Vector3) => Math.atan2(-from.x, -from.z); // turn the front (+z) towards the sequoia
 
-export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): Part {
+// The three garden beds change with the seasons: seedlings in spring; lettuce, carrots, staked tomatoes
+// and squash in summer; cabbages, carrots and pumpkins in autumn; straw and snow in winter. Sunflowers
+// grow along the side. Everything of one colour is merged into one mesh per season.
+const CROP = { leaf: '#6c9a55', sprout: '#9cc46a', purple: '#7a4f8a', carrotTop: '#5e8f45', orange: '#e3812b', red: '#d2402f', yellow: '#f2c230', stalk: '#6f8a3a', seed: '#5b3a1e', straw: '#d8c58a', snow: '#f4f6f8', stake: '#8a6a45' };
+type CropColour = keyof typeof CROP;
+function buildCrops(rnd: () => number): Record<Season, THREE.Group> {
+  const BED_X = [-2.6, 0, 2.6], TOP = 0.5;
+  const season = (parts: Partial<Record<CropColour, THREE.BufferGeometry[]>>) => {
+    const grp = new THREE.Group();
+    for (const [c, geos] of Object.entries(parts)) if (geos!.length) grp.add(mesh(faceted(merge(geos!.map(strip)), rnd, 0.18), material(CROP[c as CropColour])));
+    return grp;
+  };
+  const rows = (x: number, n: number, f: (px: number, pz: number) => void) => {
+    for (let r = 0; r < 2; r++) for (let k = 0; k < n; k++) f(x + (r - 0.5) * 0.9 + (rnd() - 0.5) * 0.15, -1 + (k - (n - 1) / 2) * (3.2 / n));
+  };
+  const ball = (r: number, x: number, y: number, z: number, sy = 1) => new THREE.IcosahedronGeometry(r, 0).scale(1, sy, 1).translate(x, y, z);
+  const cone = (r: number, h: number, x: number, y: number, z: number, seg = 5) => new THREE.ConeGeometry(r, h, seg).translate(x, y + h / 2, z);
+  const stick = (h: number, x: number, z: number, w = 0.06) => new THREE.BoxGeometry(w, h, w).translate(x, TOP + h / 2, z);
+  const sunflower = (x: number, z: number, h: number, droop: boolean, out: Partial<Record<CropColour, THREE.BufferGeometry[]>>) => {
+    out.stalk!.push(stick(h, x, z, 0.08));
+    const head = new THREE.CylinderGeometry(0.32, 0.32, 0.08, 10).rotateX(droop ? 0.4 : Math.PI / 2 - 0.2).translate(x, TOP + h, z + 0.1);
+    const centre = new THREE.CylinderGeometry(0.16, 0.16, 0.1, 8).rotateX(droop ? 0.4 : Math.PI / 2 - 0.2).translate(x, TOP + h - 0.01, z + 0.14);
+    (droop ? out.seed! : out.yellow!).push(head);
+    out.seed!.push(centre);
+  };
+  const SIDE = [-2.4, -1.2, 0, 1.2];
+
+  const spring = { sprout: [] as THREE.BufferGeometry[], leaf: [] as THREE.BufferGeometry[], carrotTop: [] as THREE.BufferGeometry[], stake: [] as THREE.BufferGeometry[], stalk: [] as THREE.BufferGeometry[] };
+  rows(BED_X[0], 5, (x, z) => spring.leaf.push(ball(0.16, x, TOP + 0.1, z, 0.6)));
+  rows(BED_X[1], 7, (x, z) => spring.carrotTop.push(cone(0.06, 0.25, x, TOP, z, 4)));
+  rows(BED_X[2], 4, (x, z) => { spring.sprout.push(cone(0.12, 0.22, x, TOP, z)); });
+  for (const z of [-2.2, -1, 0.2]) spring.stake.push(stick(1.3, BED_X[1] + 0.95, z));
+  for (const z of SIDE) spring.stalk.push(stick(0.5, 4.2, z, 0.06));
+
+  const summer = { leaf: [] as THREE.BufferGeometry[], carrotTop: [] as THREE.BufferGeometry[], orange: [] as THREE.BufferGeometry[], stake: [] as THREE.BufferGeometry[], red: [] as THREE.BufferGeometry[], yellow: [] as THREE.BufferGeometry[], stalk: [] as THREE.BufferGeometry[], seed: [] as THREE.BufferGeometry[] };
+  rows(BED_X[0], 4, (x, z) => summer.leaf.push(ball(0.34 + rnd() * 0.08, x, TOP + 0.22, z, 0.7)));
+  rows(BED_X[1], 6, (x, z) => { summer.carrotTop.push(cone(0.12, 0.45, x, TOP, z, 4)); summer.orange.push(ball(0.08, x, TOP + 0.02, z)); });
+  for (const z of [-2.2, -1, 0.2]) {
+    summer.stake.push(stick(1.5, BED_X[2], z));
+    summer.leaf.push(ball(0.38, BED_X[2], TOP + 0.9, z, 1.3));
+    for (let k = 0; k < 4; k++) summer.red.push(ball(0.11, BED_X[2] + (rnd() - 0.5) * 0.6, TOP + 0.5 + rnd() * 0.9, z + (rnd() - 0.5) * 0.5));
+  }
+  for (let k = 0; k < 3; k++) summer.yellow.push(ball(0.09, BED_X[2] + 0.75, TOP + 0.15, -2 + k * 1.2));
+  for (const z of SIDE) sunflower(4.2, z, 1.9 + rnd() * 0.4, false, summer);
+
+  const autumn = { leaf: [] as THREE.BufferGeometry[], purple: [] as THREE.BufferGeometry[], carrotTop: [] as THREE.BufferGeometry[], orange: [] as THREE.BufferGeometry[], stake: [] as THREE.BufferGeometry[], stalk: [] as THREE.BufferGeometry[], seed: [] as THREE.BufferGeometry[] };
+  rows(BED_X[0], 4, (x, z) => (rnd() < 0.5 ? autumn.purple : autumn.leaf).push(ball(0.36, x, TOP + 0.24, z, 0.75)));
+  rows(BED_X[1], 5, (x, z) => { autumn.carrotTop.push(cone(0.1, 0.35, x, TOP, z, 4)); autumn.orange.push(ball(0.09, x, TOP + 0.02, z)); });
+  for (const [x, z, r] of [[-0.3, -2.1, 0.42], [0.35, -1, 0.5], [-0.25, 0.2, 0.38]]) autumn.orange.push(ball(r, BED_X[2] + x, TOP + r * 0.55, z, 0.7));
+  autumn.leaf.push(ball(0.3, BED_X[2] + 0.5, TOP + 0.15, -0.4, 0.4));
+  for (const z of SIDE) sunflower(4.2, z, 1.7 + rnd() * 0.3, true, autumn);
+
+  const winter = { straw: [] as THREE.BufferGeometry[], snow: [] as THREE.BufferGeometry[], stake: [] as THREE.BufferGeometry[] };
+  for (const x of BED_X) {
+    winter.straw.push(new THREE.BoxGeometry(1.9, 0.12, 3.5).translate(x, TOP + 0.06, -1));
+    winter.snow.push(new THREE.BoxGeometry(1.7, 0.08, 3.2).translate(x, TOP + 0.16, -1.05));
+  }
+  for (const z of SIDE) winter.stake.push(stick(0.9, 4.2, z, 0.07));
+
+  return { spring: season(spring), summer: season(summer), autumn: season(autumn), winter: season(winter) };
+}
+
+export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; season: Season }): Part {
   const rnd = rng(2025);
   const group = new THREE.Group();
   group.name = 'structures';
@@ -76,16 +138,12 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
     const g = new THREE.Group();
     g.position.copy(at);
     g.rotation.y = facing(at);
-    const beds: THREE.BufferGeometry[] = [];
-    const greens: THREE.BufferGeometry[] = [];
-    for (let i = 0; i < 3; i++) {
-      const x = (i - 1) * 2.6;
-      beds.push(strip(box(2, 0.5, 3.6, x, 0, -1)));
-      for (let k = 0; k < 6; k++) {
-        const s = new THREE.IcosahedronGeometry(0.28 + rnd() * 0.15, 0);
-        s.translate(x + (rnd() - 0.5) * 1.3, 0.65, -1 + (k - 2.5) * 0.55);
-        greens.push(strip(s));
-      }
+    const beds = [0, 1, 2].map((i) => strip(box(2, 0.5, 3.6, (i - 1) * 2.6, 0, -1)));
+    g.add(mesh(faceted(merge(beds), rnd, 0.12), darkMat));
+    for (const [season, crops] of Object.entries(buildCrops(rnd))) {
+      crops.name = `crops-${season}`;
+      crops.visible = season === ctx.season;
+      g.add(crops);
     }
     // The writing hut, after the lodge Virginia Woolf wrote in at the end of her garden: plank walls, a
     // mossy roof, a door and one window that glows at night.
@@ -219,7 +277,8 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
   return {
     group,
     picks,
-    setPalette(_next, night) {
+    setPalette(_next, night, season) {
+      for (const s of ['spring', 'summer', 'autumn', 'winter'] as const) group.getObjectByName(`crops-${s}`)!.visible = s === season;
       glowMat.emissiveIntensity = night ? 1.6 : 0.2;
       lampMat.emissiveIntensity = night ? 2.2 : 0.05;
       (group.userData.hutWindow as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.3 : 0;

@@ -81,6 +81,38 @@ function ribbon(curve: THREE.Curve<THREE.Vector3>, width: number, lift: number, 
   return g;
 }
 
+// Water lies flat across the channel: every cross-section takes the height of the creek's centre line, so
+// the surface sits in the bed and meets the banks instead of following them under the grass.
+function waterRibbon(curve: THREE.Curve<THREE.Vector3>, width: number, lift: number, steps: number) {
+  const pos: number[] = [];
+  const pts = curve.getSpacedPoints(steps);
+  const level = pts.map((q) => heightAt(q.x, q.z) + lift);
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1];
+    const t = new THREE.Vector3().subVectors(b, a).normalize();
+    const n = new THREE.Vector3(-t.z, 0, t.x).multiplyScalar(width / 2);
+    const [p0, p1] = [a.clone().add(n), a.clone().sub(n)].map((q) => q.setY(level[i]));
+    const [p2, p3] = [b.clone().add(n), b.clone().sub(n)].map((q) => q.setY(level[i + 1]));
+    pos.push(p0.x, p0.y, p0.z, p2.x, p2.y, p2.z, p1.x, p1.y, p1.z, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, p3.x, p3.y, p3.z);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  return g;
+}
+
+// Where a stone path crosses the creek: the point on the path closest to the creek, and the path's direction there.
+function crossings() {
+  const out: { at: THREE.Vector3; dir: THREE.Vector3 }[] = [];
+  for (const path of PATHS) {
+    const pts = path.getSpacedPoints(60);
+    let best = { d: Infinity, i: 0 };
+    pts.forEach((q, i) => { const d = distToCreek(q.x, q.z); if (d < best.d) best = { d, i }; });
+    if (best.d > 1.2 || best.i < 2 || best.i > pts.length - 3) continue;
+    out.push({ at: pts[best.i], dir: new THREE.Vector3().subVectors(pts[best.i + 1], pts[best.i - 1]).setY(0).normalize() });
+  }
+  return out;
+}
+
 export function createIsland(p: Palette): Part {
   const rnd = rng(77);
   const group = new THREE.Group();
@@ -163,16 +195,70 @@ export function createIsland(p: Palette): Part {
   group.add(mesh(faceted(plaza, rnd, 0.22), pathMat, false));
 
   // Creek and waterfall.
-  const waterMat = material(p.water, { transparent: true, opacity: 0.88, roughness: 0.25, metalness: 0.05 });
-  const creek = ribbon(CREEK, 1.6, -0.35, 70);
+  const waterMat = material(p.water, { transparent: true, opacity: 0.9, roughness: 0.2, metalness: 0.05 });
+  const creekGeo = waterRibbon(CREEK, 2.4, 0.18, 90);
   const end = creekPts.at(-1)!;
-  const fall = new THREE.PlaneGeometry(1.5, 18, 1, 6);
+  const fall = new THREE.PlaneGeometry(1.8, 18, 1, 6);
   fall.translate(0, -9, 0);
   fall.rotateY(-Math.atan2(end.z, end.x) + Math.PI / 2);
   const ea = Math.atan2(end.z, end.x);
   fall.translate(Math.cos(ea) * (edgeRadius(ea) + 0.2), heightAt(end.x, end.z) - 0.3, Math.sin(ea) * (edgeRadius(ea) + 0.2));
   jitter(fall, 0.25, rnd, [1, 0, 1]);
-  group.add(mesh(faceted(merge([creek, fall.toNonIndexed()].map((g) => { for (const n of Object.keys(g.attributes)) if (n !== 'position') g.deleteAttribute(n); return g; })), rnd, 0.1), waterMat, false));
+  const creek = mesh(faceted(merge([creekGeo, fall.toNonIndexed()].map((g) => { for (const n of Object.keys(g.attributes)) if (n !== 'position') g.deleteAttribute(n); return g; })), rnd, 0.1), waterMat, false);
+  creek.name = 'creek';
+  group.add(creek);
+
+  // Stones along both banks.
+  const bank: THREE.BufferGeometry[] = [];
+  const bankPts = CREEK.getSpacedPoints(70);
+  bankPts.forEach((q, i) => {
+    if (i === 0 || i === bankPts.length - 1 || rnd() < 0.35) return;
+    const t = new THREE.Vector3().subVectors(bankPts[i + 1], bankPts[i - 1]).normalize();
+    const side = rnd() < 0.5 ? 1 : -1;
+    const off = new THREE.Vector3(-t.z, 0, t.x).multiplyScalar(side * (1.25 + rnd() * 0.35));
+    const x = q.x + off.x, z = q.z + off.z;
+    if (!insideIsland(x, z, 1.5)) return;
+    const st = new THREE.IcosahedronGeometry(0.16 + rnd() * 0.22, 0);
+    st.scale(1.2, 0.6, 1);
+    bank.push(st.translate(x, heightAt(x, z) + 0.05, z));
+  });
+  const banks = mesh(faceted(merge(bank), rnd, 0.2), rockMat);
+  banks.name = 'creek-banks';
+  group.add(banks);
+
+  // A wooden footbridge wherever a path crosses the creek.
+  const plank = (len: number, w: number, h: number, x: number, y: number, z: number) => new THREE.BoxGeometry(len, h, w).translate(x, y, z).toNonIndexed();
+  const bridgeGeos = crossings().map(({ at, dir }) => {
+    const deckY = Math.max(heightAt(at.x - dir.x * 1.6, at.z - dir.z * 1.6), heightAt(at.x + dir.x * 1.6, at.z + dir.z * 1.6)) + 0.22;
+    const parts = [plank(3.4, 1.5, 0.12, 0, 0, 0)];
+    for (const sz of [-0.72, 0.72]) {
+      parts.push(plank(3.4, 0.08, 0.08, 0, 0.62, sz));
+      for (const px of [-1.5, 0, 1.5]) parts.push(plank(0.1, 0.1, 0.62, px, 0.31, sz));
+    }
+    const g = merge(parts.map((q) => { for (const n of Object.keys(q.attributes)) if (n !== 'position') q.deleteAttribute(n); return q; }));
+    g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(at.x, deckY, at.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.atan2(dir.z, dir.x)), new THREE.Vector3(1, 1, 1)));
+    return g;
+  });
+  if (bridgeGeos.length) {
+    const bridge = mesh(faceted(merge(bridgeGeos), rnd, 0.12), material('#9c7350'));
+    bridge.name = 'bridge';
+    group.add(bridge);
+  }
+
+  // Glints on the water that twinkle (still when the visitor asked for less motion).
+  const glints: THREE.BufferGeometry[] = [];
+  CREEK.getSpacedPoints(60).forEach((q, i, all) => {
+    if (i === 0 || i === all.length - 1) return;
+    const t = new THREE.Vector3().subVectors(all[i + 1], all[i - 1]).normalize();
+    const off = (rnd() - 0.5) * 1.2;
+    const x = q.x - t.z * off, z = q.z + t.x * off;
+    const g = new THREE.PlaneGeometry(0.34, 0.07).rotateX(-Math.PI / 2).rotateY(rnd() * Math.PI);
+    glints.push(g.translate(x, heightAt(q.x, q.z) + 0.2, z).toNonIndexed());
+  });
+  const glintMat = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.3, depthWrite: false });
+  const glint = new THREE.Mesh(merge(glints.map((g) => { for (const n of Object.keys(g.attributes)) if (n !== 'position') g.deleteAttribute(n); return g; })), glintMat);
+  glint.name = 'creek-glints';
+  group.add(glint);
 
   // Clouds drifting around and below the island.
   const cloudMat = material('#ffffff', { transparent: true, opacity: 0.9 });
@@ -206,6 +292,7 @@ export function createIsland(p: Palette): Part {
       cloudMat.opacity = night ? 0.55 : 0.9;
     },
     update(t) {
+      glintMat.opacity = 0.3 + 0.22 * Math.sin(t * 2.3);
       for (const c of clouds) {
         const { a, d, speed } = c.userData as { a: number; d: number; speed: number };
         const aa = a + t * speed;

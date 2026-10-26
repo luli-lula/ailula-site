@@ -25,6 +25,7 @@ test('the Lo-Fi home has the same now line and a link to the projects', async ({
 test('the company name of her current work is not on the site', async ({ request }) => {
   for (const path of ['/', '/zh/', '/projects/', '/zh/projects/']) {
     const html = await (await request.get(path)).text();
-    expect(html, path).not.toMatch(/[公司]|[company]/);
+    // The company name, spelled indirectly so the public repo does not carry it in plain text.
+    expect(html, path).not.toMatch(new RegExp(['\u79d1\u90a6', ['Ke', 'bang'].join('')].join('|')));
   }
 });

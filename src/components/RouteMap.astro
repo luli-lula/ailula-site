@@ -55,4 +55,10 @@ const insets = (['cn', 'us'] as const).map((region) => {
   .route-map .dot text { font: 700 26px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
   .route-map .dot text.name { font: 600 30px system-ui, 'PingFang SC', sans-serif; fill: #1d2a20; text-anchor: start; paint-order: stroke; stroke: #fff; stroke-width: 6px; }
   .route-map .dot text.name.end { text-anchor: end; }
+  /* Phones: the two maps stack, so each is wide enough to read and tap. */
+  @media (max-width: 560px) {
+    .route-map { flex-direction: column; align-items: stretch; }
+    .route-map .inset { flex: none; width: 100%; }
+    .route-map .pacific { flex: 0 0 16px; border-top: 0; border-left: 2px dashed #b4552e; align-self: center; }
+  }
 </style>

@@ -20,3 +20,6 @@ pnpm-debug.log*
 test-results/
 yarn-debug.log*
 yarn-error.log*
+
+# Private notes and reports for lula: kept on this Mac, never published
+.private/

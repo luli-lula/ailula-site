@@ -66,26 +66,35 @@ export function mountCinema(root: HTMLElement) {
     years.querySelectorAll<HTMLElement>('button').forEach((b) => (b.hidden = !!wall.querySelector(`.cin-year[data-year="${b.dataset.year}"][hidden]`)));
   };
 
+  // Each render belongs to the tab that asked for it; a slower, older load never draws over a newer one.
+  let renderId = 0;
   const render = async () => {
+    const id = ++renderId, want = kind;
     wall.setAttribute('aria-busy', 'true');
-    rows = await load(kind);
+    const data = await load(want);
+    if (id !== renderId) return;
+    rows = data;
     const groups = new Map<string, number[]>();
     rows.forEach((r, i) => {
       const y = r.d.slice(0, 4) || '—';
       groups.set(y, [...(groups.get(y) ?? []), i]);
     });
-    wall.innerHTML = [...groups].map(([y, idx]) => `<section class="cin-year" data-year="${y}"><h3>${y}</h3><div class="cin-grid">${idx.map((i) => tile(kind, rows[i], i)).join('')}</div></section>`).join('');
+    wall.innerHTML = [...groups].map(([y, idx]) => `<section class="cin-year" data-year="${esc(y)}"><h3 tabindex="-1">${esc(y)}</h3><div class="cin-grid">${idx.map((i) => tile(want, rows[i], i)).join('')}</div></section>`).join('');
     years.innerHTML = [...groups.keys()].map((y) => `<button type="button" data-year="${y}">${y}</button>`).join('');
     const commented = rows.filter((r) => r.c).length;
     const since = Math.min(...rows.map((r) => Number(r.d.slice(0, 4))).filter(Boolean));
-    statsEl.textContent = T.stats(kind, rows.length, commented, since);
+    statsEl.textContent = T.stats(want, rows.length, commented, since);
     wall.removeAttribute('aria-busy');
     apply();
   };
 
   years.addEventListener('click', (e) => {
     const y = (e.target as HTMLElement).closest<HTMLElement>('button')?.dataset.year;
-    if (y) wall.querySelector(`.cin-year[data-year="${y}"]`)?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    if (!y) return;
+    // Scroll to the year and move focus there, so the next Tab continues inside that year.
+    const section = wall.querySelector<HTMLElement>(`.cin-year[data-year="${y}"]`);
+    section?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    section?.querySelector<HTMLElement>('h3')?.focus({ preventScroll: true });
   });
 
   wall.addEventListener('click', (e) => {

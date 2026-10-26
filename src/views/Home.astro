@@ -27,7 +27,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
     <section>
       <h2>{t(lang, 'sectionNow')}</h2>
       <p>{profile.now[lang]}</p>
-      <p><a href={localizedPath('/projects/', lang)}>{t(lang, 'seeProjects')} →</a></p>
+      <p><a href={localizedPath('/projects/', lang)}>{t(lang, 'seeProjects')} →</a> · <a href={localizedPath('/map/', lang)}>{t(lang, 'footprints')} →</a></p>
     </section>
   ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
 

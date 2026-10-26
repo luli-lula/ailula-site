@@ -21,19 +21,21 @@ const zh = lang === 'zh';
       <ol>{topTen.map((f) => <li>{f.title}{f.year && <span> ({f.year})</span>}</li>)}</ol>
     </section>
   )}
+  <div class="cin-sticky">
   <div class="cin-tools">
-    <div class="cin-tabs" role="tablist" aria-label={t(lang, 'navCinema')}>
-      <button type="button" role="tab" aria-selected="true" data-kind="movies"><Icon name="film" />{zh ? '电影' : 'Films'}</button>
-      <button type="button" role="tab" aria-selected="false" data-kind="books"><Icon name="book" />{zh ? '书' : 'Books'}</button>
+      <div class="cin-tabs" role="tablist" aria-label={t(lang, 'navCinema')}>
+        <button type="button" role="tab" aria-selected="true" data-kind="movies"><Icon name="film" />{zh ? '电影' : 'Films'}</button>
+        <button type="button" role="tab" aria-selected="false" data-kind="books"><Icon name="book" />{zh ? '书' : 'Books'}</button>
+      </div>
+      <div class="chips" role="group" aria-label={zh ? '筛选' : 'Filter'} data-cin-filter>
+        <button type="button" data-f="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
+        <button type="button" data-f="five" aria-pressed="false">{zh ? '五星' : '5 stars'}</button>
+        <button type="button" data-f="commented" aria-pressed="false">{zh ? '有短评' : 'With a note'}</button>
+      </div>
+      <input class="cin-search" type="search" data-cin-search placeholder={zh ? '搜索片名、导演或作者' : 'Search titles, directors, authors'} aria-label={zh ? '搜索' : 'Search'} />
     </div>
-    <div class="chips" role="group" aria-label={zh ? '筛选' : 'Filter'} data-cin-filter>
-      <button type="button" data-f="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
-      <button type="button" data-f="five" aria-pressed="false">{zh ? '五星' : '5 stars'}</button>
-      <button type="button" data-f="commented" aria-pressed="false">{zh ? '有短评' : 'With a note'}</button>
-    </div>
-    <input class="cin-search" type="search" data-cin-search placeholder={zh ? '搜索片名、导演或作者' : 'Search titles, directors, authors'} aria-label={zh ? '搜索' : 'Search'} />
+    <nav class="cin-years" data-years aria-label={zh ? '跳到年份' : 'Jump to a year'}></nav>
   </div>
-  <nav class="cin-years" data-years aria-label={zh ? '跳到年份' : 'Jump to a year'}></nav>
   <div class="cin-wall" data-wall></div>
   <dialog class="cin-card" data-card aria-label={zh ? '详情' : 'Details'}>
     <button type="button" class="cin-close" data-card-close aria-label={t(lang, 'close')} title={t(lang, 'close')}>
@@ -59,7 +61,7 @@ const zh = lang === 'zh';
   .cin-head h1 { margin: 8px 0 6px; color: var(--c-ink); }
   .cin-stats { color: var(--c-muted); margin: 0 0 4px; }
   .cin-note { color: var(--c-muted); font-size: 13px; margin: 0; }
-  .cin-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 18px 0 10px; }
+  .cin-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 12px 0 10px; }
   .cin-tabs { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: var(--c-chip); }
   .cin-tabs button { display: inline-flex; gap: 6px; align-items: center; font: 600 13px system-ui, sans-serif; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--c-muted); cursor: pointer; }
   .cin-tabs button[aria-selected='true'] { background: var(--c-ink); color: var(--c-bg); }
@@ -71,7 +73,10 @@ const zh = lang === 'zh';
   .cin-years { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 18px; }
   .cin-years button { font: 12px ui-monospace, 'SF Mono', monospace; padding: 2px 0; border: 0; background: none; color: var(--c-muted); cursor: pointer; }
   .cin-years button:hover, .cin-years button:focus-visible { color: var(--c-accent); }
-  .cin-year { content-visibility: auto; contain-intrinsic-size: auto 600px; margin-bottom: 26px; scroll-margin-top: 12px; }
+  /* Tabs, filters, search and the year index stay at the top while the wall scrolls. */
+  .cin-sticky { position: sticky; top: var(--cin-top, 0px); z-index: 2; background: var(--c-bg); padding: 6px 0 2px; }
+  .cin-year { content-visibility: auto; contain-intrinsic-size: auto 600px; margin-bottom: 26px; scroll-margin-top: calc(var(--cin-top, 0px) + 130px); }
+  .cin-year h3:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 4px; }
   .cin-year h3 { font: 700 44px/1 Georgia, 'Songti SC', serif; color: var(--c-accent); opacity: 0.9; margin: 0 0 10px; }
   .cin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
   .tile { position: relative; padding: 0; border: 0; border-radius: 4px; overflow: hidden; aspect-ratio: 2 / 3; background: #2a241e; cursor: pointer; transition: transform .15s ease; }

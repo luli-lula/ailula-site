@@ -47,6 +47,7 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
     </div>
     <p class="fmap-legend"><span class="key lived"></span>{zh ? '住过' : 'Lived'} <span class="key note"></span>{zh ? '写过游记' : 'Travel note'} <span class="key visited"></span>{zh ? '去过' : 'Visited'}</p>
   </div>
+  <div class="fmap-scroll">
   {views.map(({ v, route, others, line }, i) => (
     <svg class="fmap-view" data-map-view={v.id} viewBox={`0 0 ${v.width} ${v.height}`} role="img" aria-label={`${LABEL[v.id]}`} hidden={i !== 0}>
       <image href={`/maps/${v.id}.svg`} width={v.width} height={v.height} />
@@ -68,13 +69,14 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
       ))}
     </svg>
   ))}
+  </div>
   <div class="fmap-card" data-map-card hidden>
     <button type="button" class="fmap-close" data-map-card-close aria-label={zh ? '关闭' : 'Close'} title={zh ? '关闭' : 'Close'}>
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
     </button>
     <div data-map-card-body></div>
   </div>
-  <p class="fmap-credit">{zh ? '底图：Natural Earth、美国人口普查局（公共领域）' : 'Base map: Natural Earth, US Census Bureau (public domain)'}</p>
+  <p class="fmap-credit">{zh ? '底图：Natural Earth（公共领域）' : 'Base map: Natural Earth (public domain)'}</p>
 </div>
 
 <script>
@@ -113,5 +115,12 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
   .fmap-card p { margin: 4px 0; font-size: 14px; line-height: 1.55; color: #4f564c; }
   .fmap-card a { color: var(--m-note); font-weight: 600; }
   .fmap-close { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px; border: 1px solid #e2d8c6; background: #fff; color: var(--m-ink); cursor: pointer; }
+  /* On a phone the map keeps a usable size and scrolls sideways, so the dots stay big enough to tap. */
+  .fmap-scroll { overflow-x: auto; border-radius: 12px; }
+  @media (max-width: 560px) {
+    .fmap-view { min-width: 720px; }
+    .fmap .pt.lived circle { r: 11px; }
+    .fmap .pt.visited circle { r: 10px; }
+  }
   .fmap-credit { font-size: 11px; color: #8a8f88; margin: 6px 0 0; }
 </style>

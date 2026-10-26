@@ -57,9 +57,6 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
-      us-atlas:
-        specifier: ^3.0.1
-        version: 3.0.1
       vitest:
         specifier: ^4.1.12
         version: 4.1.12(@types/node@26.6.5)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
@@ -1957,9 +1954,6 @@ packages:
         optional: true
       uploadthing:
         optional: true
-
-  us-atlas@3.0.1:
-    resolution: {integrity: sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==}
 
   verkit@0.5.0:
     resolution: {integrity: sha512-u4J1hr6Y+C/hit34GwL3eIcUf3wngT8TlYUjK7tk0jxydKLAq3sYvifjdTDA6U3KCKRcQCQDGf/srjxfZF3l7g==}
@@ -4384,8 +4378,6 @@ snapshots:
       node-fetch-native: 1.6.7
       ofetch: 1.5.1
       ufo: 1.6.4
-
-  us-atlas@3.0.1: {}
 
   verkit@0.5.0: {}
 

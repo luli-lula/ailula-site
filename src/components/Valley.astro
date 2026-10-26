@@ -6,7 +6,6 @@ import Contact from './Contact.astro';
 import CloseButton from './CloseButton.astro';
 import CinemaWall from './CinemaWall.astro';
 import Chapters from './Chapters.astro';
-import FootprintMap from './FootprintMap.astro';
 import Icon from './Icon.astro';
 import LangBadge from './LangBadge.astro';
 import ProjectCard from './ProjectCard.astro';
@@ -76,7 +75,8 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
       </button>
     </header>
-    <FootprintMap lang={lang} />
+    <!-- Filled from /map/ the first time it opens, so the home page does not carry the map. -->
+    <div class="map-slot" data-map-slot data-src={localizedPath('/map/', lang)}></div>
   </section>
 
   <!-- The tree hollow opens a full-screen cinema rather than a side panel. -->
@@ -179,9 +179,9 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     </header>
     <div class="vbody" data-filter-scope>
     <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
-    {dogPosts.length > 0 ? (
+    {dogPosts.length > 0 && (
       <ul class="vlist">{dogPosts.map(({ slug, entry }) => <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><span class="title"><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a></span></li>)}</ul>
-    ) : <Placeholder note={lang === 'zh' ? 'DouDou 日记（等 lula 口述）' : "DouDou's diary (lula to tell it)"} />}
+    )}
     <div class="dog-photos">
       {['2', '1'].map((n) => <img src={`/assets/photos/doudou/${n}.webp`} alt={`${profile.dogName || label.dog}`} loading="lazy" />)}
     </div>
@@ -193,6 +193,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
   import type { Season } from '../scenes/valley/palette';
   import { wireChips } from '../scripts/chips';
   import { mountCinema } from '../scripts/cinema';
+  import { mountMap } from '../scripts/map';
   import type { ZoneId } from '../scenes/valley/zones';
 
   const html = document.documentElement;
@@ -304,7 +305,17 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
         root.querySelectorAll<HTMLElement>('.valley-labels, .valley-bar, .valley-hint, .valley-canvas, .vpanel').forEach((el) => (el.inert = open));
         (open ? mapOverlay.querySelector<HTMLElement>('h2') : mapOpener)?.focus({ preventScroll: true });
       };
-      mapOpener.addEventListener('click', () => setMap(true));
+      const slot = mapOverlay.querySelector<HTMLElement>('[data-map-slot]')!;
+      mapOpener.addEventListener('click', async () => {
+        setMap(true);
+        if (slot.childElementCount) return;
+        const page = new DOMParser().parseFromString(await (await fetch(slot.dataset.src!)).text(), 'text/html');
+        const map = page.querySelector<HTMLElement>('[data-fmap]');
+        if (map) {
+          slot.append(document.importNode(map, true));
+          mountMap(slot.querySelector<HTMLElement>('[data-fmap]')!);
+        }
+      });
       root.querySelector('[data-close-map]')!.addEventListener('click', () => setMap(false));
       addEventListener('keydown', (e) => {
         if (e.key !== 'Escape' || html.dataset.mode !== 'hifi') return;
@@ -382,12 +393,12 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
   html[data-night='true'] .vpanel { --p-bg: rgba(26, 30, 50, 0.78); --p-edge: rgba(255, 255, 255, 0.14); --p-line: rgba(255, 255, 255, 0.12); --p-ink: #eef0f7; --p-muted: #c3c7d6; --p-accent: #f0b58c; --p-link: #f3f1ea; --p-link-hover: #f6c49e; --p-card: rgba(255, 255, 255, 0.06); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
   .vpanel.small { bottom: auto; }
-  .map-overlay { z-index: 7; position: fixed; inset: 0; overflow-y: auto; background: #f6f1e7; color: #1d2a20; padding: 0 max(16px, calc(50vw - 560px)) 40px; box-sizing: border-box; animation: vpanel-in 0.4s ease-out; }
+  .map-overlay { z-index: 7; position: fixed; inset: 0; overflow-y: auto; background: #0b1220; color: #e8edf5; padding: 0 max(16px, calc(50vw - 560px)) 40px; box-sizing: border-box; animation: vpanel-in 0.4s ease-out; }
   .map-overlay[hidden] { display: none; }
   html[data-motion='reduced'] .map-overlay { animation: none; }
-  .map-bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 16px 0 10px; background: #f6f1e7; }
+  .map-bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 16px 0 10px; background: #0b1220; }
   .map-bar h2 { font: 700 22px/1.3 Georgia, 'Songti SC', serif; margin: 0; outline: none; }
-  .map-close { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 999px; border: 1px solid #ddd3c3; background: #fff; color: #1d2a20; cursor: pointer; }
+  .map-close { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 999px; border: 1px solid #2a3850; background: rgba(255, 255, 255, 0.06); color: #e8edf5; cursor: pointer; }
   .vpanel .gos { display: flex; flex-wrap: wrap; gap: 8px; }
   .vpanel .go { display: inline-flex; align-items: center; gap: 6px; }
   .cinema-overlay { z-index: 6; position: fixed; inset: 0; overflow-y: auto; overflow-x: hidden; background: #15120f; color: #f1ebe0; padding: 0 max(16px, calc(50vw - 560px)) 48px; box-sizing: border-box; animation: lights-down 0.9s ease-out; }

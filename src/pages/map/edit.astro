@@ -1,0 +1,116 @@
+---
+// Footprint editor, for lula on her own machine: tick the countries and cities she has been to and the map
+// lights up; every change is saved to src/data/footprints.json through the dev server (astro.config.mjs).
+// The built site only says where to find it.
+import { allCountries, allShapes, countryShapes, SIZE, unitCountries, unitName, unitsOf, VIEWS } from '../../lib/footprint';
+
+const dev = import.meta.env.DEV;
+const lang = 'zh' as const;
+const countries = dev ? allCountries(lang) : [];
+const withUnits = countries.filter((c: any) => unitCountries.includes(c.id));
+const plain = countries.filter((c: any) => !unitCountries.includes(c.id));
+// Units of a country grouped by province / state (other countries have one group).
+const groups = (iso: string) => {
+  const by = new Map<string, { id: string; name: string }[]>();
+  for (const u of unitsOf(iso)!.units) {
+    const key = u.pzh || u.pen || '';
+    by.set(key, [...(by.get(key) ?? []), { id: `${iso}:${u.id}`, name: unitName(u, lang) }]);
+  }
+  return [...by].map(([name, units]) => ({ name, units: units.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN')) })).sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN'));
+};
+const LABEL = { world: '世界', cn: '中国', us: '美国' } as const;
+const maps = dev ? VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], countries: countryShapes(id, lang), units: allShapes(id, lang) })) : [];
+---
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>足迹编辑 · lula</title>
+  </head>
+  <body>
+    {!dev ? (
+      <main class="stub"><h1>足迹编辑</h1><p>这个页面只在本地开发时可用：在项目里运行 <code>pnpm dev</code>，再打开 <code>localhost:4321/map/edit/</code>。</p></main>
+    ) : (
+      <div class="editor">
+        <aside class="list">
+          <header>
+            <h1>足迹编辑</h1>
+            <p class="status" data-status aria-live="polite">读取中…</p>
+            <input type="search" data-search placeholder="搜索国家、省份或城市" aria-label="搜索" />
+          </header>
+          <h2>可以细到城市的国家</h2>
+          {withUnits.map((c: any) => (
+            <details class="country" data-row data-text={c.name}>
+              <summary><label><input type="checkbox" data-country={c.id} /> {c.name}</label><span class="count" data-count={c.id}></span></summary>
+              {groups(c.id).map((g) => (
+                <details class="group" data-row data-text={g.name}>
+                  <summary>{g.name || '全部'} <span class="count" data-group-count></span></summary>
+                  <ul>{g.units.map((u) => <li data-row data-text={`${g.name} ${u.name}`}><label><input type="checkbox" data-place={u.id} /> {u.name}</label></li>)}</ul>
+                </details>
+              ))}
+            </details>
+          ))}
+          <h2>其他国家</h2>
+          <ul class="plain">
+            {plain.map((c: any) => (
+              <li data-row data-text={c.name}>
+                <label><input type="checkbox" data-country={c.id} /> {c.name}</label>
+                <button type="button" class="geo" data-geo={c.id} hidden>下载城市边界</button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <section class="preview">
+          <div class="views" role="group" aria-label="视图">
+            {maps.map((m, i) => <button type="button" data-view-pick={m.id} aria-pressed={i === 0 ? 'true' : 'false'}>{LABEL[m.id]}</button>)}
+          </div>
+          <p class="hint">在列表里勾选，或者直接点地图。点亮的地方会马上保存。</p>
+          {maps.map((m, i) => (
+            <svg class="map" data-map-view={m.id} viewBox={`0 0 ${m.w} ${m.h}`} hidden={i !== 0}>
+              {m.countries.map((c: any) => <path class="c" d={c.d} data-country-shape={c.id}><title>{c.name}</title></path>)}
+              {m.units.map((u: any) => <path class="u" d={u.d} data-place-shape={u.id}><title>{u.name}</title></path>)}
+            </svg>
+          ))}
+          <p class="tip" data-tip></p>
+        </section>
+      </div>
+    )}
+    {dev && <script>import '../../scripts/map-edit';</script>}
+    <style is:global>
+      body { margin: 0; font: 14px/1.5 -apple-system, 'PingFang SC', system-ui, sans-serif; background: #0b1220; color: #e8edf5; }
+      .stub { max-width: 600px; margin: 15vh auto; padding: 0 16px; }
+      .editor { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; height: 100vh; }
+      .list { overflow-y: auto; padding: 16px; border-right: 1px solid #22304a; }
+      .list header { position: sticky; top: -16px; background: #0b1220; padding: 16px 0 8px; margin-top: -16px; z-index: 1; }
+      .list h1 { font-size: 20px; margin: 0 0 4px; }
+      .list h2 { font-size: 12px; letter-spacing: .1em; color: #9aa8bd; margin: 18px 0 6px; }
+      .status { margin: 0 0 8px; color: #9aa8bd; font-size: 13px; }
+      .status.ok { color: #7fd18b; }
+      .status.err { color: #ff8a7a; }
+      input[type='search'] { width: 100%; box-sizing: border-box; padding: 8px 12px; border-radius: 999px; border: 1px solid #2a3850; background: #121b2b; color: inherit; }
+      details { margin: 2px 0; }
+      summary { cursor: pointer; display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; }
+      .group { margin-left: 18px; }
+      .group ul, .plain { list-style: none; margin: 0; padding: 0 0 0 18px; }
+      .plain { padding-left: 0; }
+      .plain li { display: flex; justify-content: space-between; align-items: center; }
+      .count { color: #f4b860; font-size: 12px; }
+      .geo { font-size: 11px; border: 1px solid #2a3850; background: transparent; color: #9aa8bd; border-radius: 999px; padding: 1px 8px; cursor: pointer; }
+      [data-row][hidden] { display: none; }
+      .preview { padding: 16px; overflow: auto; }
+      .views { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.06); }
+      .views button { font: 600 13px system-ui; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: #9aa8bd; cursor: pointer; }
+      .views button[aria-pressed='true'] { background: #e8edf5; color: #0b1220; }
+      .hint, .tip { color: #9aa8bd; margin: 8px 0; }
+      .map { display: block; width: 100%; height: auto; background: #0b1220; }
+      .map[hidden] { display: none; }
+      .map .c { fill: #141d2b; stroke: #2a3850; stroke-width: .6; cursor: pointer; }
+      .map .c.on { fill: #1b283b; }
+      .map .u { fill: #182234; stroke: #2f4260; stroke-width: .35; cursor: pointer; }
+      .map .u.on { fill: #f4b860; stroke: #ffe2a8; }
+      .map .c:hover, .map .u:hover { fill: #31507a; }
+      .map .u.on:hover { fill: #ffd894; }
+    </style>
+  </body>
+</html>

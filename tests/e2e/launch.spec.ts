@@ -144,3 +144,12 @@ test('panel close is an icon button with a name for screen readers', async ({ pa
   await close.click();
   await expect(page.locator('[data-panel="garden"]')).toBeHidden();
 });
+
+test('no résumé or DouDou-diary markers, and the dog’s label is her name', async ({ page, request }) => {
+  const html = await (await request.get('/zh/')).text();
+  expect(html).not.toContain('data-todo="简历 PDF"');
+  expect(html).not.toMatch(/data-todo="DouDou 日记/);
+  await page.addInitScript(() => { localStorage.setItem('ailula-mode', 'hifi'); localStorage.setItem('ailula-night', '0'); });
+  await page.goto('/');
+  await expect(page.locator('.valley-label[data-zone="dog"]')).toHaveText('DouDou', { timeout: 30_000 });
+});

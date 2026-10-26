@@ -24,22 +24,31 @@ test('the tree panel has a route map of the places lula lived; a dot leads to it
 test.describe('footprint map page', () => {
   test.beforeEach(({ page }) => lofi(page));
 
-  test('shows lived places as a route and visited places as points, in three views', async ({ page }) => {
+  test('a dark map lights the cities lula has been to, with no route lines', async ({ page }) => {
+    await page.goto('/zh/map/');
+    const bg = await page.locator('.fmap-view').first().evaluate((el) => getComputedStyle(el).backgroundColor);
+    const [r, g, b] = (bg.match(/\d+/g) ?? []).map(Number);
+    expect(r + g + b).toBeLessThan(120);
+    await expect(page.locator('.fmap .route')).toHaveCount(0);
+    for (const name of ['广州市', '北京市']) await expect(page.locator(`[data-map-view="cn"] .lit[data-name="${name}"]`)).toHaveCount(1);
+    await expect(page.locator('[data-map-view="us"] .lit[data-name="Albany"]')).toHaveCount(1);
+  });
+
+  test('switches views and names a lit place on hover', async ({ page }) => {
     await page.goto('/zh/map/');
     await expect(page.locator('[data-view-pick="world"]')).toHaveAttribute('aria-pressed', 'true');
-    expect(await page.locator('[data-map-view="world"] .lived').count()).toBeGreaterThanOrEqual(4);
-    expect(await page.locator('[data-map-view="world"] .visited').count()).toBeGreaterThanOrEqual(2);
     await page.locator('[data-view-pick="cn"]').click();
     await expect(page.locator('[data-map-view="cn"]')).toBeVisible();
     await expect(page.locator('[data-map-view="world"]')).toBeHidden();
+    await page.locator('[data-map-view="cn"] .lit[data-name="广州市"]').hover();
+    await expect(page.locator('[data-map-tip]')).toContainText('广州市');
   });
 
-  test('the Xinjiang point opens a card that leads to the travel note', async ({ page }) => {
+  test('shows a few numbers about where lula has been', async ({ page }) => {
     await page.goto('/zh/map/');
-    await page.locator('[data-map-view="world"] [data-point="xinjiang"]').click();
-    const card = page.locator('[data-map-card]');
-    await expect(card).toBeVisible();
-    await expect(card.locator('a[href^="/zh/writing/014-"]')).toBeVisible();
+    const stats = page.locator('.fmap-stats');
+    await expect(stats).toContainText('国家和地区');
+    await expect(stats).toContainText('/ 361');
   });
 
   test.describe('phone', () => {
@@ -51,6 +60,17 @@ test.describe('footprint map page', () => {
   });
 });
 
+test('the footprint editor exists only on lula’s machine', async ({ page, request }) => {
+  await page.goto('/map/edit/');
+  await expect(page.locator('body')).toContainText('只在本地开发时可用');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  expect(await (await request.get('/sitemap-0.xml')).text()).not.toContain('/map/edit/');
+});
+
+test('the home page does not carry the footprint map', async ({ request }) => {
+  expect(await (await request.get('/zh/')).text()).not.toContain('data-place=');
+});
+
 test('the lookout opens the footprint map full screen; Esc closes it', async ({ page }) => {
   await hifi(page);
   await page.goto('/zh/');
@@ -60,6 +80,7 @@ test('the lookout opens the footprint map full screen; Esc closes it', async ({ 
   await open.click();
   const overlay = page.locator('.map-overlay');
   await expect(overlay).toBeVisible();
+  await expect(overlay.locator('.lit').first()).toBeAttached({ timeout: 10_000 });
   const box = (await overlay.boundingBox())!;
   expect(box.width).toBeGreaterThanOrEqual(page.viewportSize()!.width - 1);
   await page.keyboard.press('Escape');

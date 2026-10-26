@@ -28,10 +28,12 @@
     "@types/topojson-client": "^3.1.5",
     "d3-geo": "^3.1.1",
     "gray-matter": "^4.0.3",
+    "mapshaper": "^0.7.98",
     "sharp": "^0.35.5",
     "smol-toml": "^1.9.1",
     "topojson-client": "^3.1.0",
     "tsx": "^4.23.15",
+    "us-atlas": "^3.0.1",
     "vitest": "^4.1.12",
     "world-atlas": "^2.0.2",
     "yaml": "^2.9.1"

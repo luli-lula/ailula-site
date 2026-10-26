@@ -1,0 +1,12 @@
+{
+  "countries": [
+    "CHN",
+    "USA"
+  ],
+  "places": [
+    "CHN:CN011010",
+    "CHN:CN044040",
+    "USA:06043",
+    "USA:36001"
+  ]
+}

@@ -13,5 +13,5 @@ export const ZONES: Zone[] = [
   { id: 'garden', label: { en: 'Garden · Writing', zh: '花园 · 写作' }, anchor: [15, 3.6, 10], view: { position: [28, 11, 27], target: [15, 1.2, 10] } },
   { id: 'greenhouse', label: { en: 'Greenhouse · Plants', zh: '温室 · 植物' }, anchor: [24, 6.2, -8], view: { position: [38, 12, 8], target: [24, 2, -8] } },
   { id: 'lookout', label: { en: 'Lookout · Now', zh: '瞭望台 · 此刻' }, anchor: [10, 11, -19], view: { position: [26, 16, -32], target: [10, 7, -19] } },
-  { id: 'dog', label: { en: 'Woof', zh: '汪' }, anchor: [6.5, 2.2, 13], view: { position: [9.5, 5, 18.5], target: [6.5, 0.8, 13] } },
+  { id: 'dog', label: { en: 'DouDou', zh: 'DouDou' }, anchor: [6.5, 2.2, 13], view: { position: [9.5, 5, 18.5], target: [6.5, 0.8, 13] } },
 ];

@@ -1,0 +1,2532 @@
+{
+"source": "OCHA, China - Subnational Administrative Boundaries (HDX cod-ab-chn, 2020), CC BY-IGO",
+"units": [
+{
+"pcode": "CN011010",
+"en": "Beijing Municipality",
+"zh": "北京市",
+"pen": "Beijing Municipality",
+"pzh": "北京市"
+},
+{
+"pcode": "CN012010",
+"en": "Tianjin Municipality",
+"zh": "天津市",
+"pen": "Tianjin Municipality",
+"pzh": "天津市"
+},
+{
+"pcode": "CN013010",
+"en": "Baoding",
+"zh": "保定市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013020",
+"en": "Cangzhou",
+"zh": "沧州市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013030",
+"en": "Chengde",
+"zh": "承德市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013040",
+"en": "Handan",
+"zh": "邯郸市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013050",
+"en": "Hengshui",
+"zh": "衡水市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013060",
+"en": "Langfang",
+"zh": "廊坊市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013070",
+"en": "Qinhuangdao",
+"zh": "秦皇岛市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013080",
+"en": "Shijiazhuang",
+"zh": "石家庄市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013090",
+"en": "Tangshan",
+"zh": "唐山市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013100",
+"en": "Xingtai",
+"zh": "邢台市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN013110",
+"en": "Zhangjiakou",
+"zh": "张家口市",
+"pen": "Hebei Province",
+"pzh": "河北省"
+},
+{
+"pcode": "CN014010",
+"en": "Changzhi",
+"zh": "长治市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014020",
+"en": "Datong",
+"zh": "大同市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014030",
+"en": "Jincheng",
+"zh": "晋城市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014040",
+"en": "Jinzhong",
+"zh": "晋中市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014050",
+"en": "Lüliang",
+"zh": "吕梁市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014060",
+"en": "Linfen",
+"zh": "临汾市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014070",
+"en": "Shuozhou",
+"zh": "朔州市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014080",
+"en": "Taiyuan",
+"zh": "太原市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014090",
+"en": "Xinzhou",
+"zh": "忻州市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014100",
+"en": "Yangquan",
+"zh": "阳泉市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN014110",
+"en": "Yuncheng",
+"zh": "运城市",
+"pen": "Shanxi Province",
+"pzh": "山西省"
+},
+{
+"pcode": "CN015010",
+"en": "Alxa League",
+"zh": "阿拉善盟",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015020",
+"en": "Baotou",
+"zh": "包头市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015030",
+"en": "Bayannur",
+"zh": "巴彦淖尔市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015040",
+"en": "Chifeng",
+"zh": "赤峰市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015050",
+"en": "Hinggan League",
+"zh": "兴安盟",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015060",
+"en": "Hohhot",
+"zh": "呼和浩特市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015070",
+"en": "Hulunbuir",
+"zh": "呼伦贝尔市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015080",
+"en": "Ordos",
+"zh": "鄂尔多斯市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015090",
+"en": "Tongliao",
+"zh": "通辽市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015100",
+"en": "Ulanqab",
+"zh": "乌兰察布市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015110",
+"en": "Wuhai",
+"zh": "乌海市",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN015120",
+"en": "Xilingol League",
+"zh": "锡林郭勒盟",
+"pen": "Inner Mongolia Autonomous Region",
+"pzh": "内蒙古自治区"
+},
+{
+"pcode": "CN021010",
+"en": "Anshan",
+"zh": "鞍山市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021020",
+"en": "Benxi",
+"zh": "本溪市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021030",
+"en": "Chaoyang",
+"zh": "朝阳市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021040",
+"en": "Dalian",
+"zh": "大连市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021050",
+"en": "Dandong",
+"zh": "丹东市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021060",
+"en": "Fushun",
+"zh": "抚顺市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021070",
+"en": "Fuxin",
+"zh": "阜新市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021080",
+"en": "Huludao",
+"zh": "葫芦岛市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021090",
+"en": "Jinzhou",
+"zh": "锦州市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021100",
+"en": "Liaoyang",
+"zh": "辽阳市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021110",
+"en": "Panjin",
+"zh": "盘锦市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021120",
+"en": "Shenyang",
+"zh": "沈阳市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021130",
+"en": "Tieling",
+"zh": "铁岭市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN021140",
+"en": "Yingkou",
+"zh": "营口市",
+"pen": "Liaoning Province",
+"pzh": "辽宁省"
+},
+{
+"pcode": "CN022010",
+"en": "Baicheng",
+"zh": "白城市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022020",
+"en": "Baishan",
+"zh": "白山市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022030",
+"en": "Changchun",
+"zh": "长春市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022040",
+"en": "Jilin",
+"zh": "吉林市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022050",
+"en": "Liaoyuan",
+"zh": "辽源市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022060",
+"en": "Siping",
+"zh": "四平市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022070",
+"en": "Songyuan",
+"zh": "松原市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022080",
+"en": "Tonghua",
+"zh": "通化市",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN022090",
+"en": "Yanbian Korean Autonomous Prefecture",
+"zh": "延边朝鲜族自治州",
+"pen": "Jilin Province",
+"pzh": "吉林省"
+},
+{
+"pcode": "CN023010",
+"en": "Daqing",
+"zh": "大庆市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023020",
+"en": "Daxinganling Prefecture",
+"zh": "大兴安岭地区[4]",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023030",
+"en": "Harbin",
+"zh": "哈尔滨市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023040",
+"en": "Hegang",
+"zh": "鹤岗市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023050",
+"en": "Heihe",
+"zh": "黑河市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023060",
+"en": "Jiamusi",
+"zh": "佳木斯市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023070",
+"en": "Jixi",
+"zh": "鸡西市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023080",
+"en": "Mudanjiang",
+"zh": "牡丹江市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023090",
+"en": "Qiqihar",
+"zh": "齐齐哈尔市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023100",
+"en": "Qitaihe",
+"zh": "七台河市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023110",
+"en": "Shuangyashan",
+"zh": "双鸭山市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023120",
+"en": "Suihua",
+"zh": "绥化市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN023130",
+"en": "Yichun",
+"zh": "伊春市",
+"pen": "Heilongjiang Province",
+"pzh": "黑龙江省"
+},
+{
+"pcode": "CN031010",
+"en": "Shanghai Municipality",
+"zh": "上海市",
+"pen": "Shanghai Municipality",
+"pzh": "上海市"
+},
+{
+"pcode": "CN032010",
+"en": "Changzhou",
+"zh": "常州市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032020",
+"en": "Huai'an",
+"zh": "淮安市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032030",
+"en": "Lianyungang",
+"zh": "连云港市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032040",
+"en": "Nanjing",
+"zh": "南京市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032050",
+"en": "Nantong",
+"zh": "南通市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032060",
+"en": "Suqian",
+"zh": "宿迁市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032070",
+"en": "Suzhou",
+"zh": "苏州市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032080",
+"en": "Taizhou",
+"zh": "泰州市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032090",
+"en": "Wuxi",
+"zh": "无锡市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032100",
+"en": "Xuzhou",
+"zh": "徐州市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032110",
+"en": "Yancheng",
+"zh": "盐城市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032120",
+"en": "Yangzhou",
+"zh": "扬州市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN032130",
+"en": "Zhenjiang",
+"zh": "镇江市",
+"pen": "Jiangsu Province",
+"pzh": "江苏省"
+},
+{
+"pcode": "CN033010",
+"en": "Hangzhou",
+"zh": "杭州市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033020",
+"en": "Huzhou",
+"zh": "湖州市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033030",
+"en": "Jiaxing",
+"zh": "嘉兴市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033040",
+"en": "Jinhua",
+"zh": "金华市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033050",
+"en": "Lishui",
+"zh": "丽水市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033060",
+"en": "Ningbo",
+"zh": "宁波市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033070",
+"en": "Quzhou",
+"zh": "衢州市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033080",
+"en": "Shaoxing",
+"zh": "绍兴市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033090",
+"en": "Taizhou",
+"zh": "台州市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033100",
+"en": "Wenzhou",
+"zh": "温州市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN033110",
+"en": "Zhoushan",
+"zh": "舟山市",
+"pen": "Zhejiang Province",
+"pzh": "浙江省"
+},
+{
+"pcode": "CN034010",
+"en": "Anqing",
+"zh": "安庆市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034020",
+"en": "Bengbu",
+"zh": "蚌埠市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034030",
+"en": "Bozhou",
+"zh": "亳州市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034040",
+"en": "Chizhou",
+"zh": "池州市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034050",
+"en": "Chuzhou",
+"zh": "滁州市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034060",
+"en": "Fuyang",
+"zh": "阜阳市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034070",
+"en": "Hefei",
+"zh": "合肥市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034080",
+"en": "Huaibei",
+"zh": "淮北市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034090",
+"en": "Huainan",
+"zh": "淮南市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034100",
+"en": "Huangshan",
+"zh": "黄山市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034110",
+"en": "Lu'an",
+"zh": "六安市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034120",
+"en": "Ma'anshan",
+"zh": "马鞍山市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034130",
+"en": "Suzhou",
+"zh": "宿州市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034140",
+"en": "Tongling",
+"zh": "铜陵市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034150",
+"en": "Wuhu",
+"zh": "芜湖市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN034160",
+"en": "Xuancheng",
+"zh": "宣城市",
+"pen": "Anhui Province",
+"pzh": "安徽省"
+},
+{
+"pcode": "CN035010",
+"en": "Fuzhou",
+"zh": "福州市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035020",
+"en": "Longyan",
+"zh": "龙岩市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035030",
+"en": "Nanping",
+"zh": "南平市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035040",
+"en": "Ningde",
+"zh": "宁德市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035050",
+"en": "Putian",
+"zh": "莆田市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035060",
+"en": "Quanzhou",
+"zh": "泉州市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035070",
+"en": "Sanming",
+"zh": "三明市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035080",
+"en": "Xiamen",
+"zh": "厦门市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN035090",
+"en": "Zhangzhou",
+"zh": "漳州市",
+"pen": "Fujian Province",
+"pzh": "福建省"
+},
+{
+"pcode": "CN036010",
+"en": "Fuzhou",
+"zh": "抚州市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036020",
+"en": "Ganzhou",
+"zh": "赣州市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036030",
+"en": "Ji'an",
+"zh": "吉安市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036040",
+"en": "Jingdezhen",
+"zh": "景德镇市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036050",
+"en": "Jiujiang",
+"zh": "九江市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036060",
+"en": "Nanchang",
+"zh": "南昌市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036070",
+"en": "Pingxiang",
+"zh": "萍乡市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036080",
+"en": "Shangrao",
+"zh": "上饶市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036090",
+"en": "Xinyu",
+"zh": "新余市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036100",
+"en": "Yichun",
+"zh": "宜春市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN036110",
+"en": "Yingtan",
+"zh": "鹰潭市",
+"pen": "Jiangxi Province",
+"pzh": "江西省"
+},
+{
+"pcode": "CN037010",
+"en": "Binzhou",
+"zh": "滨州市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037020",
+"en": "Dezhou",
+"zh": "德州市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037030",
+"en": "Dongying",
+"zh": "东营市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037040",
+"en": "Heze",
+"zh": "菏泽市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037050",
+"en": "Jinan",
+"zh": "济南市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037060",
+"en": "Jining",
+"zh": "济宁市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037070",
+"en": "Laiwu",
+"zh": "莱芜市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037080",
+"en": "Liaocheng",
+"zh": "聊城市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037090",
+"en": "Linyi",
+"zh": "临沂市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037100",
+"en": "Qingdao",
+"zh": "青岛市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037110",
+"en": "Rizhao",
+"zh": "日照市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037120",
+"en": "Tai'an",
+"zh": "泰安市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037130",
+"en": "Weifang",
+"zh": "潍坊市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037140",
+"en": "Weihai",
+"zh": "威海市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037150",
+"en": "Yantai",
+"zh": "烟台市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037160",
+"en": "Zaozhuang",
+"zh": "枣庄市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN037170",
+"en": "Zibo",
+"zh": "淄博市",
+"pen": "Shandong Province",
+"pzh": "山东省"
+},
+{
+"pcode": "CN041010",
+"en": "Anyang",
+"zh": "安阳市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041020",
+"en": "Hebi",
+"zh": "鹤壁市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041030",
+"en": "Jiaozuo",
+"zh": "焦作市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041040",
+"en": "Jiyuan",
+"zh": "济源市〔1〕",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041050",
+"en": "Kaifeng",
+"zh": "开封市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041060",
+"en": "Luohe",
+"zh": "漯河市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041070",
+"en": "Luoyang",
+"zh": "洛阳市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041080",
+"en": "Nanyang",
+"zh": "南阳市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041090",
+"en": "Pingdingshan",
+"zh": "平顶山市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041100",
+"en": "Puyang",
+"zh": "濮阳市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041110",
+"en": "Sanmenxia",
+"zh": "三门峡市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041120",
+"en": "Shangqiu",
+"zh": "商丘市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041130",
+"en": "Xinxiang",
+"zh": "新乡市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041140",
+"en": "Xinyang",
+"zh": "信阳市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041150",
+"en": "Xuchang",
+"zh": "许昌市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041160",
+"en": "Zhengzhou",
+"zh": "郑州市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041170",
+"en": "Zhoukou",
+"zh": "周口市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN041180",
+"en": "Zhumadian",
+"zh": "驻马店市",
+"pen": "Henan Province",
+"pzh": "河南省"
+},
+{
+"pcode": "CN042010",
+"en": "Enshi Tujia and Miao Autonomous Prefecture",
+"zh": "恩施土家族苗族自治州",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042020",
+"en": "Ezhou",
+"zh": "鄂州市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042030",
+"en": "Huanggang",
+"zh": "黄冈市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042040",
+"en": "Huangshi",
+"zh": "黄石市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042050",
+"en": "Jingmen",
+"zh": "荆门市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042060",
+"en": "Jingzhou",
+"zh": "荆州市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042070",
+"en": "Qianjiang",
+"zh": "潜江市[1]",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042080",
+"en": "Shennongjia Forestry District",
+"zh": "神农架林区[3]",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042090",
+"en": "Shiyan",
+"zh": "十堰市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042100",
+"en": "Suizhou",
+"zh": "随州市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042110",
+"en": "Tianmen",
+"zh": "天门市[1]",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042120",
+"en": "Wuhan",
+"zh": "武汉市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042130",
+"en": "Xiangyang",
+"zh": "襄阳市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042140",
+"en": "Xianning",
+"zh": "咸宁市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042150",
+"en": "Xiantao",
+"zh": "仙桃市[1]",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042160",
+"en": "Xiaogan",
+"zh": "孝感市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN042170",
+"en": "Yichang",
+"zh": "宜昌市",
+"pen": "Hubei Province",
+"pzh": "湖北省"
+},
+{
+"pcode": "CN043010",
+"en": "Changde",
+"zh": "常德市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043020",
+"en": "Changsha",
+"zh": "长沙市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043030",
+"en": "Chenzhou",
+"zh": "郴州市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043040",
+"en": "Hengyang",
+"zh": "衡阳市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043050",
+"en": "Huaihua",
+"zh": "怀化市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043060",
+"en": "Loudi",
+"zh": "娄底市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043070",
+"en": "Shaoyang",
+"zh": "邵阳市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043080",
+"en": "Xiangtan",
+"zh": "湘潭市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043090",
+"en": "Xiangxi Tujia and Miao Autonomous Prefecture",
+"zh": "湘西土家族苗族自治州",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043100",
+"en": "Yiyang",
+"zh": "益阳市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043110",
+"en": "Yongzhou",
+"zh": "永州市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043120",
+"en": "Yueyang",
+"zh": "岳阳市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043130",
+"en": "Zhangjiajie",
+"zh": "张家界市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN043140",
+"en": "Zhuzhou",
+"zh": "株州市",
+"pen": "Hunan Province",
+"pzh": "湖南省"
+},
+{
+"pcode": "CN044010",
+"en": "Chaozhou",
+"zh": "潮州市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044020",
+"en": "Dongguan",
+"zh": "东莞市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044030",
+"en": "Foshan",
+"zh": "佛山市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044040",
+"en": "Guangzhou",
+"zh": "广州市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044050",
+"en": "Heyuan",
+"zh": "河源市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044060",
+"en": "Huizhou",
+"zh": "惠州市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044070",
+"en": "Jiangmen",
+"zh": "江门市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044080",
+"en": "Jieyang",
+"zh": "揭阳市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044090",
+"en": "Maoming",
+"zh": "茂名市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044100",
+"en": "Meizhou",
+"zh": "梅州市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044110",
+"en": "Qingyuan",
+"zh": "清远市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044120",
+"en": "Shantou",
+"zh": "汕头市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044130",
+"en": "Shanwei",
+"zh": "汕尾市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044140",
+"en": "Shaoguan",
+"zh": "韶关市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044150",
+"en": "Shenzhen",
+"zh": "深圳市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044160",
+"en": "Yangjiang",
+"zh": "阳江市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044170",
+"en": "Yunfu",
+"zh": "云浮市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044180",
+"en": "Zhanjiang",
+"zh": "湛江市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044190",
+"en": "Zhaoqing",
+"zh": "肇庆市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044200",
+"en": "Zhongshan",
+"zh": "中山市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN044210",
+"en": "Zhuhai",
+"zh": "珠海市",
+"pen": "Guangdong Province",
+"pzh": "广东省"
+},
+{
+"pcode": "CN045010",
+"en": "Baise",
+"zh": "百色市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045020",
+"en": "Beihai",
+"zh": "北海市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045030",
+"en": "Chongzuo",
+"zh": "崇左市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045040",
+"en": "Fangchenggang",
+"zh": "防城港市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045050",
+"en": "Guigang",
+"zh": "贵港市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045060",
+"en": "Guilin",
+"zh": "桂林市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045070",
+"en": "Hechi",
+"zh": "河池市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045080",
+"en": "Hezhou",
+"zh": "贺州市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045090",
+"en": "Laibin",
+"zh": "来宾市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045100",
+"en": "Liuzhou",
+"zh": "柳州市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045110",
+"en": "NanNing",
+"zh": "南宁市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045120",
+"en": "Qinzhou",
+"zh": "钦州市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045130",
+"en": "Wuzhou",
+"zh": "梧州市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN045140",
+"en": "Yulin",
+"zh": "玉林市",
+"pen": "Guangxi Zhuang Autonomous Region",
+"pzh": "广西壮族自治区"
+},
+{
+"pcode": "CN046010",
+"en": "Baisha Li Autonomous County",
+"zh": "白沙黎族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046020",
+"en": "Baoting Li and Miao Autonomous County",
+"zh": "保亭黎族苗族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046030",
+"en": "Changjiang Li Autonomous County",
+"zh": "昌江黎族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046040",
+"en": "Chengmai County",
+"zh": "澄迈县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046050",
+"en": "Danzhou",
+"zh": "儋州市",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046060",
+"en": "Ding'an County",
+"zh": "定安县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046070",
+"en": "Dongfang City",
+"zh": "东方市[1]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046080",
+"en": "Haikou",
+"zh": "海口市",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046090",
+"en": "Ledong Li Autonomous County",
+"zh": "乐东黎族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046100",
+"en": "Lingao County",
+"zh": "临高县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046110",
+"en": "Lingshui Li Autonomous County",
+"zh": "陵水黎族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046120",
+"en": "Qionghai City",
+"zh": "琼海市[1]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046130",
+"en": "Qiongzhong Li and Miao Autonomous County",
+"zh": "琼中黎族苗族自治县[2]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046140",
+"en": "Sansha",
+"zh": "三沙市",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046150",
+"en": "Sanya",
+"zh": "三亚市",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046160",
+"en": "Tunchang County",
+"zh": "屯昌县[1]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046170",
+"en": "Wanning City",
+"zh": "万宁市[1]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN046180",
+"en": "Wuzhishan City",
+"zh": "五指山市[1]",
+"pen": "Hainan Province",
+"pzh": "海南省"
+},
+{
+"pcode": "CN050010",
+"en": "Chongqing Municipality",
+"zh": "重庆市",
+"pen": "Chongqing Municipality",
+"pzh": "重庆市"
+},
+{
+"pcode": "CN051010",
+"en": "Bazhong",
+"zh": "巴中市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051020",
+"en": "Chengdu",
+"zh": "成都市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051030",
+"en": "Dazhou",
+"zh": "达州市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051040",
+"en": "Deyang",
+"zh": "德阳市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051050",
+"en": "Garzê Tibetan Autonomous Prefecture",
+"zh": "甘孜藏族自治州",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051060",
+"en": "Guang'an",
+"zh": "广安市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051070",
+"en": "Guangyuan",
+"zh": "广元市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051080",
+"en": "Leshan",
+"zh": "乐山市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051090",
+"en": "Liangshan Yi Autonomous Prefecture",
+"zh": "凉山彝族自治州",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051100",
+"en": "Luzhou",
+"zh": "泸州市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051110",
+"en": "Meishan",
+"zh": "眉山市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051120",
+"en": "Mianyang",
+"zh": "绵阳市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051130",
+"en": "Nanchong",
+"zh": "南充市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051140",
+"en": "Neijiang",
+"zh": "内江市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051150",
+"en": "Ngawa Tibetan and Qiang Autonomous Prefecture",
+"zh": "阿坝藏族羌族自治州",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051160",
+"en": "Panzhihua",
+"zh": "攀枝花市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051170",
+"en": "Suining",
+"zh": "遂宁市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051180",
+"en": "Ya'an",
+"zh": "雅安市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051190",
+"en": "Yibin",
+"zh": "宜宾市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051200",
+"en": "Zigong",
+"zh": "自贡市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN051210",
+"en": "Ziyang",
+"zh": "资阳市",
+"pen": "Sichuan Province",
+"pzh": "四川省"
+},
+{
+"pcode": "CN052010",
+"en": "Anshun",
+"zh": "安顺市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052020",
+"en": "Bijie",
+"zh": "毕节市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052030",
+"en": "Guiyang",
+"zh": "贵阳市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052040",
+"en": "Liupanshui",
+"zh": "六盘水市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052050",
+"en": "Qiandongnan Miao and Dong Autonomous Prefecture",
+"zh": "黔东南苗族侗族自治州",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052060",
+"en": "Qiannan Buyi and Miao Autonomous Prefecture",
+"zh": "黔南布依族苗族自治州",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052070",
+"en": "Qianxinan Buyi and Miao Autonomous Prefecture",
+"zh": "黔西南布依族苗族自治州",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052080",
+"en": "Tongren",
+"zh": "铜仁市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN052090",
+"en": "Zunyi",
+"zh": "遵义市",
+"pen": "Guizhou Province",
+"pzh": "贵州省"
+},
+{
+"pcode": "CN053010",
+"en": "Baoshan",
+"zh": "保山市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053020",
+"en": "Chuxiong Yi Autonomous Prefecture",
+"zh": "楚雄彝族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053030",
+"en": "Dêqên Tibetan Autonomous Prefecture",
+"zh": "迪庆藏族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053040",
+"en": "Dali Bai Autonomous Prefecture",
+"zh": "大理白族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053050",
+"en": "Dehong Dai and Jingpo Autonomous Prefecture",
+"zh": "德宏傣族景颇族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053060",
+"en": "Honghe Hani and Yi Autonomous Prefecture",
+"zh": "红河哈尼族彝族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053070",
+"en": "Kunming",
+"zh": "昆明市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053080",
+"en": "Lijiang",
+"zh": "丽江市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053090",
+"en": "Lincang",
+"zh": "临沧市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053100",
+"en": "Nujiang Lisu Autonomous Prefecture",
+"zh": "怒江傈僳族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053110",
+"en": "Pu'er",
+"zh": "普洱市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053120",
+"en": "Qujing",
+"zh": "曲靖市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053130",
+"en": "Wenshan Zhuang and Miao Autonomous Prefecture",
+"zh": "文山壮族苗族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053140",
+"en": "Xishuangbanna Dai Autonomous Prefecture",
+"zh": "西双版纳傣族自治州",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053150",
+"en": "Yuxi",
+"zh": "玉溪市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN053160",
+"en": "Zhaotong",
+"zh": "昭通市",
+"pen": "Yunnan Province",
+"pzh": "云南省"
+},
+{
+"pcode": "CN054010",
+"en": "Lhasa",
+"zh": "拉萨市",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054020",
+"en": "Lhoka",
+"zh": "山南市",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054030",
+"en": "Nagqu Prefecture",
+"zh": "那曲地区",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054040",
+"en": "Ngari Prefecture",
+"zh": "阿里地区",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054050",
+"en": "Nyingchi",
+"zh": "林芝市",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054060",
+"en": "Qamdo",
+"zh": "昌都市",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN054070",
+"en": "Xigazê",
+"zh": "日喀则市",
+"pen": "Tibet Autonomous Region",
+"pzh": "西藏自治区"
+},
+{
+"pcode": "CN061010",
+"en": "Ankang",
+"zh": "安康市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061020",
+"en": "Baoji",
+"zh": "宝鸡市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061030",
+"en": "Hanzhong",
+"zh": "汉中市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061040",
+"en": "Shangluo",
+"zh": "商洛市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061050",
+"en": "Tongchuan",
+"zh": "铜川市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061060",
+"en": "Weinan",
+"zh": "渭南市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061070",
+"en": "Xi'an",
+"zh": "西安市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061080",
+"en": "Xianyang",
+"zh": "咸阳市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061090",
+"en": "Yan'an",
+"zh": "延安市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN061100",
+"en": "Yulin",
+"zh": "榆林市",
+"pen": "Shaanxi Province",
+"pzh": "陕西省"
+},
+{
+"pcode": "CN062010",
+"en": "Baiyin",
+"zh": "白银市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062020",
+"en": "Dingxi",
+"zh": "定西市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062030",
+"en": "Gannan Tibetan Autonomous Prefecture",
+"zh": "甘南藏族自治州",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062040",
+"en": "Jiayuguan",
+"zh": "嘉峪关市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062050",
+"en": "Jinchang",
+"zh": "金昌市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062060",
+"en": "Jiuquan",
+"zh": "酒泉市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062070",
+"en": "Lanzhou",
+"zh": "兰州市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062080",
+"en": "Linxia Hui Autonomous Prefecture",
+"zh": "临夏回族自治州",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062090",
+"en": "Longnan",
+"zh": "陇南市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062100",
+"en": "Pingliang",
+"zh": "平凉市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062110",
+"en": "Qingyang",
+"zh": "庆阳市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062120",
+"en": "Tianshui",
+"zh": "天水市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062130",
+"en": "Wuwei",
+"zh": "武威市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN062140",
+"en": "Zhangye",
+"zh": "张掖市",
+"pen": "Gansu province",
+"pzh": "甘肃省"
+},
+{
+"pcode": "CN063010",
+"en": "Golog Tibetan Autonomous Prefecture",
+"zh": "果洛藏族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063020",
+"en": "Haibei Tibetan Autonomous Prefecture",
+"zh": "海北藏族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063030",
+"en": "Haidong",
+"zh": "海东市",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063040",
+"en": "Hainan Tibetan Autonomous Prefecture",
+"zh": "海南藏族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063050",
+"en": "Haixi Mongolian Autonomous Prefecture",
+"zh": "海西蒙古族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063060",
+"en": "Huangnan Tibetan Autonomous Prefecture",
+"zh": "黄南藏族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063070",
+"en": "Xining",
+"zh": "西宁市",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN063080",
+"en": "Yushu Tibetan Autonomous Prefecture",
+"zh": "玉树藏族自治州",
+"pen": "Qinghai Province",
+"pzh": "青海省"
+},
+{
+"pcode": "CN064010",
+"en": "Guyuan",
+"zh": "固原市",
+"pen": "Ningxia Hui Autonomous Region",
+"pzh": "宁夏回族自治区"
+},
+{
+"pcode": "CN064020",
+"en": "Shizuishan",
+"zh": "石嘴山市",
+"pen": "Ningxia Hui Autonomous Region",
+"pzh": "宁夏回族自治区"
+},
+{
+"pcode": "CN064030",
+"en": "Wuzhong",
+"zh": "吴忠市",
+"pen": "Ningxia Hui Autonomous Region",
+"pzh": "宁夏回族自治区"
+},
+{
+"pcode": "CN064040",
+"en": "Yinchuan",
+"zh": "银川市",
+"pen": "Ningxia Hui Autonomous Region",
+"pzh": "宁夏回族自治区"
+},
+{
+"pcode": "CN064050",
+"en": "Zhongwei",
+"zh": "中卫市",
+"pen": "Ningxia Hui Autonomous Region",
+"pzh": "宁夏回族自治区"
+},
+{
+"pcode": "CN065010",
+"en": "Ürümqi",
+"zh": "乌鲁木齐市",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065020",
+"en": "Aksu Prefecture",
+"zh": "阿克苏地区",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065030",
+"en": "Altay Prefecture",
+"zh": "阿勒泰地区",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065040",
+"en": "Bayingolin Mongolia Autonomous Prefecture",
+"zh": "巴音郭楞蒙古自治州",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065050",
+"en": "Bortala Mongol Autonomous Prefecture",
+"zh": "博尔塔拉蒙古自治州",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065060",
+"en": "Changji Hui Autonomous Prefecture",
+"zh": "昌吉回族自治州",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065070",
+"en": "Hami",
+"zh": "哈密市",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065080",
+"en": "Hotan Prefecture",
+"zh": "和田地区",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065090",
+"en": "Ili Kazak Autonomous Prefecture",
+"zh": "伊犁哈萨克自治州[5]",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065100",
+"en": "Karamay",
+"zh": "克拉玛依市",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065110",
+"en": "Kashi Prefecture",
+"zh": "喀什地区",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065120",
+"en": "Kizilsu Kirgiz Autonomous Prefecture",
+"zh": "克孜勒苏柯尔克孜自治州",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065130",
+"en": "Shihezi",
+"zh": "石河子市[1]",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065140",
+"en": "Tarbaĝatay Prefecture",
+"zh": "塔城地区",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN065150",
+"en": "Turpan",
+"zh": "吐鲁番市",
+"pen": "Xinjiang Uygur Autonomous Region",
+"pzh": "新疆维吾尔自治区"
+},
+{
+"pcode": "CN071010",
+"en": "Taiwan province",
+"zh": "台湾省",
+"pen": "Taiwan Province",
+"pzh": "台湾省"
+},
+{
+"pcode": "CN081010",
+"en": "Hong Kong Special Administrative Region",
+"zh": "香港",
+"pen": "Hong Kong Special Administrative Region",
+"pzh": "香港特别行政区"
+},
+{
+"pcode": "CN082010",
+"en": "Macao Special Administrative Region",
+"zh": "澳门",
+"pen": "Macao Special Administrative Region",
+"pzh": "澳门特别行政区"
+}
+]
+}

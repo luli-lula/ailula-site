@@ -61,10 +61,10 @@ test('the English feed lists only posts readable in English', async ({ request }
   for (const t of titles) expect(t, t).not.toMatch(/[一-鿿]/);
 });
 
-test('the map credits only the data it uses', async ({ page }) => {
+test('the map credits the data it uses', async ({ page }) => {
   await lofi(page);
   await page.goto('/map/');
-  await expect(page.locator('.fmap-credit')).not.toContainText('Census');
+  for (const source of ['Natural Earth', 'OCHA', 'Census']) await expect(page.locator('.fmap-credit')).toContainText(source);
 });
 
 test.describe('phone', () => {
@@ -79,10 +79,10 @@ test.describe('phone', () => {
     expect((await page.locator('main .route-map [data-chapter="beijing"] circle').boundingBox())!.width).toBeGreaterThanOrEqual(14);
   });
 
-  test('footprint map dots are big enough to tap', async ({ page }) => {
+  test('the footprint map keeps a usable size and scrolls inside itself', async ({ page }) => {
     await lofi(page);
     await page.goto('/zh/map/');
-    expect((await page.locator('[data-map-view="world"] [data-point="xinjiang"] circle').boundingBox())!.width).toBeGreaterThanOrEqual(14);
+    expect((await page.locator('[data-map-view="world"]').boundingBox())!.width).toBeGreaterThanOrEqual(700);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   });
 });

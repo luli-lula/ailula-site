@@ -1,82 +1,54 @@
 ---
-// Footprint map: the places lula lived (a route, oldest to newest) and the places she has been (points;
-// a filled point has a travel note). Three fixed views: world, China, US. Drawn at build time.
-import { projector, SIZE, VIEWS, type LonLat, type ViewId } from '../lib/geo';
-import { chapters } from '../data/places';
-import { visited } from '../data/visited';
-import { localized } from '../lib/content';
-import { localizedPath, type Lang } from '../lib/i18n';
+// Footprint map: a dark world. Countries are outlines; countries lula has been to are divided into
+// city-level units, and the units she has been to are lit. Three fixed views (world, China, US) and a few
+// numbers. Drawn at build time from src/lib/footprint.ts; the unlit base is a static file per view.
+import { litShapes, SIZE, stats, VIEWS, type ViewId } from '../lib/footprint';
+import { visits } from '../lib/visits';
+import type { Lang } from '../lib/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const zh = lang === 'zh';
-
-type Point = { id: string; kind: 'lived' | 'visited' | 'note'; at: LonLat; card: { name: string; when?: string; text?: string; href?: string; link?: string } };
-const lived: Point[] = chapters.filter((c) => c.coords && c.city).reverse().map((c) => ({
-  id: c.id, kind: 'lived', at: c.coords!, card: { name: c.city![lang], when: c.years[lang], text: (c.life ?? c.work)?.[lang] },
-}));
-const notes: Point[] = (await localized('posts', 'zh')).flatMap(({ slug, entry }) =>
-  entry.data.places.map((p) => ({
-    id: p.id, kind: 'note' as const, at: [p.lon, p.lat] as LonLat,
-    card: { name: p.name, when: entry.data.date.toISOString().slice(0, 7), href: localizedPath(`/writing/${slug}/`, 'zh'), link: zh ? `读游记《${entry.data.title}》→` : 'Read the travel note (in Chinese) →' },
-  })),
-);
-const visits: Point[] = visited.map((v) => ({ id: v.id, kind: 'visited', at: v.coords, card: { name: v.name[lang], when: v.when, text: v.note?.[lang] } }));
-const views = VIEWS.map((id) => {
-  const project = projector(id);
-  const v = { id, width: SIZE[id][0], height: SIZE[id][1] };
-  const place = (ps: Point[]) => ps.map((p) => ({ ...p, xy: project(p.at) })).filter((p) => p.xy);
-  const route = place(lived);
-  return { v, route, others: place([...visits, ...notes]), line: route.map((p, i) => `${i ? 'L' : 'M'}${p.xy![0]},${p.xy![1]}`).join('') };
-});
-// Short place names beside the points on the regional views (the world view stays clean).
-const short = (name: string) => name.split(/（| \(| · /)[0];
-const nameWidth = (p: { card: { name: string } }) => [...short(p.card.name)].reduce((n, ch) => n + (ch.charCodeAt(0) > 255 ? 15 : 8.5), 0);
-const flip = (p: { xy: [number, number] | null; card: { name: string } }, w: number) => p.xy![0] + 14 + nameWidth(p) > w - 6;
-// An invisible target over the dot and its name, so either can be clicked.
-const hit = (p: { xy: [number, number] | null; card: { name: string } }, w: number, labelled: boolean) => {
-  const span = labelled ? 14 + nameWidth(p) : 9;
-  return { x: flip(p, w) && labelled ? p.xy![0] - span : p.xy![0] - 10, y: p.xy![1] - 11, width: span + 10, height: 22 };
-};
+const v = visits();
+const s = stats(v);
+const pct = (a: number, b: number) => `${Math.round((a / b) * 1000) / 10}%`;
 const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: '美国' } : { world: 'World', cn: 'China', us: 'US' };
+const views = VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], lit: litShapes(id, lang, v) }));
 ---
 <div class="fmap" data-fmap>
-  <div class="fmap-bar">
-    <div class="fmap-views" role="group" aria-label={zh ? '视图' : 'View'}>
-      {views.map(({ v }, i) => <button type="button" data-view-pick={v.id} aria-pressed={i === 0 ? 'true' : 'false'}>{LABEL[v.id]}</button>)}
-    </div>
-    <p class="fmap-legend"><span class="key lived"></span>{zh ? '住过' : 'Lived'} <span class="key note"></span>{zh ? '写过游记' : 'Travel note'} <span class="key visited"></span>{zh ? '去过' : 'Visited'}</p>
+  <dl class="fmap-stats">
+    <div><dt>{zh ? '国家和地区' : 'Countries'}</dt><dd>{s.countries}<small> / {s.countriesTotal} · {pct(s.countries, s.countriesTotal)}</small></dd></div>
+    <div><dt>{zh ? '中国地级市' : 'Chinese cities'}</dt><dd>{s.chn.cities}<small> / {s.chn.citiesTotal} · {pct(s.chn.cities, s.chn.citiesTotal)}</small></dd></div>
+    <div><dt>{zh ? '中国省份' : 'Chinese provinces'}</dt><dd>{s.chn.provinces}<small> / {s.chn.provincesTotal}</small></dd></div>
+    <div><dt>{zh ? '美国的县' : 'US counties'}</dt><dd>{s.usa.counties}<small> · {s.usa.states} {zh ? '个州' : s.usa.states === 1 ? 'state' : 'states'}</small></dd></div>
+  </dl>
+  <div class="fmap-views" role="group" aria-label={zh ? '视图' : 'View'}>
+    {views.map((v, i) => <button type="button" data-view-pick={v.id} aria-pressed={i === 0 ? 'true' : 'false'}>{LABEL[v.id]}</button>)}
   </div>
   <div class="fmap-scroll">
-  {views.map(({ v, route, others, line }, i) => (
-    <svg class="fmap-view" data-map-view={v.id} viewBox={`0 0 ${v.width} ${v.height}`} role="img" aria-label={`${LABEL[v.id]}`} hidden={i !== 0}>
-      <image href={`/maps/${v.id}.svg`} width={v.width} height={v.height} />
-      {line && <path class="route" d={line} />}
-      {others.map((p) => (
-        <g class={`pt ${p.kind === 'lived' ? 'lived' : 'visited'} ${p.kind}`} data-point={p.id} data-card={JSON.stringify(p.card)} role="button" tabindex="0" aria-label={p.card.name}>
-          <rect class="hit" {...hit(p, v.width, v.id !== 'world')} />
-          <circle cx={p.xy![0]} cy={p.xy![1]} r="7" />
-          {v.id !== 'world' && <text class={`name${flip(p, v.width) ? ' end' : ''}`} x={p.xy![0] + (flip(p, v.width) ? -13 : 13)} y={p.xy![1] + 5}>{short(p.card.name)}</text>}
+    {views.map((v, i) => (
+      <svg class="fmap-view" data-map-view={v.id} viewBox={`0 0 ${v.w} ${v.h}`} role="img" aria-label={LABEL[v.id]} hidden={i !== 0}>
+        <defs>
+          <filter id={`glow-${v.id}`} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.4" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <image href={`/maps/footprint-${v.id}.svg`} width={v.w} height={v.h} />
+        <g filter={`url(#glow-${v.id})`}>
+          {v.lit.map((p) => (
+            <path class={p.whole ? 'lit whole' : 'lit'} d={p.d} data-place={p.id} data-name={p.name} tabindex="0" role="img" aria-label={p.parent ? `${p.name}, ${p.parent}` : p.name}>
+              <title>{p.parent ? `${p.name} · ${p.parent}` : p.name}</title>
+            </path>
+          ))}
         </g>
-      ))}
-      {route.map((p, n) => (
-        <g class="pt lived" data-point={p.id} data-card={JSON.stringify(p.card)} role="button" tabindex="0" aria-label={p.card.name}>
-          <rect class="hit" {...hit(p, v.width, v.id !== 'world')} />
-          <circle cx={p.xy![0]} cy={p.xy![1]} r="8" />
-          <text x={p.xy![0]} y={p.xy![1] + 3.5}>{n + 1}</text>
-          {v.id !== 'world' && <text class={`name${flip(p, v.width) ? ' end' : ''}`} x={p.xy![0] + (flip(p, v.width) ? -14 : 14)} y={p.xy![1] + 5}>{short(p.card.name)}</text>}
-        </g>
-      ))}
-    </svg>
-  ))}
+      </svg>
+    ))}
   </div>
-  <div class="fmap-card" data-map-card hidden>
-    <button type="button" class="fmap-close" data-map-card-close aria-label={zh ? '关闭' : 'Close'} title={zh ? '关闭' : 'Close'}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-    </button>
-    <div data-map-card-body></div>
-  </div>
-  <p class="fmap-credit">{zh ? '底图：Natural Earth（公共领域）' : 'Base map: Natural Earth (public domain)'}</p>
+  <p class="fmap-tip" data-map-tip aria-live="polite"></p>
+  <p class="fmap-credit">{zh
+    ? '边界：Natural Earth（中国视角，公共领域）；中国地级行政区：OCHA / HDX（CC BY-IGO）；美国县界：美国人口普查局（公共领域）'
+    : 'Boundaries: Natural Earth (China point of view, public domain); Chinese prefectures: OCHA / HDX (CC BY-IGO); US counties: US Census Bureau (public domain)'}</p>
 </div>
 
 <script>
@@ -85,42 +57,23 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
 </script>
 
 <style is:global>
-  .fmap { --m-water: #dfe9ec; --m-land: #efe7d6; --m-edge: #c9bda4; --m-lived: #b4552e; --m-note: #3d6a3c; --m-ink: #1d2a20; position: relative; }
-  .fmap-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; margin: 0 0 10px; }
-  .fmap-views { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: var(--m-water); }
-  .fmap-views button { font: 600 13px system-ui, sans-serif; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--m-ink); cursor: pointer; }
-  .fmap-views button[aria-pressed='true'] { background: var(--m-ink); color: #fdfaf3; }
-  .fmap-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: #5b6157; margin: 0; }
-  .fmap-legend .key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; }
-  .key.lived { background: var(--m-lived); }
-  .key.note { background: var(--m-note); }
-  .key.visited { border: 2px solid var(--m-note); box-sizing: border-box; }
-  .fmap-view { display: block; width: 100%; height: auto; background: var(--m-water); border-radius: 12px; }
+  .fmap { --m-bg: #0b1220; --m-ink: #e8edf5; --m-muted: #9aa8bd; --m-lit: #f4b860; position: relative; color: var(--m-ink); background: var(--m-bg); border-radius: 14px; padding: 16px; }
+  .fmap-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 0 0 14px; }
+  .fmap-stats div { border-left: 2px solid var(--m-lit); padding-left: 10px; }
+  .fmap-stats dt { font-size: 12px; color: var(--m-muted); }
+  .fmap-stats dd { margin: 2px 0 0; font: 700 24px/1.1 Georgia, 'Songti SC', serif; font-variant-numeric: tabular-nums; }
+  .fmap-stats small { font: 400 12px system-ui, sans-serif; color: var(--m-muted); }
+  .fmap-views { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); margin-bottom: 10px; }
+  .fmap-views button { font: 600 13px system-ui, sans-serif; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--m-muted); cursor: pointer; }
+  .fmap-views button[aria-pressed='true'] { background: var(--m-ink); color: var(--m-bg); }
+  .fmap-scroll { overflow-x: auto; border-radius: 10px; }
+  .fmap-view { display: block; width: 100%; height: auto; background: var(--m-bg); }
   .fmap-view[hidden] { display: none; }
-  .fmap .route { fill: none; stroke: var(--m-lived); stroke-width: 2; stroke-dasharray: 6 5; }
   .fmap image { pointer-events: none; }
-  .fmap .pt { cursor: pointer; outline: none; }
-  .fmap .pt .hit { fill: transparent; stroke: none; pointer-events: all; }
-  .fmap .pt circle { stroke: #fff; stroke-width: 2; }
-  .fmap .pt.lived circle { fill: var(--m-lived); }
-  .fmap .pt.note circle { fill: var(--m-note); }
-  .fmap .pt.visited:not(.note) circle { fill: #fff; stroke: var(--m-note); stroke-width: 2.5; }
-  .fmap .pt text { font: 700 9px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
-  .fmap .pt text.name { font: 600 15px system-ui, 'PingFang SC', sans-serif; fill: var(--m-ink); text-anchor: start; paint-order: stroke; stroke: #fff; stroke-width: 3px; }
-  .fmap .pt text.name.end { text-anchor: end; }
-  .fmap .pt:hover circle, .fmap .pt:focus-visible circle { stroke: var(--m-ink); stroke-width: 3; }
-  .fmap-card { position: absolute; right: 12px; bottom: 40px; max-width: min(320px, calc(100% - 24px)); padding: 14px 16px; border-radius: 12px; background: #fffdf8; color: var(--m-ink); box-shadow: 0 10px 30px rgba(20, 30, 20, 0.2); }
-  .fmap-card[hidden] { display: none; }
-  .fmap-card h3 { font: 700 17px/1.3 Georgia, 'Songti SC', serif; margin: 0 28px 4px 0; }
-  .fmap-card p { margin: 4px 0; font-size: 14px; line-height: 1.55; color: #4f564c; }
-  .fmap-card a { color: var(--m-note); font-weight: 600; }
-  .fmap-close { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px; border: 1px solid #e2d8c6; background: #fff; color: var(--m-ink); cursor: pointer; }
-  /* On a phone the map keeps a usable size and scrolls sideways, so the dots stay big enough to tap. */
-  .fmap-scroll { overflow-x: auto; border-radius: 12px; }
-  @media (max-width: 560px) {
-    .fmap-view { min-width: 720px; }
-    .fmap .pt.lived circle { r: 11px; }
-    .fmap .pt.visited circle { r: 10px; }
-  }
-  .fmap-credit { font-size: 11px; color: #8a8f88; margin: 6px 0 0; }
+  .fmap .lit { fill: var(--m-lit); stroke: #ffe2a8; stroke-width: 0.4; cursor: pointer; outline: none; }
+  .fmap .lit.whole { fill-opacity: 0.45; }
+  .fmap .lit:hover, .fmap .lit:focus-visible { fill: #ffd894; }
+  .fmap-tip { min-height: 1.4em; margin: 8px 0 0; font-size: 14px; color: var(--m-ink); }
+  .fmap-credit { font-size: 11px; color: var(--m-muted); margin: 4px 0 0; }
+  @media (max-width: 560px) { .fmap-view { min-width: 720px; } }
 </style>

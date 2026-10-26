@@ -8,6 +8,18 @@ const { lang } = Astro.props;
 const title = lang === 'zh' ? '足迹地图' : 'Places I have been';
 ---
 <Base title={title}>
-  <h1>{title}</h1>
-  <FootprintMap lang={lang} />
+  <div class="map-page">
+    <h1>{title}</h1>
+    <FootprintMap lang={lang} />
+  </div>
 </Base>
+
+<style is:global>
+  /* A dark page, like the map itself. */
+  body:has(.map-page) { background: #0b1220; color: #e8edf5; }
+  body:has(.map-page) .site-header > a, body:has(.map-page) .site-header nav a, body:has(.map-page) .site-footer, body:has(.map-page) .site-footer a { color: #e8edf5; }
+  body:has(.map-page) .notice { color: #1d2a20; }
+  .map-page { margin: 0 calc(50% - 50vw); padding: 0 max(16px, calc(50vw - 600px)) 32px; }
+  .map-page h1 { margin: 8px 0 12px; }
+  .map-page .fmap { padding: 0; }
+</style>

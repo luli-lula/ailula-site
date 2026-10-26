@@ -114,3 +114,15 @@ test('place labels never cover the top bar or an open panel', async ({ page }) =
   });
   expect(overlaps).toEqual([]);
 });
+
+test('lula’s answers show up: now, email, DouDou, and JustSay is off the site', async ({ page, request }) => {
+  await page.addInitScript(() => localStorage.setItem('ailula-mode', 'lofi'));
+  await page.goto('/');
+  await expect(page.locator('main').getByText('Looking for a product manager role.')).toBeVisible();
+  await expect(page.locator('main a[href="mailto:imluli.me@gmail.com"]')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'JustSay' })).toHaveCount(0);
+  expect((await request.get('/projects/justsay/')).status()).toBe(404);
+  const dog = page.locator('[data-panel="dog"]');
+  await expect(dog).toContainText('This is DouDou, lula’s dog.');
+  expect(await dog.locator('img').count()).toBe(2);
+});

@@ -190,20 +190,21 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
   const lampMat = material(WINDOW, { emissive: WINDOW, emissiveIntensity: 0.1 });
   group.add(mesh(faceted(merge(lanternPosts), rnd, 0.1), darkMat), mesh(faceted(merge(lanternLamps), rnd, 0), lampMat, false));
 
-  // The dog: cream-coloured, napping near the plaza, tail wagging.
+  // The dog is DouDou, lula's black tricolour shepherd: black coat, white chest, muzzle and paws, tail wagging.
   const dog = new THREE.Group();
   {
     const at = zoneAt('dog');
     dog.position.copy(at);
     dog.rotation.y = facing(at) + 0.8;
-    const fur = material('#efe3cc');
-    const furDark = material('#c9b493');
+    const fur = material('#262321');
+    const white = material('#f1ece2');
     const body = faceted(jitter(new THREE.IcosahedronGeometry(0.55, 1).scale(1.5, 0.75, 0.85), 0.04, rnd).translate(0, 0.55, 0), rnd, 0.06);
     const head = faceted(new THREE.IcosahedronGeometry(0.34, 1).translate(0.85, 0.95, 0), rnd, 0.06);
     const snout = faceted(strip(new THREE.ConeGeometry(0.17, 0.35, 6).rotateZ(-Math.PI / 2).translate(1.22, 0.9, 0)), rnd, 0.05);
     const ears = faceted(merge([new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(0.4).translate(0.82, 1.25, 0.18), new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(-0.4).translate(0.82, 1.25, -0.18)].map(strip)), rnd, 0.05);
     const legs = faceted(merge([[0.5, 0.25], [0.5, -0.25], [-0.5, 0.25], [-0.5, -0.25]].map(([x, z]) => strip(box(0.16, 0.4, 0.16, x, 0, z)))), rnd, 0.05);
-    dog.add(mesh(body, fur), mesh(head, fur), mesh(snout, furDark), mesh(ears, furDark), mesh(legs, fur));
+    const chest = faceted(new THREE.IcosahedronGeometry(0.3, 1).scale(0.8, 1.1, 1).translate(0.62, 0.62, 0), rnd, 0.05);
+    dog.add(mesh(body, fur), mesh(head, fur), mesh(snout, white), mesh(chest, white), mesh(ears, fur), mesh(legs, white));
     const tail = mesh(faceted(strip(new THREE.ConeGeometry(0.08, 0.6, 5).translate(0, 0.3, 0)), rnd, 0.05), fur);
     tail.position.set(-0.8, 0.75, 0);
     tail.rotation.z = 0.9;

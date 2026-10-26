@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { clickPlace } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('ailula-mode', 'hifi'));
@@ -10,8 +11,7 @@ test('hi-fi home is the valley; a place opens a panel of real content', async ({
   await page.goto('/');
   await expect(page.locator('.valley-root')).toBeVisible();
   await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
-  await page.mouse.move(300, 300);
-  await page.locator('.valley-label[data-zone="workshop"]').click();
+  await clickPlace(page, 'workshop');
   const panel = page.locator('[data-panel="workshop"]');
   await expect(panel).toBeVisible();
   await expect(panel.getByRole('link', { name: /CELPIP12/ })).toHaveAttribute('href', '/projects/celpip12/');
@@ -47,8 +47,7 @@ test.describe('phone', () => {
     await page.goto('/');
     await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
-    await page.mouse.move(100, 100);
-    await page.locator('.valley-label[data-zone="garden"]').click();
+    await clickPlace(page, 'garden', [100, 100]);
     const panel = page.locator('[data-panel="garden"]');
     await expect(panel).toBeVisible();
     const box = await panel.boundingBox();

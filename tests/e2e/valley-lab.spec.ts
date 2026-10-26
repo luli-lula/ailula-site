@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { clickPlace } from './helpers';
 
 test('valley lab renders six places and flies to the one clicked', async ({ page }) => {
   const errors: string[] = [];
@@ -7,8 +8,7 @@ test('valley lab renders six places and flies to the one clicked', async ({ page
   await page.goto('/lab/valley/');
   await expect(page.locator('canvas#valley')).toBeVisible();
   await expect(page.locator('.valley-label')).toHaveCount(7);
-  await page.mouse.move(200, 200); // a visitor moving the pointer stops the idle rotation
-  await page.locator('.valley-label[data-zone="workshop"]').click();
+  await clickPlace(page, 'workshop', [200, 200]);
   await expect(page.locator('html')).toHaveAttribute('data-zone', 'workshop');
   // Rapid selections must not stack flights: the camera ends on the last place chosen.
   await page.evaluate(() => { const v = (window as any).__valley; v.focus('garden'); v.focus('lookout'); });

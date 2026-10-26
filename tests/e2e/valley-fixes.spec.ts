@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { clickPlace } from './helpers';
 
 // Model real browsers: while a tab is hidden, animation frames are held and delivered on return.
 const fakeTabVisibility = () => {
@@ -108,8 +109,7 @@ test('keyboard: focus stays in the valley and moves into and out of panels', asy
   await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => !!document.activeElement?.closest('.valley-root'))).toBe(true);
-  await page.mouse.move(300, 300);
-  await page.locator('.valley-label[data-zone="workshop"]').click();
+  await clickPlace(page, 'workshop');
   await expect(page.locator('[data-panel="workshop"]')).toHaveAttribute('role', 'dialog');
   expect(await page.evaluate(() => !!document.activeElement?.closest('[data-panel="workshop"]'))).toBe(true);
   await page.keyboard.press('Escape');

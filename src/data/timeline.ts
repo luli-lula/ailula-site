@@ -66,17 +66,17 @@ export const timeline: Milestone[] = [
     years: '2024',
     title: { zh: '离开大厂，开始自己做产品', en: 'Left big tech to build my own products' },
     detail: {
-      zh: '自学 Next.js，做出第一个独立产品；12 月起在 Wild Ones 首府地区分会做志愿者，设计活动海报和本土植物卡片。',
-      en: 'Taught myself Next.js and shipped my first indie product; from December, volunteering with Wild Ones Capital Region on posters and native plant cards.',
+      zh: '自学 Next.js，做出第一个独立产品；搬到纽约州；12 月起在 Wild Ones 首府地区分会做志愿者，设计活动海报和本土植物卡片。',
+      en: 'Taught myself Next.js and shipped my first indie product; moved to upstate New York; from December, volunteering with Wild Ones Capital Region on posters and native plant cards.',
     },
   },
   {
     start: 2025,
-    years: '2025–',
-    title: { zh: '独立 AI 产品顾问 · 植物 · 纽约州', en: 'Independent AI product consultant · plants · upstate New York' },
+    years: '2025–2026',
+    title: { zh: '独立 AI 产品顾问 · 植物', en: 'Independent AI product consultant · plants' },
     detail: {
-      zh: '为酒店 AI 智能体平台和 B2B 销售 CRM 做产品设计；开始做 iOS 植物 App WildCard；搬到纽约州，9 月成为 Cornell Master Gardener 志愿者。',
-      en: 'Product design for an AI agent platform for hotels and an LLM sales CRM; started WildCard, an iOS plant app; moved to New York and became a Cornell Master Gardener volunteer.',
+      zh: '为酒店 AI 智能体平台（到 2026 年 7 月）和 B2B 销售 CRM 做产品设计；开始做 iOS 植物 App WildCard；9 月成为 Cornell Master Gardener 志愿者。',
+      en: 'Product design for an AI agent platform for hotels (until July 2026) and an LLM sales CRM; started WildCard, an iOS plant app; became a Cornell Master Gardener volunteer in September.',
     },
   },
   {
@@ -84,8 +84,8 @@ export const timeline: Milestone[] = [
     years: '2026',
     title: { zh: '现在', en: 'Now' },
     detail: {
-      zh: '在做植物收集 App Floradex 和这个网站。',
-      en: 'Building Floradex, a plant collection app, and this site.',
+      zh: '在[公司]做一个 auto-research 工具；业余在做植物收集 App Floradex 和这个网站。',
+      en: 'Building an auto-research tool at [company]; on the side, Floradex, a plant collection app, and this site.',
     },
   },
 ];

@@ -12,5 +12,6 @@ url: https://interview-vert-chi.vercel.app/
 image: /assets/projects/justsay.webp
 todo:
   - "Project story: why, how, results, lessons"
+draft: true
 ---
 Upload your résumé and practise English job interviews with AI, by text and by voice.

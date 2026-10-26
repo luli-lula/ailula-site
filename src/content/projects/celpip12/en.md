@@ -198,7 +198,6 @@ Converting product design to technical implementation with attention to detail:
 ### Technical Metrics
 - **Build Performance**: Homepage 6.68KB, Writing page 80.8KB
 - **Response Time**: AI scoring 15-30s, Interface response <100ms
-- **System Availability**: 99.9% uptime
 - **Data Processing**: Real-time search support for 90+ samples, 46+ questions
 
 ### Core Feature Implementation

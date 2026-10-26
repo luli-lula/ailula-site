@@ -11,5 +11,6 @@ url: https://interview-vert-chi.vercel.app/
 image: /assets/projects/justsay.webp
 todo:
   - "项目故事：为什么做、怎么做、结果、学到了什么"
+draft: true
 ---
 上传简历，用 AI 文字和语音练英语面试。

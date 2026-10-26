@@ -149,7 +149,10 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   <section class="vpanel small" data-panel="dog" role="dialog" aria-labelledby="vp-dog" hidden>
     <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
     <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
-    <p>{t(lang, 'dogNote')}{profile.dogName ? ` ${t(lang, 'dogName')}: ${profile.dogName}` : <Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} />}</p>
+    <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
+    <div class="dog-photos">
+      {['2', '1'].map((n) => <img src={`/assets/photos/doudou/${n}.webp`} alt={`${profile.dogName || label.dog}`} loading="lazy" />)}
+    </div>
   </section>
 </div>
 
@@ -321,6 +324,8 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .vpanel .cards p { margin: 4px 0 0; font-size: 14px; color: #4a4a44; }
   .vpanel .cards li.featured { border-color: #b4552e; background: #fff8ef; }
   .vpanel .cards img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 8px; margin-bottom: 8px; }
+  .dog-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .dog-photos img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; }
   .vpanel .plain { padding-left: 18px; margin: 0; font-size: 14px; line-height: 1.6; color: #4a4a44; }
   .vpanel .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .vpanel .photos img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 8px; }

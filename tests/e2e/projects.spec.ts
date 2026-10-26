@@ -9,9 +9,10 @@ test('projects page lists the chosen projects in groups, plants first', async ({
   const groups = page.locator('main section h2');
   await expect(groups.first()).toHaveText('Plants');
   const cards = page.locator('main .cards li');
-  await expect(cards).toHaveCount(10);
+  await expect(cards).toHaveCount(9);
   await expect(page.locator('main section').first().locator('.cards li').first()).toContainText('Floradex');
   await expect(page.getByText('Floating Thoughts')).toHaveCount(0);
+  await expect(page.getByText('JustSay')).toHaveCount(0);
 });
 
 test('a live project shows its screenshot and a link to the live site', async ({ page }) => {

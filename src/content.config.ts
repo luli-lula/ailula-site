@@ -20,7 +20,7 @@ const posts = defineCollection({
     // Set on an English file translated from the Chinese original; the page says so.
     translatedFrom: z.enum(['zh']).optional(),
     // Travel notes: places shown on the footprint map.
-    places: z.array(z.object({ name: z.string(), lat: z.number(), lon: z.number() })).default([]),
+    places: z.array(z.object({ id: z.string(), name: z.string(), lat: z.number(), lon: z.number() })).default([]),
     tags: z.array(z.string()).default([]),
     legacyPaths: z.array(z.string()).default([]),
   }),

@@ -6,6 +6,8 @@ import Contact from './Contact.astro';
 import CloseButton from './CloseButton.astro';
 import CinemaWall from './CinemaWall.astro';
 import Chapters from './Chapters.astro';
+import FootprintMap from './FootprintMap.astro';
+import Icon from './Icon.astro';
 import LangBadge from './LangBadge.astro';
 import ProjectCard from './ProjectCard.astro';
 import { CATEGORY_ORDER } from '../lib/content';
@@ -64,6 +66,17 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <Chapters lang={lang} />
     </div>
+  </section>
+
+  <!-- The lookout's telescope: a full-screen footprint map. -->
+  <section class="map-overlay" role="dialog" aria-modal="true" aria-labelledby="vp-map" hidden>
+    <header class="map-bar">
+      <h2 id="vp-map" tabindex="-1">{t(lang, 'footprints')}</h2>
+      <button type="button" class="map-close" data-close-map aria-label={t(lang, 'close')} title={t(lang, 'close')}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+    </header>
+    <FootprintMap lang={lang} />
   </section>
 
   <!-- The tree hollow opens a full-screen cinema rather than a side panel. -->
@@ -152,7 +165,10 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
         <p>{profile.now[lang]}</p>
       </>
     ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
-    <p><button type="button" class="go" data-go="workshop">{t(lang, 'seeProjects')} →</button></p>
+    <p class="gos">
+      <button type="button" class="go" data-go="workshop">{t(lang, 'seeProjects')} →</button>
+      <button type="button" class="go" data-open-map><Icon name="map" />{t(lang, 'footprints')}</button>
+    </p>
     <h3>{t(lang, 'sectionContact')}</h3>
     <Contact lang={lang} />
     </div>
@@ -282,8 +298,21 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       root.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
       // Links between places (the lookout's "see what I'm building" opens the workshop).
       root.querySelectorAll<HTMLElement>('[data-go]').forEach((b) => b.addEventListener('click', () => v.select(b.dataset.go as ZoneId)));
-      // Esc closes the open place, unless a card inside it (a film's details) is open: that closes first.
-      addEventListener('keydown', (e) => e.key === 'Escape' && openZone && html.dataset.mode === 'hifi' && !document.querySelector('dialog[open]') && close());
+      // The footprint map opens over everything; Esc closes it first, then a film card, then the open place.
+      const mapOverlay = root.querySelector<HTMLElement>('.map-overlay')!;
+      const mapOpener = root.querySelector<HTMLElement>('[data-open-map]')!;
+      const setMap = (open: boolean) => {
+        mapOverlay.hidden = !open;
+        root.querySelectorAll<HTMLElement>('.valley-labels, .valley-bar, .valley-hint, .valley-canvas, .vpanel').forEach((el) => (el.inert = open));
+        (open ? mapOverlay.querySelector<HTMLElement>('h2') : mapOpener)?.focus({ preventScroll: true });
+      };
+      mapOpener.addEventListener('click', () => setMap(true));
+      root.querySelector('[data-close-map]')!.addEventListener('click', () => setMap(false));
+      addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape' || html.dataset.mode !== 'hifi') return;
+        if (!mapOverlay.hidden) return setMap(false);
+        if (openZone && !document.querySelector('dialog[open]')) close();
+      });
       seasonButtons.forEach((b) =>
         b.addEventListener('click', () => {
           season = b.dataset.seasonPick as Season;
@@ -353,6 +382,14 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
   html[data-night='true'] .vpanel { --p-bg: rgba(26, 30, 50, 0.78); --p-edge: rgba(255, 255, 255, 0.14); --p-line: rgba(255, 255, 255, 0.12); --p-ink: #eef0f7; --p-muted: #c3c7d6; --p-accent: #f0b58c; --p-link: #f3f1ea; --p-link-hover: #f6c49e; --p-card: rgba(255, 255, 255, 0.06); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
   .vpanel.small { bottom: auto; }
+  .map-overlay { z-index: 7; position: fixed; inset: 0; overflow-y: auto; background: #f6f1e7; color: #1d2a20; padding: 0 max(16px, calc(50vw - 560px)) 40px; box-sizing: border-box; animation: vpanel-in 0.4s ease-out; }
+  .map-overlay[hidden] { display: none; }
+  html[data-motion='reduced'] .map-overlay { animation: none; }
+  .map-bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 16px 0 10px; background: #f6f1e7; }
+  .map-bar h2 { font: 700 22px/1.3 Georgia, 'Songti SC', serif; margin: 0; outline: none; }
+  .map-close { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 999px; border: 1px solid #ddd3c3; background: #fff; color: #1d2a20; cursor: pointer; }
+  .vpanel .gos { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vpanel .go { display: inline-flex; align-items: center; gap: 6px; }
   .cinema-overlay { z-index: 6; position: fixed; inset: 0; overflow-y: auto; overflow-x: hidden; background: #15120f; color: #f1ebe0; padding: 0 max(16px, calc(50vw - 560px)) 48px; box-sizing: border-box; animation: lights-down 0.9s ease-out; }
   .cinema-overlay[hidden] { display: none; }
   html[data-motion='reduced'] .cinema-overlay { animation: none; }

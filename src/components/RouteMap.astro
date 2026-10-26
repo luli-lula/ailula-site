@@ -1,0 +1,48 @@
+---
+// The route of the places lula lived, as two small maps side by side (China, then the US), numbered from
+// the roots. A dot jumps to its chapter in the list below.
+import { projector, SIZE } from '../lib/geo';
+import { chapters } from '../data/places';
+import type { Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ordered = chapters.filter((c) => c.coords).reverse(); // oldest first
+const insets = (['cn', 'us'] as const).map((region) => {
+  const project = projector(region);
+  const dots = ordered.map((c, i) => ({ c, n: i + 1, xy: c.region === region ? project(c.coords!) : null })).filter((d) => d.xy);
+  return { region, w: SIZE[region][0], h: SIZE[region][1], dots, line: dots.map((d, i) => `${i ? 'L' : 'M'}${d.xy![0]},${d.xy![1]}`).join('') };
+});
+---
+<div class="route-map" aria-label={lang === 'zh' ? '住过的地方' : 'Places I have lived'}>
+  {insets.map(({ region, w, h, dots, line }, i) => (
+    <>
+      {i > 0 && <span class="pacific" aria-hidden="true"></span>}
+      <svg viewBox={`0 0 ${w} ${h}`} class={`inset ${region}`}>
+        <image href={`/maps/${region}.svg`} width={w} height={h} />
+        {line && <path class="route" d={line} />}
+        {dots.map((d) => (
+          <g class="dot" data-chapter={d.c.id} role="button" tabindex="0" aria-label={d.c.city ? d.c.city[lang] : d.c.years[lang]}>
+            <circle cx={d.xy![0]} cy={d.xy![1]} r="22" />
+            <text x={d.xy![0]} y={d.xy![1] + 9}>{d.n}</text>
+            {d.c.city && (d.xy![0] > w * 0.62
+              ? <text class="name" x={d.xy![0] - 30} y={d.xy![1] + 10} text-anchor="end">{d.c.city[lang].split(/（| \(/)[0]}</text>
+              : <text class="name" x={d.xy![0] + 30} y={d.xy![1] + 10}>{d.c.city[lang].split(/（| \(/)[0]}</text>)}
+          </g>
+        ))}
+      </svg>
+    </>
+  ))}
+</div>
+
+<style is:global>
+  .route-map { display: flex; align-items: center; gap: 6px; margin: 4px 0 10px; }
+  .route-map .inset { flex: 1 1 0; min-width: 0; height: auto; background: #dfe9ec; border-radius: 10px; }
+  .route-map .pacific { flex: 0 0 22px; border-top: 2px dashed #b4552e; }
+  .route-map .route { fill: none; stroke: #b4552e; stroke-width: 5; stroke-dasharray: 14 10; }
+  .route-map .dot { cursor: pointer; outline: none; }
+  .route-map .dot circle { fill: #b4552e; stroke: #fff; stroke-width: 5; }
+  .route-map .dot:hover circle, .route-map .dot:focus-visible circle { stroke: #1d2a20; }
+  .route-map .dot text { font: 700 26px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
+  .route-map .dot text.name { font: 600 30px system-ui, 'PingFang SC', sans-serif; fill: #1d2a20; paint-order: stroke; stroke: #fff; stroke-width: 6px; }
+</style>

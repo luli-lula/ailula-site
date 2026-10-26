@@ -2,13 +2,15 @@
 title: 新疆结伴游—旅行真人秀
 date: 2019-12-14T19:02:46.000Z
 lang: zh
-kind: essay
+kind: travel
 maturity: mature
 tags: []
 legacyPaths:
   - /zh/posts/014-新疆结伴游旅行真人秀/
 topics: [travel, life]
 titleEn: "Xinjiang with Strangers: A Travel Reality Show"
+places:
+  - { id: xinjiang, name: 新疆 Xinjiang, lat: 43.8, lon: 87.6 }
 ---
 9个陌生人一起14天新疆游经历，风景很美，人物关系也很复杂，感觉都可以在两辆车上分别装上摄像头，拍一季《花样青春》，凌晨2点投票表决要不要分开.
 

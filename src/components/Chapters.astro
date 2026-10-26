@@ -2,6 +2,7 @@
 // lula's story by the places she lived: one chapter per place, work on the left and life on the right
 // (one column on phones). Two toggles show only one side; at least one side always stays on.
 import Placeholder from './Placeholder.astro';
+import RouteMap from './RouteMap.astro';
 import { chapters } from '../data/places';
 import { t, type Lang } from '../lib/i18n';
 
@@ -10,6 +11,7 @@ const { lang } = Astro.props;
 const zh = lang === 'zh';
 ---
 <div class="story">
+  <RouteMap lang={lang} />
   <div class="sides-toggle" role="group" aria-label={zh ? '显示' : 'Show'}>
     <button type="button" data-side="work" aria-pressed="true">{zh ? '工作' : 'Work'}</button>
     <button type="button" data-side="life" aria-pressed="true">{zh ? '生活' : 'Life'}</button>
@@ -33,6 +35,13 @@ const zh = lang === 'zh';
 
 <script>
   document.querySelectorAll<HTMLElement>('.story').forEach((story) => {
+    // A dot on the route map jumps to its chapter.
+    const jump = (dot: Element) =>
+      story.querySelector(`.chapter[data-id="${(dot as HTMLElement).dataset.chapter}"]`)?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    story.querySelectorAll('[data-chapter]').forEach((dot) => {
+      dot.addEventListener('click', () => jump(dot));
+      dot.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter' || (e as KeyboardEvent).key === ' ') { e.preventDefault(); jump(dot); } });
+    });
     const buttons = [...story.querySelectorAll<HTMLButtonElement>('[data-side]')];
     buttons.forEach((b) =>
       b.addEventListener('click', () => {

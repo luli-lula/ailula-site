@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import FootprintMap from '../components/FootprintMap.astro';
+import type { Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const title = lang === 'zh' ? '足迹地图' : 'Places I have been';
+---
+<Base title={title}>
+  <h1>{title}</h1>
+  <FootprintMap lang={lang} />
+</Base>

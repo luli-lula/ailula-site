@@ -5,11 +5,11 @@ import Placeholder from './Placeholder.astro';
 import Contact from './Contact.astro';
 import CloseButton from './CloseButton.astro';
 import CinemaWall from './CinemaWall.astro';
+import Chapters from './Chapters.astro';
 import LangBadge from './LangBadge.astro';
 import ProjectCard from './ProjectCard.astro';
 import { CATEGORY_ORDER } from '../lib/content';
 import { TOPICS, topicLabel } from '../lib/topics';
-import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { community } from '../data/community';
 import { localizedPath, t, type Lang } from '../lib/i18n';
@@ -55,18 +55,14 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
 
   <p class="valley-hint">{t(lang, 'valleyHint')}</p>
 
-  <section class="vpanel" data-panel="tree" role="dialog" aria-labelledby="vp-tree" hidden>
+  <section class="vpanel wide" data-panel="tree" role="dialog" aria-labelledby="vp-tree" hidden>
     <header class="vhead">
       <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
       <CloseButton lang={lang} />
     </header>
     <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'treeIntro')}</p>
-    <ol class="rings">
-      {timeline.map((m) => (
-        <li><time>{m.years}</time><strong>{m.title[lang]}</strong><p class="detail">{m.detail[lang]}</p></li>
-      ))}
-    </ol>
+    <Chapters lang={lang} />
     </div>
   </section>
 

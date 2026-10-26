@@ -58,7 +58,8 @@ test('list rows keep the date and the title side by side', async ({ page }) => {
     return { dt: Math.abs(t.top - a.top), left: a.left > t.right };
   }));
   expect(rows.length).toBeGreaterThan(3);
-  for (const r of rows) { expect(r.dt).toBeLessThanOrEqual(4); expect(r.left).toBe(true); }
+  // Baseline-aligned text of two sizes puts their tops ~4px apart; a title on its own line would be ~20px off.
+  for (const r of rows) { expect(r.dt).toBeLessThanOrEqual(5); expect(r.left).toBe(true); }
 });
 
 test('the English garden never says "Chinese only"', async ({ page }) => {

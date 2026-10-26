@@ -1,0 +1,71 @@
+---
+// lula's story by the places she lived: one chapter per place, work on the left and life on the right
+// (one column on phones). Two toggles show only one side; at least one side always stays on.
+import Placeholder from './Placeholder.astro';
+import { chapters } from '../data/places';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+---
+<div class="story">
+  <div class="sides-toggle" role="group" aria-label={zh ? '显示' : 'Show'}>
+    <button type="button" data-side="work" aria-pressed="true">{zh ? '工作' : 'Work'}</button>
+    <button type="button" data-side="life" aria-pressed="true">{zh ? '生活' : 'Life'}</button>
+  </div>
+  <ol class="chapters">
+    {chapters.map((c) => (
+      <li class="chapter" data-id={c.id}>
+        <p class="place">
+          <span class="years">{c.years[lang]}</span>
+          {c.city ? <span class="city">{c.city[lang]}</span> : <Placeholder note={zh ? `${c.years.zh} 住在哪个城市` : `city for ${c.years.en}`} />}
+          {c.id === 'roots' && <Placeholder note={zh ? '河南的哪个城市' : 'which city in Henan'} />}
+        </p>
+        <div class="sides">
+          <p class="work">{c.work ? c.work[lang] : <Placeholder note={zh ? '这一章的工作或学习' : 'work or study in this chapter'} />}</p>
+          <p class="life">{c.life ? c.life[lang] : <Placeholder note={zh ? `${c.years.zh} 的生活：一两件事` : `life in ${c.years.en}: one or two things`} />}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.story').forEach((story) => {
+    const buttons = [...story.querySelectorAll<HTMLButtonElement>('[data-side]')];
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const on = b.getAttribute('aria-pressed') === 'true';
+        if (on && buttons.every((x) => x === b || x.getAttribute('aria-pressed') === 'false')) return; // keep one side
+        b.setAttribute('aria-pressed', String(!on));
+        story.classList.toggle(`hide-${b.dataset.side}`, on);
+      }),
+    );
+  });
+</script>
+
+<style is:global>
+  .story .sides-toggle { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: var(--p-card, var(--card)); border: 1px solid var(--p-line, var(--line)); margin: 4px 0 12px; }
+  .story .sides-toggle button { font: 600 12px system-ui, sans-serif; padding: 5px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--p-muted, var(--muted)); cursor: pointer; }
+  .story .sides-toggle button[aria-pressed='true'] { background: var(--p-ink, var(--fg)); color: var(--p-on-ink, var(--bg)); }
+  .story .chapters { list-style: none; margin: 0; padding: 0; }
+  .story .chapter { padding: 10px 0 12px; border-bottom: 1px solid var(--p-line, var(--line)); }
+  .story .place { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 0 0 6px; }
+  .story .years { font: 600 12px ui-monospace, 'SF Mono', monospace; color: var(--p-accent, var(--accent)); }
+  .story .city { font-weight: 650; }
+  .story .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; position: relative; }
+  /* The trunk: a thin line between work and life. */
+  .story .sides::before { content: ''; position: absolute; left: 50%; top: 2px; bottom: 2px; border-left: 2px solid #d9a978; }
+  .story .sides p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--p-muted, var(--muted)); min-width: 0; }
+  .story .work { padding-right: 4px; }
+  .story .life { padding-left: 4px; }
+  .story.hide-work .work, .story.hide-life .life { display: none; }
+  .story.hide-work .sides, .story.hide-life .sides { grid-template-columns: 1fr; }
+  .story.hide-work .sides::before, .story.hide-life .sides::before { display: none; }
+  @media (max-width: 700px) {
+    .story .sides { grid-template-columns: 1fr; gap: 6px; }
+    .story .sides::before { display: none; }
+    .story .life { padding-left: 10px; border-left: 2px solid #d9a978; }
+  }
+</style>

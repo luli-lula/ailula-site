@@ -3,8 +3,8 @@ import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
 import Valley from '../components/Valley.astro';
 import Contact from '../components/Contact.astro';
+import Chapters from '../components/Chapters.astro';
 import LangBadge from '../components/LangBadge.astro';
-import { timeline } from '../data/timeline';
 import { community } from '../data/community';
 import { profile } from '../data/profile';
 import { localizedPath, t, type Lang } from '../lib/i18n';
@@ -33,14 +33,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
 
   <section>
     <h2>{t(lang, 'sectionTimeline')}</h2>
-    <ul class="list">
-      {timeline.map((m) => (
-        <li>
-          <time>{m.years}</time>
-          <span><strong>{m.title[lang]}</strong><br /><span class="muted">{m.detail[lang]}</span></span>
-        </li>
-      ))}
-    </ul>
+    <Chapters lang={lang} />
   </section>
 
   <section>

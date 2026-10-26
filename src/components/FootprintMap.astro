@@ -26,6 +26,11 @@ const views = VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], lit: litS
     {views.map((v, i) => <button type="button" data-view-pick={v.id} aria-pressed={i === 0 ? 'true' : 'false'}>{LABEL[v.id]}</button>)}
   </div>
   <div class="fmap-scroll">
+    <div class="fmap-zoom" role="group" aria-label={zh ? '缩放' : 'Zoom'}>
+      <button type="button" data-zoom="in" aria-label={zh ? '放大' : 'Zoom in'} title={zh ? '放大' : 'Zoom in'}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
+      <button type="button" data-zoom="out" aria-label={zh ? '缩小' : 'Zoom out'} title={zh ? '缩小' : 'Zoom out'}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg></button>
+      <button type="button" data-zoom="reset" aria-label={zh ? '看全图' : 'Whole map'} title={zh ? '看全图' : 'Whole map'}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></svg></button>
+    </div>
     {views.map((v, i) => (
       <svg class="fmap-view" data-map-view={v.id} viewBox={`0 0 ${v.w} ${v.h}`} role="img" aria-label={LABEL[v.id]} hidden={i !== 0}>
         <defs>
@@ -34,7 +39,7 @@ const views = VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], lit: litS
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
-        <image href={`/maps/footprint-${v.id}.svg`} width={v.w} height={v.h} />
+        <g class="base" data-base-src={`/maps/footprint-${v.id}.svg`}></g>
         <g filter={`url(#glow-${v.id})`}>
           {v.lit.map((p) => (
             <path class={p.whole ? 'lit whole' : 'lit'} d={p.d} data-place={p.id} data-name={p.name} tabindex="0" role="img" aria-label={p.parent ? `${p.name}, ${p.parent}` : p.name}>
@@ -66,14 +71,18 @@ const views = VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], lit: litS
   .fmap-views { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); margin-bottom: 10px; }
   .fmap-views button { font: 600 13px system-ui, sans-serif; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--m-muted); cursor: pointer; }
   .fmap-views button[aria-pressed='true'] { background: var(--m-ink); color: var(--m-bg); }
-  .fmap-scroll { overflow-x: auto; border-radius: 10px; }
+  .fmap-scroll { position: relative; overflow: hidden; border-radius: 10px; }
+  .fmap-zoom { position: absolute; top: 10px; right: 10px; z-index: 1; display: flex; flex-direction: column; gap: 4px; }
+  .fmap-zoom button { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; border: 1px solid #2a3850; background: rgba(11, 18, 32, 0.85); color: var(--m-ink); cursor: pointer; }
+  .fmap-zoom button:hover, .fmap-zoom button:focus-visible { border-color: var(--m-lit); outline: none; }
+  .fmap-view { touch-action: none; cursor: grab; }
+  .fmap-view:active { cursor: grabbing; }
   .fmap-view { display: block; width: 100%; height: auto; background: var(--m-bg); }
   .fmap-view[hidden] { display: none; }
-  .fmap image { pointer-events: none; }
-  .fmap .lit { fill: var(--m-lit); stroke: #ffe2a8; stroke-width: 0.4; cursor: pointer; outline: none; }
+  .fmap .base { pointer-events: none; }
+  .fmap .lit { fill: var(--m-lit); stroke: #ffe2a8; stroke-width: 0.6; vector-effect: non-scaling-stroke; cursor: pointer; outline: none; }
   .fmap .lit.whole { fill-opacity: 0.45; }
   .fmap .lit:hover, .fmap .lit:focus-visible { fill: #ffd894; }
   .fmap-tip { min-height: 1.4em; margin: 8px 0 0; font-size: 14px; color: var(--m-ink); }
   .fmap-credit { font-size: 11px; color: var(--m-muted); margin: 4px 0 0; }
-  @media (max-width: 560px) { .fmap-view { min-width: 720px; } }
 </style>

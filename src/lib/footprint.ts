@@ -54,7 +54,7 @@ function projection(view: ViewId): GeoProjection {
 // Which countries a view draws subdivided: the US view only knows the US (Albers USA projects nothing else).
 const viewCountries = (view: ViewId, v: Visits) => [...v.countries].filter((c) => unitCountries.includes(c) && (view !== 'us' || c === 'USA'));
 
-// The base layer: country outlines (visited ones a shade lighter) and the city-level lines of visited countries.
+// The base layer (loaded into the map as vectors, so it stays sharp when zoomed): country outlines (visited ones a shade lighter) and the city-level lines of visited countries.
 export function baseSvg(view: ViewId, v: Visits) {
   const [w, h] = SIZE[view];
   // Whole pixels are enough for the small world view, and halve its file.
@@ -63,9 +63,9 @@ export function baseSvg(view: ViewId, v: Visits) {
   const lines = viewCountries(view, v).map((iso) => path(mesh(topo(iso), topo(iso).objects.units, (a: any, b: any) => a !== b) as GeoPermissibleObjects) ?? '').join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">`
     + `<rect width="${w}" height="${h}" fill="#0b1220"/>`
-    + (view === 'us' ? '' : `<path d="${path(countries) ?? ''}" fill="#141d2b" stroke="#2a3850" stroke-width="0.6"/>`)
-    + `<path d="${path(visited as any) ?? ''}" fill="#1b283b" stroke="#3a4d6b" stroke-width="0.8"/>`
-    + `<path d="${lines}" fill="none" stroke="#2f4260" stroke-width="0.35"/>`
+    + (view === 'us' ? '' : `<path d="${path(countries) ?? ''}" fill="#141d2b" stroke="#2a3850" stroke-width="0.6" vector-effect="non-scaling-stroke"/>`)
+    + `<path d="${path(visited as any) ?? ''}" fill="#1b283b" stroke="#3a4d6b" stroke-width="0.8" vector-effect="non-scaling-stroke"/>`
+    + `<path d="${lines}" fill="none" stroke="#2f4260" stroke-width="0.35" vector-effect="non-scaling-stroke"/>`
     + '</svg>';
 }
 

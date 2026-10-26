@@ -79,10 +79,11 @@ test.describe('phone', () => {
     expect((await page.locator('main .route-map [data-chapter="beijing"] circle').boundingBox())!.width).toBeGreaterThanOrEqual(14);
   });
 
-  test('the footprint map keeps a usable size and scrolls inside itself', async ({ page }) => {
+  test('the footprint map fits the screen and zooms instead of scrolling sideways', async ({ page }) => {
     await lofi(page);
     await page.goto('/zh/map/');
-    expect((await page.locator('[data-map-view="world"]').boundingBox())!.width).toBeGreaterThanOrEqual(700);
+    expect((await page.locator('[data-map-view="world"]').boundingBox())!.width).toBeGreaterThanOrEqual(320);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+    await expect(page.getByRole('button', { name: '放大' })).toBeVisible();
   });
 });

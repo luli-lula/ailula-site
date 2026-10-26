@@ -1,5 +1,7 @@
 // Footprint editor (dev only): tick countries and cities in the list or click them on the map; the map
 // lights up at once and the choice is saved to src/data/footprints.json through /__footprints.
+import { zoomable, type Zoom } from './zoom';
+
 type State = { countries: string[]; places: string[] };
 
 const status = document.querySelector<HTMLElement>('[data-status]')!;
@@ -65,6 +67,7 @@ document.addEventListener('change', (e) => {
 
 document.addEventListener('click', (e) => {
   const t = e.target as Element;
+  if (t.closest<SVGElement>('svg.map')?.dataset.dragged) return; // that was a pan, not a click
   const unit = t.closest<SVGElement>('[data-place-shape]');
   const country = t.closest<SVGElement>('[data-country-shape]');
   if (unit) setPlace(unit.dataset.placeShape!, !places.has(unit.dataset.placeShape!));
@@ -83,6 +86,15 @@ document.querySelectorAll<HTMLButtonElement>('[data-view-pick]').forEach((b) =>
   b.addEventListener('click', () => {
     document.querySelectorAll('[data-view-pick]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     document.querySelectorAll<SVGElement>('[data-map-view]').forEach((v) => v.toggleAttribute('hidden', v.dataset.mapView !== b.dataset.viewPick));
+  }),
+);
+
+const maps = [...document.querySelectorAll<SVGSVGElement>('svg.map')];
+const zooms = new Map<SVGSVGElement, Zoom>(maps.map((m) => [m, zoomable(m)]));
+document.querySelectorAll<HTMLButtonElement>('[data-zoom]').forEach((b) =>
+  b.addEventListener('click', () => {
+    const z = zooms.get(maps.find((m) => !m.hasAttribute('hidden'))!)!;
+    ({ in: z.zoomIn, out: z.zoomOut, reset: z.reset })[b.dataset.zoom as 'in' | 'out' | 'reset']();
   }),
 );
 

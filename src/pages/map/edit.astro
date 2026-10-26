@@ -65,7 +65,12 @@ const maps = dev ? VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], coun
           <div class="views" role="group" aria-label="视图">
             {maps.map((m, i) => <button type="button" data-view-pick={m.id} aria-pressed={i === 0 ? 'true' : 'false'}>{LABEL[m.id]}</button>)}
           </div>
-          <p class="hint">在列表里勾选，或者直接点地图。点亮的地方会马上保存。</p>
+          <p class="hint">在列表里勾选，或者直接点地图。滚轮缩放，按住拖动。点亮的地方会马上保存。</p>
+          <div class="zoom">
+            <button type="button" data-zoom="in" aria-label="放大" title="放大">+</button>
+            <button type="button" data-zoom="out" aria-label="缩小" title="缩小">−</button>
+            <button type="button" data-zoom="reset" aria-label="看全图" title="看全图">⟲</button>
+          </div>
           {maps.map((m, i) => (
             <svg class="map" data-map-view={m.id} viewBox={`0 0 ${m.w} ${m.h}`} hidden={i !== 0}>
               {m.countries.map((c: any) => <path class="c" d={c.d} data-country-shape={c.id}><title>{c.name}</title></path>)}
@@ -103,7 +108,10 @@ const maps = dev ? VIEWS.map((id) => ({ id, w: SIZE[id][0], h: SIZE[id][1], coun
       .views button { font: 600 13px system-ui; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: #9aa8bd; cursor: pointer; }
       .views button[aria-pressed='true'] { background: #e8edf5; color: #0b1220; }
       .hint, .tip { color: #9aa8bd; margin: 8px 0; }
-      .map { display: block; width: 100%; height: auto; background: #0b1220; }
+      .map { display: block; width: 100%; height: auto; background: #0b1220; touch-action: none; }
+      .map path { vector-effect: non-scaling-stroke; }
+      .zoom { display: inline-flex; gap: 4px; margin-bottom: 6px; }
+      .zoom button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #2a3850; background: #121b2b; color: #e8edf5; font-size: 16px; cursor: pointer; }
       .map[hidden] { display: none; }
       .map .c { fill: #141d2b; stroke: #2a3850; stroke-width: .6; cursor: pointer; }
       .map .c.on { fill: #1b283b; }

@@ -1,0 +1,93 @@
+---
+// The cinema: stats, Films/Books tabs, filters, a year index and the wall itself. The wall is drawn in the
+// browser from /douban/*.json (src/scripts/cinema.ts). Used on /cinema/ and inside the valley's tree hollow.
+import Icon from './Icon.astro';
+import { topTen } from '../data/films';
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang; embedded?: boolean }
+const { lang, embedded = false } = Astro.props;
+const zh = lang === 'zh';
+---
+<div class="cinema" data-cinema data-lang={lang} data-embedded={embedded ? '1' : undefined}>
+  <div class="cin-head">
+    {!embedded && <h1>{t(lang, 'navCinema')}</h1>}
+    <p class="cin-stats" data-stats aria-live="polite"></p>
+    {!zh && <p class="cin-note">Titles and notes are in Chinese, as I logged them on Douban.</p>}
+  </div>
+  {topTen.length > 0 && (
+    <section class="cin-top">
+      <h2>{t(lang, 'sectionTopTen')}</h2>
+      <ol>{topTen.map((f) => <li>{f.title}{f.year && <span> ({f.year})</span>}</li>)}</ol>
+    </section>
+  )}
+  <div class="cin-tools">
+    <div class="cin-tabs" role="tablist" aria-label={t(lang, 'navCinema')}>
+      <button type="button" role="tab" aria-selected="true" data-kind="movies"><Icon name="film" />{zh ? '电影' : 'Films'}</button>
+      <button type="button" role="tab" aria-selected="false" data-kind="books"><Icon name="book" />{zh ? '书' : 'Books'}</button>
+    </div>
+    <div class="chips" role="group" aria-label={zh ? '筛选' : 'Filter'} data-cin-filter>
+      <button type="button" data-f="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
+      <button type="button" data-f="five" aria-pressed="false">{zh ? '五星' : '5 stars'}</button>
+      <button type="button" data-f="commented" aria-pressed="false">{zh ? '有短评' : 'With a note'}</button>
+    </div>
+    <input class="cin-search" type="search" data-cin-search placeholder={zh ? '搜索片名、导演或作者' : 'Search titles, directors, authors'} aria-label={zh ? '搜索' : 'Search'} />
+  </div>
+  <nav class="cin-years" data-years aria-label={zh ? '跳到年份' : 'Jump to a year'}></nav>
+  <div class="cin-wall" data-wall></div>
+  <dialog class="cin-card" data-card aria-label={zh ? '详情' : 'Details'}>
+    <button type="button" class="cin-close" data-card-close aria-label={t(lang, 'close')} title={t(lang, 'close')}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+    </button>
+    <div data-card-body></div>
+  </dialog>
+</div>
+
+<script>
+  import { mountCinema } from '../scripts/cinema';
+  // The page version mounts at once; the valley mounts its copy when the hollow is first opened.
+  document.querySelectorAll<HTMLElement>('[data-cinema]:not([data-embedded])').forEach(mountCinema);
+</script>
+
+<style is:global>
+  /* A dark room where the posters are the only colour. */
+  .cinema { --c-bg: #15120f; --c-ink: #f1ebe0; --c-muted: #b6ab9b; --c-line: rgba(255, 240, 220, 0.14); --c-chip: rgba(255, 240, 220, 0.08); --c-accent: #f0b06e;
+    background: var(--c-bg); color: var(--c-ink); }
+  main:has(> .cinema), body:has(main > .cinema) { background: #15120f; }
+  body:has(main > .cinema) .site-header > a, body:has(main > .cinema) .site-header nav a, body:has(main > .cinema) .site-footer, body:has(main > .cinema) .site-footer a { color: #e9e1d3; }
+  main > .cinema { margin: 0 calc(50% - 50vw); padding: 8px max(16px, calc(50vw - 560px)) 48px; }
+  .cin-head h1 { margin: 8px 0 6px; color: var(--c-ink); }
+  .cin-stats { color: var(--c-muted); margin: 0 0 4px; }
+  .cin-note { color: var(--c-muted); font-size: 13px; margin: 0; }
+  .cin-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 18px 0 10px; }
+  .cin-tabs { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: var(--c-chip); }
+  .cin-tabs button { display: inline-flex; gap: 6px; align-items: center; font: 600 13px system-ui, sans-serif; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--c-muted); cursor: pointer; }
+  .cin-tabs button[aria-selected='true'] { background: var(--c-ink); color: var(--c-bg); }
+  .cinema .chips { margin: 0; }
+  .cinema .chips button { background: var(--c-chip); border-color: var(--c-line); color: var(--c-ink); }
+  .cinema .chips button[aria-pressed='true'] { background: var(--c-ink); color: var(--c-bg); border-color: var(--c-ink); }
+  .cin-search { flex: 1 1 200px; min-width: 0; font: 14px system-ui, sans-serif; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--c-line); background: var(--c-chip); color: var(--c-ink); }
+  .cin-search::placeholder { color: var(--c-muted); }
+  .cin-years { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 18px; }
+  .cin-years button { font: 12px ui-monospace, 'SF Mono', monospace; padding: 2px 0; border: 0; background: none; color: var(--c-muted); cursor: pointer; }
+  .cin-years button:hover, .cin-years button:focus-visible { color: var(--c-accent); }
+  .cin-year { content-visibility: auto; contain-intrinsic-size: auto 600px; margin-bottom: 26px; scroll-margin-top: 12px; }
+  .cin-year h3 { font: 700 44px/1 Georgia, 'Songti SC', serif; color: var(--c-accent); opacity: 0.9; margin: 0 0 10px; }
+  .cin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+  .tile { position: relative; padding: 0; border: 0; border-radius: 4px; overflow: hidden; aspect-ratio: 2 / 3; background: #2a241e; cursor: pointer; transition: transform .15s ease; }
+  .tile:hover, .tile:focus-visible { transform: scale(1.05); z-index: 1; outline: 2px solid var(--c-accent); outline-offset: 1px; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile-text { display: flex; flex-direction: column; justify-content: space-between; height: 100%; box-sizing: border-box; padding: 8px; text-align: left; font: 12px/1.35 system-ui, sans-serif; color: var(--c-ink); background: linear-gradient(160deg, #3a2f26, #221c17); overflow: hidden; }
+  .tile-text b { font-weight: 600; overflow-wrap: anywhere; }
+  .tile-text i { font-style: normal; color: var(--c-accent); font-size: 10px; letter-spacing: 1px; }
+  .cin-card { max-width: min(420px, calc(100vw - 32px)); border: 1px solid var(--c-line); border-radius: 14px; padding: 22px 22px 16px; background: #1f1a16; color: var(--c-ink); }
+  .cin-card::backdrop { background: rgba(0, 0, 0, 0.6); }
+  .cin-card h3 { font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 0 36px 4px 0; }
+  .cin-card .cin-meta, .cin-card .cin-date, .cin-card .cin-none { color: var(--c-muted); font-size: 14px; margin: 4px 0; }
+  .cin-card .cin-stars { color: var(--c-accent); letter-spacing: 2px; margin: 6px 0; }
+  .cin-card blockquote { margin: 12px 0; padding: 10px 14px; border-left: 3px solid var(--c-accent); background: rgba(255, 240, 220, 0.05); line-height: 1.6; }
+  .cin-card a { color: var(--c-accent); }
+  .cin-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--c-line); background: transparent; color: var(--c-ink); cursor: pointer; }
+  .cin-top ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding-left: 1.2em; }
+  @media (max-width: 560px) { .cin-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; } .cin-year h3 { font-size: 32px; } }
+</style>

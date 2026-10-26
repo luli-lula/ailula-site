@@ -1,19 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import Placeholder from '../components/Placeholder.astro';
-import { topTen } from '../data/films';
+import CinemaWall from '../components/CinemaWall.astro';
 import { t, type Lang } from '../lib/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
 <Base title={t(lang, 'navCinema')}>
-  <h1>{t(lang, 'navCinema')}</h1>
-  {topTen.length > 0 ? (
-    <>
-      <h2>{t(lang, 'sectionTopTen')}</h2>
-      <ol>{topTen.map((f) => <li>{f.title}{f.year && <span> ({f.year})</span>}</li>)}</ol>
-    </>
-  ) : <Placeholder note={lang === 'zh' ? '个人十佳电影（10 部）' : 'top-10 films'} />}
-  <p>{t(lang, 'cinemaComing')}</p>
+  <CinemaWall lang={lang} />
 </Base>

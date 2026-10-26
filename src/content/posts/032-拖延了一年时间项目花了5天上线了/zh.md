@@ -8,6 +8,8 @@ tags:
   - Project
 legacyPaths:
   - /zh/posts/032-拖延了一年时间项目花了5天上线了/
+topics: [projects]
+titleEn: "A Project I Put Off for a Year Shipped in 5 Days"
 ---
 ![032-laji.jpg](/images/032-laji.jpg)
 

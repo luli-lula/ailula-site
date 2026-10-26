@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { TOPICS } from './lib/topics';
 
 const lang = z.enum(['en', 'zh']);
 
@@ -9,9 +10,17 @@ const posts = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     lang,
-    kind: z.enum(['essay', 'notes', 'weekly', 'old-notes']),
+    kind: z.enum(['essay', 'notes', 'weekly', 'old-notes', 'travel']),
     maturity: z.enum(['seedling', 'growing', 'mature']),
     draft: z.boolean().default(false),
+    // One or two of the fixed writing topics (src/lib/topics.ts).
+    topics: z.array(z.enum(TOPICS)).min(1).max(2),
+    // English title for a post that only exists in Chinese, used on the English lists.
+    titleEn: z.string().optional(),
+    // Set on an English file translated from the Chinese original; the page says so.
+    translatedFrom: z.enum(['zh']).optional(),
+    // Travel notes: places shown on the footprint map.
+    places: z.array(z.object({ name: z.string(), lat: z.number(), lon: z.number() })).default([]),
     tags: z.array(z.string()).default([]),
     legacyPaths: z.array(z.string()).default([]),
   }),

@@ -9,6 +9,8 @@ tags:
   - Product
 legacyPaths:
   - /zh/posts/009-google-map-从0到1的过程/
+topics: [books, product]
+titleEn: "How Google Maps Went from Zero to One"
 ---
 Never Lost Again 
 The Google Mapping Revolution That Sparked New Industries and Augmented Our Reality

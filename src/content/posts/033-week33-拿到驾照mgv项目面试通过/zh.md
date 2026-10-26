@@ -8,6 +8,8 @@ tags:
   - Life
 legacyPaths:
   - /zh/posts/033-week33-拿到驾照mgv项目面试通过/
+topics: [life]
+titleEn: "Week 33: A Driver’s License, and the Master Gardener Interview"
 ---
 ![033-IMG_9370.jpeg](/images/033-IMG_9370.jpeg)
 ![033-IMG_9381.jpeg](/images/033-IMG_9381.jpeg)

@@ -10,7 +10,7 @@ interface Props { lang: Lang; slug: string; entry: CollectionEntry<'projects'>; 
 const { lang, slug, entry, fallback, size = 'normal' } = Astro.props;
 const d = entry.data;
 ---
-<a class={`pcard ${size}`} href={localizedPath(`/projects/${slug}/`, lang)} data-category={d.category} data-status={d.status}>
+<a class={`pcard ${size}`} href={localizedPath(`/projects/${slug}/`, lang)} data-category={d.category} data-keys={d.category} data-status={d.status}>
   {d.image
     ? <img class="pimg" src={d.image} alt="" loading="lazy" width="480" height="300" />
     : <span class="pimg pcover" data-category={d.category} aria-hidden="true">{d.title.slice(0, 1)}</span>}

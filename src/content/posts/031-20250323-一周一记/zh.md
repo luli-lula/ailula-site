@@ -7,6 +7,8 @@ maturity: seedling
 tags: []
 legacyPaths:
   - /zh/posts/031-20250323-一周一记/
+topics: [life]
+titleEn: "Weekly Notes 12"
 ---
 相比上周的丰富生活，这周似乎都没什么可以记录的事情，大部分时间都在家里，生活上似乎也没什么进展，周末出门了逛了一下超市而已。
 

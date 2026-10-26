@@ -7,6 +7,8 @@ maturity: mature
 tags: []
 legacyPaths:
   - /zh/posts/008-为什么现在还要写博客呢/
+topics: [life]
+titleEn: "Why Write a Blog Now?"
 ---
 > 风吹枯叶落，落叶生肥土，肥土丰香果，孜孜不倦，不紧不慢。- 《人生果实》
 

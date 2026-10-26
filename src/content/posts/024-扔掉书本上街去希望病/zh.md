@@ -8,6 +8,8 @@ tags:
   - Reading
 legacyPaths:
   - /zh/posts/024-扔掉书本上街去希望病/
+topics: [books]
+titleEn: "Throw Away Your Books, Rally in the Streets"
 ---
 # 扔掉书本上街去
 寺山修司

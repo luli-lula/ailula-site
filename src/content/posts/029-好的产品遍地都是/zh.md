@@ -7,6 +7,8 @@ maturity: mature
 tags: []
 legacyPaths:
   - /zh/posts/029-好的产品遍地都是/
+topics: [product]
+titleEn: "Good Products Are Everywhere"
 ---
 最近接连两次有产品idea的时候发现市面上已经有做的非常好的产品了，顺便调研了一下这些创作人的故事，虽然感觉自己没得做了，但是还是会为这些好的产品而激动。
 

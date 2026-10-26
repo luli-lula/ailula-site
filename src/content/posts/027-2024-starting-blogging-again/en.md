@@ -8,6 +8,7 @@ tags:
   - Life
 legacyPaths:
   - /posts/027-2024-starting-blogging-again/
+topics: [life]
 ---
 Writing blogs now might be as unnoticed as writing diaries on Douban. Recently, I bought a domain for an independent product project, which sparked the idea to set up a blog again. Still using Hugo + GitHub, just like seven or eight years ago, though with many more convenient tools available now.
 

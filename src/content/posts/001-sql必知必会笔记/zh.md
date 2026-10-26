@@ -8,6 +8,8 @@ tags:
   - Data Analyst
 legacyPaths:
   - /zh/posts/001-sql必知必会笔记/
+topics: [product]
+titleEn: "Notes on “SQL in 10 Minutes”"
 ---
 > Sams Teach Yourself SQL in 10 Minutes - Fourth Edition
 > 语句备份，方便查阅，SQL Server版本

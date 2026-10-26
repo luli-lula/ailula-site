@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/003-三节课产品p1课程笔记1-of-3/
+topics: [product]
+titleEn: "Product Manager Course Notes (1/3)"
 ---
 -----
 

@@ -8,6 +8,7 @@ tags:
   - Life
 legacyPaths:
   - /zh/posts/027-2024-starting-blogging-again/
+topics: [life]
 ---
 现在写博客，可能也类似在在豆瓣写日记一样没人看吧，最近因为做独立产品买了一个域名，所以又开始产生折腾博客的念头，依然是用的Hugo+Github，似乎和七八年前一样，不过有了很多更便捷的工具。
 

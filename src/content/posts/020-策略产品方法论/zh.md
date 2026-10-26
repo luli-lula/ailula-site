@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/020-策略产品方法论/
+topics: [product]
+titleEn: "A Method for Strategy Products"
 ---
 -  三节课在二月份限免了一些课程，当时随手领取之后就忘了，结果还有两天课程结束时才想起来又开始看
 - 课程导师是原来在百度/滴滴的产品，其实方法论很简单，但是课程内容有很多简化版的例子对于想要了解其他行业的策略还是很好的入门

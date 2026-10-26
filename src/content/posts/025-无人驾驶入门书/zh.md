@@ -8,6 +8,8 @@ tags:
   - Books
 legacyPaths:
   - /zh/posts/025-无人驾驶入门书/
+topics: [books]
+titleEn: "A Primer on Self-Driving Cars"
 ---
 作者：胡迪·利普森 梅尔芭·库曼
 评分：***

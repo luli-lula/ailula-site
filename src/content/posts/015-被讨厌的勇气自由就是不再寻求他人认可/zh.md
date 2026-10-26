@@ -8,6 +8,8 @@ tags:
   - Reading
 legacyPaths:
   - /zh/posts/015-被讨厌的勇气自由就是不再寻求他人认可/
+topics: [books]
+titleEn: "The Courage to Be Disliked"
 ---
 <!-- more -->
 

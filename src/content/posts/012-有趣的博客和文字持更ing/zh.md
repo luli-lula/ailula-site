@@ -7,6 +7,8 @@ maturity: mature
 tags: []
 legacyPaths:
   - /zh/posts/012-有趣的博客和文字持更ing/
+topics: [books]
+titleEn: "Interesting Blogs and Writing (Ongoing)"
 ---
 很早开始就
 

@@ -70,7 +70,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
     addLight(at.clone().add(new THREE.Vector3(0, 2, 0)), 14, 14);
   }
 
-  // Garden: raised beds and a little glasshouse — the writing.
+  // Garden: raised beds and a writing hut — the writing.
   {
     const at = zoneAt('garden');
     const g = new THREE.Group();
@@ -87,18 +87,20 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
         greens.push(strip(s));
       }
     }
-    const house = strip(box(3, 2.4, 2.4, 0, 0, 2.4));
-    const roofG = strip(gable(3.2, 2.6, 1.1).translate(0, 2.4, 2.4));
-    g.add(mesh(faceted(merge(beds), rnd, 0.12), darkMat), mesh(faceted(merge(greens), rnd, 0.25), material('#6c9a55')));
-    const glass = material('#d8efe9', { transparent: true, opacity: 0.35, roughness: 0.1, emissive: WINDOW, emissiveIntensity: 0 });
-    g.add(mesh(faceted(merge([house, roofG]), rnd, 0), glass, false));
-    // Frame edges so the glasshouse reads clearly.
-    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(merge([house, roofG])), new THREE.LineBasicMaterial({ color: '#f4efe6' }));
-    g.add(edges);
+    // The writing hut, after the lodge Virginia Woolf wrote in at the end of her garden: plank walls, a
+    // mossy roof, a door and one window that glows at night.
+    const hutAt = 2.4;
+    const walls = faceted(strip(box(2.8, 2, 2.2, 0, 0, hutAt)), rnd, 0.1, (c) => (Math.abs(c.y % 0.4) < 0.2 ? 1 : 0.88));
+    const hutRoof = faceted(strip(gable(3.3, 2.8, 1.2).translate(0, 2, hutAt)), rnd, 0.12);
+    const hutDoor = faceted(strip(box(0.7, 1.45, 0.08, -0.7, 0, hutAt + 1.12)), rnd, 0);
+    const hutWindow = faceted(strip(box(0.85, 0.6, 0.08, 0.55, 0.9, hutAt + 1.12)), rnd, 0);
+    const step = faceted(strip(box(0.9, 0.12, 0.4, -0.7, 0, hutAt + 1.35)), rnd, 0.1);
+    const windowMat = material('#45545c', { emissive: WINDOW, emissiveIntensity: 0 });
+    g.add(mesh(walls, material('#b98d62')), mesh(hutRoof, material('#5f6e4c')), mesh(merge([hutDoor, step]), darkMat), mesh(hutWindow, windowMat, false));
+    g.name = 'garden';
     group.add(g);
     picks.push({ object: g, zone: 'garden' });
-    glass.userData.glow = true;
-    group.userData.glass = glass;
+    group.userData.hutWindow = windowMat;
     addLight(at.clone().add(new THREE.Vector3(0, 1.5, 0)), 10, 12);
   }
 
@@ -220,7 +222,7 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low' }): 
     setPalette(_next, night) {
       glowMat.emissiveIntensity = night ? 1.6 : 0.2;
       lampMat.emissiveIntensity = night ? 2.2 : 0.05;
-      (group.userData.glass as THREE.MeshStandardMaterial).emissiveIntensity = night ? 0.35 : 0;
+      (group.userData.hutWindow as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.3 : 0;
       (group.userData.greenhouseGlass as THREE.MeshStandardMaterial).emissiveIntensity = night ? 0.45 : 0;
       ((group.userData.hollowGlow as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.4 : 0.05;
       for (const l of nightLights) l.intensity = night ? (l.userData.on as number) : 0;

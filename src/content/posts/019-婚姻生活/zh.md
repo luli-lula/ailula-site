@@ -8,6 +8,8 @@ tags:
   - Movies
 legacyPaths:
   - /zh/posts/019-婚姻生活/
+topics: [movies]
+titleEn: "Scenes from a Marriage"
 ---
 [婚姻生活 🌟🌟🌟🌟🌟](https://movie.douban.com/subject/1292981/)
 

@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/007-三节课产品p2课程/
+topics: [product]
+titleEn: "Product Manager Course, Part 2"
 ---
 P2课程开始就强调更多的在于思考，作业比较少，但是感觉还是没有P1课程内容的丰富度，而且也没有体会到深度，可能也是自己没有实际的工作经验，但是课程数量、拓展材料以及思考题也都变少了很多。
 

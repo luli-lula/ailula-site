@@ -8,6 +8,8 @@ tags:
   - Reading
 legacyPaths:
   - /zh/posts/030-an-unfinished-film/
+topics: [movies]
+titleEn: "An Unfinished Film"
 ---
 ![](/images/030-film_forum.jpeg)
 

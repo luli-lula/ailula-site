@@ -8,6 +8,8 @@ tags:
   - Share
 legacyPaths:
   - /zh/posts/028-旧kindle安装微信读书防踩坑全流程/
+topics: [tools]
+titleEn: "Installing WeChat Read on an Old Kindle"
 ---
 # 
 

@@ -70,12 +70,12 @@ test.describe('workshop in hi-fi', () => {
 
   test('category chips filter the cards', async ({ page }) => {
     const panel = await open(page);
-    await panel.locator('button[data-cat="plants"]').click();
-    await expect(panel.locator('button[data-cat="plants"]')).toHaveAttribute('aria-pressed', 'true');
+    await panel.locator('button[data-key="plants"]').click();
+    await expect(panel.locator('button[data-key="plants"]')).toHaveAttribute('aria-pressed', 'true');
     const visible = panel.locator('.pcard:visible');
     await expect(visible).toHaveCount(4);
     for (const c of await visible.all()) await expect(c).toHaveAttribute('data-category', 'plants');
-    await panel.locator('button[data-cat="all"]').click();
+    await panel.locator('button[data-key="all"]').click();
     await expect(panel.locator('.pcard:visible')).toHaveCount(9);
   });
 

@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/004-三节课产品p1课程笔记2-of-3/
+topics: [product]
+titleEn: "Product Manager Course Notes (2/3)"
 ---
 - 04 功能和流程入门
    - 针对已有功能的优化

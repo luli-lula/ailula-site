@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/002-地图导航产品分析报告/
+topics: [product]
+titleEn: "A Product Analysis of Map Navigation Apps"
 ---
 当年校招下决心要做产品，看了一堆推荐入门的书之后满腔热情开始分析产品。
 没有实习经历，只能傻了吧唧自己瞎琢磨花了一段时间磨出来下面的内容，也算是后来找工作的敲门砖，现在回头看起来里面的观点真的太幼稚了，但是还是还能回想起来当时截图对比分析时的乐趣和初心

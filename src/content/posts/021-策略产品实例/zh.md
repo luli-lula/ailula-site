@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/021-策略产品实例/
+topics: [product]
+titleEn: "Strategy Products in Practice"
 ---
 > 目的地检索推荐策略
 1. 产品目标：帮助用户以最低成本完成目的地输入

@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/005-三节课产品p1课程笔记3-of-3/
+topics: [product]
+titleEn: "Product Manager Course Notes (3/3)"
 ---
 - 06 项目管理入门-上线邮件
     - 上线邮件怎么写

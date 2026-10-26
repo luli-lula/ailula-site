@@ -11,9 +11,9 @@ const over = (top: number[], a: number, under: number[]) => top.slice(0, 3).map(
 const ratio = (x: number[], y: number[]) => { const [a, b] = [lum(x), lum(y)].sort((p, q) => q - p); return (a + 0.05) / (b + 0.05); };
 const SCENE = [[255, 255, 255], [32, 38, 64], [61, 106, 60], [196, 67, 44]]; // sky, night, fir, dogwood
 
-async function openGarden(page: Page, night = false) {
+async function openGarden(page: Page, night = false, path = '/zh/') {
   await page.addInitScript((n) => { localStorage.setItem('ailula-mode', 'hifi'); localStorage.setItem('ailula-night', n ? '1' : '0'); }, night);
-  await page.goto('/');
+  await page.goto(path);
   await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
   await page.evaluate(() => (window as any).__valley.select('garden'));
   const panel = page.locator('[data-panel="garden"]');
@@ -61,11 +61,9 @@ test('list rows keep the date and the title side by side', async ({ page }) => {
   for (const r of rows) { expect(r.dt).toBeLessThanOrEqual(4); expect(r.left).toBe(true); }
 });
 
-test('Chinese-only posts carry a small badge, not the words "Chinese only"', async ({ page }) => {
-  const panel = await openGarden(page);
+test('the English garden never says "Chinese only"', async ({ page }) => {
+  const panel = await openGarden(page, false, '/');
   await expect(panel).not.toContainText('Chinese only');
-  expect(await panel.locator('.zh-badge').count()).toBeGreaterThan(0);
-  await expect(panel.locator('.zh-badge').first()).toHaveAttribute('title', 'Chinese only');
 });
 
 test('panel title and close stay in view while the list scrolls', async ({ page }) => {

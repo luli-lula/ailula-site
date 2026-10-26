@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Placeholder from '../components/Placeholder.astro';
 import Valley from '../components/Valley.astro';
 import Contact from '../components/Contact.astro';
+import LangBadge from '../components/LangBadge.astro';
 import { timeline } from '../data/timeline';
 import { community } from '../data/community';
 import { profile } from '../data/profile';
@@ -56,7 +57,7 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
             <li>
               <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
               <span class="muted">{entry.data.summary}</span>
-              {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
+              {fallback && <LangBadge lang={lang} />}
             </li>
           ))}
         </ul>
@@ -67,8 +68,10 @@ const fmt = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
   <section>
     <h2>{t(lang, 'sectionWriting')}</h2>
     <ul class="list">
-      {posts.map(({ slug, entry }) => (
-        <li><time>{fmt(entry.data.date)}</time><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a></li>
+      {posts.map(({ slug, entry, fallback }) => (
+        <li><time>{fmt(entry.data.date)}</time>{fallback
+          ? <><a href={localizedPath(`/writing/${slug}/`, entry.data.lang as Lang)} hreflang={entry.data.lang}>{entry.data.titleEn ?? entry.data.title}</a><LangBadge lang={lang} /></>
+          : <a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>}</li>
       ))}
     </ul>
     <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>

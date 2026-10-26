@@ -8,6 +8,8 @@ tags:
   - 产品
 legacyPaths:
   - /zh/posts/022-豆瓣电影推荐策略优化/
+topics: [product, movies]
+titleEn: "Improving Douban’s Movie Recommendations"
 ---
 #### 问题：豆瓣电影的网页「喜欢这部电影的人也喜欢」模块的策略优化
 

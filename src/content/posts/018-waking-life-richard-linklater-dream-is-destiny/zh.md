@@ -8,6 +8,8 @@ tags:
   - Movies
 legacyPaths:
   - /zh/posts/018-waking-life-richard-linklater-dream-is-destiny/
+topics: [movies]
+titleEn: "Waking Life and “Richard Linklater: Dream Is Destiny”"
 ---
 [半梦半醒的人生 🌟🌟🌟🌟🌟](https://movie.douban.com/subject/1304981/)
 [理查德·林克莱特：筑梦而生 🌟🌟🌟🌟](https://movie.douban.com/subject/26681652/)

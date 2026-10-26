@@ -8,6 +8,8 @@ tags:
   - Books
 legacyPaths:
   - /zh/posts/026-一间只属于自己的房间/
+topics: [books]
+titleEn: "A Room of One’s Own"
 ---
 弗吉尼亚·伍尔夫
 19个笔记

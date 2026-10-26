@@ -8,6 +8,8 @@ tags:
   - Books
 legacyPaths:
   - /zh/posts/013-jusitcewhats-the-right-things-to-do/
+topics: [books]
+titleEn: "Justice: What’s the Right Thing to Do?"
 ---
 从前段时间更新的新一季奇葩说，到最近顺风车上线之后的女权讨论，还有HK青年争取的自由，社会议题每天都有每个人也都有自己的观点，然后到最后讨论似乎都演变成无法说服之后的不理解和谩骂。
 

@@ -139,6 +139,12 @@ var h=document.documentElement;h.dataset.mode=r.mode;h.dataset.modeAuto=String(r
       .pstatus[data-status='wip']::before { background: #c98a1e; }
       .pstatus[data-status='paused']::before { background: #8a8f88; }
       .pstatus[data-status='done']::before { background: #3d6fa8; }
+      [hidden] { display: none !important; }
+      .zh-badge { display: inline-block; margin-left: 6px; font: 600 10px/1 system-ui, sans-serif; padding: 2px 4px; border: 1px solid currentColor; border-radius: 4px; color: var(--p-muted, var(--muted)); vertical-align: 2px; text-decoration: none; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 16px; }
+      .chips button { font: 600 13px system-ui, sans-serif; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+      .chips button[aria-pressed='true'] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+      .chips button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
       .lang-label { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; background: var(--line); color: var(--muted); }
       .list { list-style: none; padding: 0; margin: 0; }
       .list li { padding: 8px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }

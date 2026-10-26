@@ -7,6 +7,7 @@ import CloseButton from './CloseButton.astro';
 import LangBadge from './LangBadge.astro';
 import ProjectCard from './ProjectCard.astro';
 import { CATEGORY_ORDER } from '../lib/content';
+import { TOPICS, topicLabel } from '../lib/topics';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { community } from '../data/community';
@@ -23,8 +24,9 @@ const groups = await projectGroups(lang);
 // The workshop shows every project, featured first; the greenhouse keeps only the plant work.
 const allProjects = groups.flatMap((g) => g.items).sort((a, b) => Number(b.entry.data.featured) - Number(a.entry.data.featured));
 const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
-const posts = (await localized('posts', lang)).sort(byDateDesc);
-const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
+// The garden lists the posts written (or translated) in this language; the English one links to the rest.
+const gardenPosts = (await localized('posts', lang)).filter((p) => !p.fallback).sort(byDateDesc);
+const gardenTopics = TOPICS.filter((tp) => gardenPosts.some((p) => p.entry.data.topics.includes(tp)));
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
 ---
 <div class="valley-root" data-lang={lang}>
@@ -56,7 +58,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <ol class="rings">
       {timeline.map((m) => (
@@ -71,7 +73,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'hollowIntro')}</p>
     {topTen.length > 0 ? (
       <>
@@ -88,11 +90,11 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'workshopIntro')}</p>
     <div class="chips" role="group" aria-label={t(lang, 'navProjects')} data-filter>
-      <button type="button" data-cat="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
-      {CATEGORY_ORDER.filter((c) => groups.some((g) => g.category === c)).map((c) => <button type="button" data-cat={c} aria-pressed="false">{t(lang, `cat_${c}`)}</button>)}
+      <button type="button" data-key="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
+      {CATEGORY_ORDER.filter((c) => groups.some((g) => g.category === c)).map((c) => <button type="button" data-key={c} aria-pressed="false">{t(lang, `cat_${c}`)}</button>)}
     </div>
     <div class="pgrid">
       {allProjects.map(({ slug, entry, fallback }) => <ProjectCard lang={lang} slug={slug} entry={entry} fallback={fallback} size={entry.data.featured ? 'large' : 'normal'} />)}
@@ -105,21 +107,18 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-garden" tabindex="-1">{label.garden}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'gardenIntro')}</p>
-    {kinds.map((k) => {
-      const group = posts.filter((p) => p.entry.data.kind === k).slice(0, 6);
-      return group.length > 0 && (
-        <>
-          <h3>{t(lang, `kind_${k}`)}</h3>
-          <ul class="vlist">
-            {group.map(({ slug, entry, fallback }) => (
-              <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><span class="title"><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>{fallback && <LangBadge lang={lang} />}</span></li>
-            ))}
-          </ul>
-        </>
-      );
-    })}
+    <div class="chips" role="group" aria-label={t(lang, 'navWriting')} data-filter>
+      <button type="button" data-key="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
+      {gardenTopics.map((tp) => <button type="button" data-key={tp} aria-pressed="false">{topicLabel(tp, lang)}</button>)}
+    </div>
+    <ul class="vlist">
+      {gardenPosts.map(({ slug, entry }) => (
+        <li data-keys={entry.data.topics.join(' ')}><time>{entry.data.date.toISOString().slice(0, 7)}</time><span class="title"><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a></span></li>
+      ))}
+    </ul>
+    {lang === 'en' && <p><a href="/writing/#more-in-chinese">{t(lang, 'moreInChinese')} →</a></p>}
     <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>
     </div>
   </section>
@@ -129,7 +128,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-greenhouse" tabindex="-1">{label.greenhouse}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'greenhouseIntro')}</p>
     <div class="pstack">
       {plantProjects.map(({ slug, entry, fallback }) => <ProjectCard lang={lang} slug={slug} entry={entry} fallback={fallback} size="compact" />)}
@@ -152,7 +151,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p class="intro">{t(lang, 'lookoutIntro')}</p>
     {profile.now[lang] ? (
       <>
@@ -170,7 +169,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
       <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
       <CloseButton lang={lang} />
     </header>
-    <div class="vbody">
+    <div class="vbody" data-filter-scope>
     <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
     <div class="dog-photos">
       {['2', '1'].map((n) => <img src={`/assets/photos/doudou/${n}.webp`} alt={`${profile.dogName || label.dog}`} loading="lazy" />)}
@@ -181,6 +180,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
 
 <script>
   import type { Season } from '../scenes/valley/palette';
+  import { wireChips } from '../scripts/chips';
   import type { ZoneId } from '../scenes/valley/zones';
 
   const html = document.documentElement;
@@ -228,14 +228,8 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     else if (previous) root.querySelector<HTMLElement>(`.valley-label[data-zone="${previous}"]`)?.focus({ preventScroll: true });
   };
 
-  // Category chips (workshop): show only the cards of the chosen kind.
-  root.querySelectorAll<HTMLElement>('[data-filter] [data-cat]').forEach((b) =>
-    b.addEventListener('click', () => {
-      const cat = b.dataset.cat!;
-      b.closest('[data-filter]')!.querySelectorAll('[data-cat]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      b.closest('.vpanel')!.querySelectorAll<HTMLElement>('.pcard').forEach((c) => (c.hidden = cat !== 'all' && c.dataset.category !== cat));
-    }),
-  );
+  // Filter chips: workshop categories and garden topics.
+  wireChips(root);
 
   let valley: any = null;
   let started = false;
@@ -368,7 +362,6 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
   .vpanel .vlist li { display: grid; grid-template-columns: 4.6em 1fr; column-gap: 12px; align-items: first baseline; padding: 7px 0; border-bottom: 1px solid var(--p-line); }
   .vpanel .vlist time { font: 12px/1.6 ui-monospace, 'SF Mono', monospace; color: var(--p-muted); font-variant-numeric: tabular-nums; }
   .vpanel .vlist .title { min-width: 0; line-height: 1.5; }
-  .zh-badge { display: inline-block; margin-left: 6px; font: 600 10px/1 system-ui, sans-serif; padding: 2px 4px; border: 1px solid currentColor; border-radius: 4px; color: var(--p-muted, #6b6f66); vertical-align: 2px; text-decoration: none; }
   .vpanel .rings { list-style: none; padding: 0; margin: 0; border-left: 2px solid #d9a978; }
   .vpanel .rings li { position: relative; padding: 6px 0 10px 16px; line-height: 1.6; }
   .vpanel .rings li::before { content: ''; position: absolute; left: -6px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: #b4552e; }

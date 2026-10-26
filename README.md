@@ -1,6 +1,6 @@
 # ailula.top
 
-lula 的个人网站：一棵红杉。设计见 `docs/superpowers/specs/`。
+lula 的个人网站：一座低多边形的小山谷，中间是一棵巨杉。设计见 `docs/superpowers/specs/`。
 
 - `pnpm dev`：本地预览（http://localhost:4321）
 - `pnpm test`：单元测试
@@ -9,4 +9,6 @@ lula 的个人网站：一棵红杉。设计见 `docs/superpowers/specs/`。
 
 ## Notes
 
-- Package manager: pnpm. The depth-map script (`scripts/depth-maps.mjs`) needs `pnpm approve-builds onnxruntime-node` once before it can run.
+- Package manager: pnpm.
+- 缺的内容：`pnpm build && node scripts/content-todo.mjs` 生成 `CONTENT-TODO.md`。缺的地方只在 `pnpm dev` 里显示「待补充」，正式网站上自动隐藏。
+- 新照片：见 `ASSETS.md`。

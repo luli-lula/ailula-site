@@ -1,17 +1,18 @@
-// Web versions of the climb photos: 2000px WebP for colour, 768px grey JPEG for depth.
+// Web versions of lula's photos: every assets-src/photos/<album>/<name>.(jpg|jpeg|png|heic) becomes
+// public/assets/photos/<album>/<name>.webp, at most 1600px wide. Existing web files are skipped.
 // Run: node scripts/compress-photos.mjs
-import { readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
 
 const src = new URL('../assets-src/photos/', import.meta.url).pathname;
-const dir = new URL('../public/assets/photos/', import.meta.url).pathname;
-for (const name of readdirSync(src)) {
-  const from = join(src, name);
-  if (/^(\d\d-[a-z]+|one-tree)\.jpg$/.test(name)) {
-    await sharp(from).resize({ width: name.startsWith("one-tree") ? 2688 : 2000 }).webp({ quality: 80 }).toFile(join(dir, name.replace('.jpg', '.webp')));
-  } else if (name.endsWith('-depth.png')) {
-    await sharp(from).resize({ width: name.startsWith("one-tree") ? 1024 : 768 }).grayscale().jpeg({ quality: 85 }).toFile(join(dir, name.replace('.png', '.jpg')));
+const out = new URL('../public/assets/photos/', import.meta.url).pathname;
+for (const album of readdirSync(src).filter((n) => statSync(join(src, n)).isDirectory())) {
+  mkdirSync(join(out, album), { recursive: true });
+  for (const name of readdirSync(join(src, album)).filter((n) => /\.(jpe?g|png|heic)$/i.test(n))) {
+    const to = join(out, album, name.replace(/\.[^.]+$/, '.webp'));
+    if (existsSync(to)) continue;
+    await sharp(join(src, album, name)).rotate().resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 78 }).toFile(to);
+    console.log(`${album}/${name} → ${(statSync(to).size / 1024).toFixed(0)} KB`);
   }
 }
-for (const n of readdirSync(dir).sort()) console.log(n.padEnd(24), (statSync(join(dir, n)).size / 1024).toFixed(0), 'KB');

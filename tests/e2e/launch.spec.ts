@@ -126,3 +126,21 @@ test('lula’s answers show up: now, email, DouDou, and JustSay is off the site'
   await expect(dog).toContainText('This is DouDou, lula’s dog.');
   expect(await dog.locator('img').count()).toBe(2);
 });
+
+test('panel close is an icon button with a name for screen readers', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('ailula-mode', 'hifi'));
+  await page.goto('/');
+  await expect(page.locator('.valley-label')).toHaveCount(7, { timeout: 30_000 });
+  await page.evaluate(() => (window as any).__valley.select('garden'));
+  const close = page.locator('[data-panel="garden"] [data-close]');
+  await expect(close).toBeVisible();
+  await expect(close).toHaveAccessibleName('Close');
+  await expect(close).toHaveAttribute('title', 'Close');
+  expect((await close.innerText()).trim()).toBe('');
+  await expect(close.locator('svg')).toHaveCount(1);
+  const box = (await close.boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(32);
+  expect(box.height).toBeGreaterThanOrEqual(32);
+  await close.click();
+  await expect(page.locator('[data-panel="garden"]')).toBeHidden();
+});

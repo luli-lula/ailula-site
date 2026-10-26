@@ -3,6 +3,7 @@
 // from the same content as the Lo-Fi pages. The 3D code loads only in Hi-Fi mode with WebGL.
 import Placeholder from './Placeholder.astro';
 import Contact from './Contact.astro';
+import CloseButton from './CloseButton.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { community } from '../data/community';
@@ -48,7 +49,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   <p class="valley-hint">{t(lang, 'valleyHint')}</p>
 
   <section class="vpanel" data-panel="tree" role="dialog" aria-labelledby="vp-tree" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <ol class="rings">
@@ -59,7 +60,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel" data-panel="hollow" role="dialog" aria-labelledby="vp-hollow" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
     <p class="intro">{t(lang, 'hollowIntro')}</p>
     {topTen.length > 0 ? (
@@ -72,7 +73,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel" data-panel="workshop" role="dialog" aria-labelledby="vp-workshop" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
     <p class="intro">{t(lang, 'workshopIntro')}</p>
     <ul class="cards">
@@ -87,7 +88,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel" data-panel="garden" role="dialog" aria-labelledby="vp-garden" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-garden" tabindex="-1">{label.garden}</h2>
     <p class="intro">{t(lang, 'gardenIntro')}</p>
     {kinds.map((k) => {
@@ -107,7 +108,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel" data-panel="greenhouse" role="dialog" aria-labelledby="vp-greenhouse" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-greenhouse" tabindex="-1">{label.greenhouse}</h2>
     <p class="intro">{t(lang, 'greenhouseIntro')}</p>
     <ul class="cards">
@@ -133,7 +134,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel" data-panel="lookout" role="dialog" aria-labelledby="vp-lookout" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
     <p class="intro">{t(lang, 'lookoutIntro')}</p>
     {profile.now[lang] ? (
@@ -147,7 +148,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   </section>
 
   <section class="vpanel small" data-panel="dog" role="dialog" aria-labelledby="vp-dog" hidden>
-    <button type="button" class="vclose" data-close>{t(lang, 'close')}</button>
+    <CloseButton lang={lang} />
     <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
     <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
     <div class="dog-photos">
@@ -311,7 +312,9 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   .vpanel h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #9a4f2e; margin: 18px 0 6px; }
   .vpanel .intro { color: #5b6157; margin: 0 0 8px; line-height: 1.6; }
   .vpanel .muted { color: #5b6157; font-size: 14px; }
-  .vclose { position: absolute; top: 16px; right: 16px; font: 600 12px system-ui, sans-serif; border: 1px solid #ddd3c3; background: #fff; border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+  .vpanel .vclose { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 1px solid #ddd3c3; background: #fff; color: #2b2b26; border-radius: 999px; cursor: pointer; }
+  .vpanel .vclose:hover { background: #f3eee6; }
+  .vpanel .vclose:focus-visible { outline: 2px solid #2b2b26; outline-offset: 2px; }
   .vpanel .rings { list-style: none; padding: 0; margin: 0; border-left: 2px solid #d9a978; }
   .vpanel .rings li { position: relative; padding: 6px 0 10px 16px; line-height: 1.6; }
   .vpanel .rings li::before { content: ''; position: absolute; left: -6px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: #b4552e; }

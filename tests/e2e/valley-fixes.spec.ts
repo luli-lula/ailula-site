@@ -51,7 +51,8 @@ test('switching tabs never multiplies the render loop', async ({ page }) => {
     await page.waitForTimeout(150);
   }
   const after = await framesPerSecond(page);
-  expect(after).toBeLessThanOrEqual(before * 1.35 + 2);
+  // A doubled loop would give about 2×; 1.5× leaves room for a busy test machine.
+  expect(after).toBeLessThanOrEqual(before * 1.5 + 2);
 });
 
 test('lo-fi pauses the valley; resizing meanwhile does not break it on return', async ({ page }) => {

@@ -65,7 +65,7 @@ test('the greenhouse gathers the plant work, Floradex first, with photos', async
   await page.evaluate(() => (window as any).__valley.select('greenhouse'));
   const panel = page.locator('[data-panel="greenhouse"]');
   await expect(panel).toBeVisible();
-  await expect(panel.locator('.cards li').first()).toContainText('Floradex');
+  await expect(panel.locator('.pcard').first()).toContainText('Floradex');
+  for (const c of await panel.locator('.pcard').all()) await expect(c).toHaveAttribute('data-category', 'plants');
   await expect(panel.locator('.photos img')).not.toHaveCount(0);
-  await expect(page.locator('[data-panel="workshop"] .cards')).not.toContainText('Floradex');
 });

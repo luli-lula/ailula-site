@@ -1,5 +1,5 @@
 ---
-title: WildCard · 植物发现
+title: WildCard
 lang: zh
 summary: 拍一张植物照片，得到一张知识卡片的 iOS App。
 status: wip

@@ -1,0 +1,58 @@
+---
+// One project as a card: picture (or a lettered cover), name, one-line pitch, status and year.
+// Used by the workshop and greenhouse panels and the /projects/ page, so all three look the same.
+import type { CollectionEntry } from 'astro:content';
+import LangBadge from './LangBadge.astro';
+import { localizedPath, t, type Lang } from '../lib/i18n';
+import { STATUS_KEY } from '../lib/content';
+
+interface Props { lang: Lang; slug: string; entry: CollectionEntry<'projects'>; fallback: boolean; size?: 'large' | 'normal' | 'compact' }
+const { lang, slug, entry, fallback, size = 'normal' } = Astro.props;
+const d = entry.data;
+---
+<a class={`pcard ${size}`} href={localizedPath(`/projects/${slug}/`, lang)} data-category={d.category} data-status={d.status}>
+  {d.image
+    ? <img class="pimg" src={d.image} alt="" loading="lazy" width="480" height="300" />
+    : <span class="pimg pcover" data-category={d.category} aria-hidden="true">{d.title.slice(0, 1)}</span>}
+  <span class="pbody">
+    <span class="ptitle">{d.title}{fallback && <LangBadge lang={lang} />}</span>
+    <span class="ptag">{d.summary}</span>
+    <span class="pmeta">
+      <span class="pstatus" data-status={d.status}>{t(lang, STATUS_KEY[d.status])}</span>
+      {d.date && <span>{d.date.getUTCFullYear()}</span>}
+    </span>
+  </span>
+</a>
+
+<style is:global>
+  /* Colours come from the panel tokens inside the valley, and from the site tokens on Lo-Fi pages. */
+  .pcard { display: flex; flex-direction: column; overflow: hidden; border-radius: 14px; text-decoration: none !important;
+    color: var(--p-ink, var(--fg)) !important; background: var(--p-card, var(--card)); border: 1px solid var(--p-line, var(--line));
+    transition: transform .2s ease, box-shadow .2s ease; }
+  .pcard:hover, .pcard:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(30, 40, 30, 0.14); }
+  .pcard:focus-visible { outline: 2px solid var(--p-ink, var(--fg)); outline-offset: 2px; }
+  .pcard[hidden] { display: none; }
+  .pimg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--p-line, var(--line)); }
+  .pcover { display: grid; place-items: center; font: 700 44px/1 Georgia, 'Songti SC', serif; color: #fdfaf3; }
+  .pcover[data-category='plants'] { background: #4f7a4a; }
+  .pcover[data-category='learning'] { background: #a5643c; }
+  .pcover[data-category='tools'] { background: #4d5f7a; }
+  .pbody { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px 12px; min-width: 0; }
+  .ptitle { font-weight: 650; font-size: 16px; line-height: 1.3; }
+  .ptag { font-size: 13.5px; line-height: 1.5; color: var(--p-muted, var(--muted)); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pmeta { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--p-muted, var(--muted)); margin-top: 2px; }
+  .pstatus::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: currentColor; }
+  .pstatus[data-status='live']::before { background: #3f8f4f; }
+  .pstatus[data-status='wip']::before { background: #c98a1e; }
+  .pstatus[data-status='paused']::before { background: #8a8f88; }
+  .pstatus[data-status='done']::before { background: #3d6fa8; }
+  .pcard.large .pimg { aspect-ratio: 2 / 1; }
+  .pcard.large .ptitle { font-size: 19px; }
+  .pcard.large .ptag { -webkit-line-clamp: 3; font-size: 14.5px; }
+  /* Compact: picture on the left, text on the right. */
+  .pcard.compact { flex-direction: row; }
+  .pcard.compact .pimg { width: 34%; flex: none; height: auto; min-height: 100px; aspect-ratio: auto; align-self: stretch; border-bottom: 0; border-right: 1px solid var(--p-line, var(--line)); }
+  .pcard.compact .pcover { font-size: 30px; }
+  .pgrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+  .pgrid .pcard.large { grid-column: 1 / -1; }
+</style>

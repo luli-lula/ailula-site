@@ -5,12 +5,14 @@ import Placeholder from './Placeholder.astro';
 import Contact from './Contact.astro';
 import CloseButton from './CloseButton.astro';
 import LangBadge from './LangBadge.astro';
+import ProjectCard from './ProjectCard.astro';
+import { CATEGORY_ORDER } from '../lib/content';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { community } from '../data/community';
 import { topTen } from '../data/films';
 import { localizedPath, t, type Lang } from '../lib/i18n';
-import { byDateDesc, localized, projectGroups, STATUS_KEY } from '../lib/content';
+import { byDateDesc, localized, projectGroups } from '../lib/content';
 import { ZONES } from '../scenes/valley/zones';
 import { SEASONS } from '../scenes/valley/palette';
 
@@ -18,7 +20,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const other: Lang = lang === 'zh' ? 'en' : 'zh';
 const groups = await projectGroups(lang);
-const workshopProjects = groups.filter((g) => g.category !== 'plants').flatMap((g) => g.items);
+// The workshop shows every project, featured first; the greenhouse keeps only the plant work.
+const allProjects = groups.flatMap((g) => g.items).sort((a, b) => Number(b.entry.data.featured) - Number(a.entry.data.featured));
 const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
 const posts = (await localized('posts', lang)).sort(byDateDesc);
 const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
@@ -80,22 +83,20 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     </div>
   </section>
 
-  <section class="vpanel" data-panel="workshop" role="dialog" aria-labelledby="vp-workshop" hidden>
+  <section class="vpanel wide" data-panel="workshop" role="dialog" aria-labelledby="vp-workshop" hidden>
     <header class="vhead">
       <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
       <CloseButton lang={lang} />
     </header>
     <div class="vbody">
     <p class="intro">{t(lang, 'workshopIntro')}</p>
-    <ul class="cards">
-      {workshopProjects.map(({ slug, entry, fallback }) => (
-        <li>
-          <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
-          <p>{entry.data.summary}</p>
-          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <LangBadge lang={lang} />}</p>
-        </li>
-      ))}
-    </ul>
+    <div class="chips" role="group" aria-label={t(lang, 'navProjects')} data-filter>
+      <button type="button" data-cat="all" aria-pressed="true">{t(lang, 'cat_all')}</button>
+      {CATEGORY_ORDER.filter((c) => groups.some((g) => g.category === c)).map((c) => <button type="button" data-cat={c} aria-pressed="false">{t(lang, `cat_${c}`)}</button>)}
+    </div>
+    <div class="pgrid">
+      {allProjects.map(({ slug, entry, fallback }) => <ProjectCard lang={lang} slug={slug} entry={entry} fallback={fallback} size={entry.data.featured ? 'large' : 'normal'} />)}
+    </div>
     </div>
   </section>
 
@@ -130,16 +131,9 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     </header>
     <div class="vbody">
     <p class="intro">{t(lang, 'greenhouseIntro')}</p>
-    <ul class="cards">
-      {plantProjects.map(({ slug, entry, fallback }) => (
-        <li class={entry.data.featured ? 'featured' : ''}>
-          {entry.data.image && <img src={entry.data.image} alt="" loading="lazy" />}
-          <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
-          <p>{entry.data.summary}</p>
-          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <LangBadge lang={lang} />}</p>
-        </li>
-      ))}
-    </ul>
+    <div class="pstack">
+      {plantProjects.map(({ slug, entry, fallback }) => <ProjectCard lang={lang} slug={slug} entry={entry} fallback={fallback} size="compact" />)}
+    </div>
     <h3>{t(lang, 'communityTitle')}</h3>
     <ul class="plain">
       {community[lang].map((c) => <li>{c}</li>)}
@@ -233,6 +227,15 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     if (open) open.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
     else if (previous) root.querySelector<HTMLElement>(`.valley-label[data-zone="${previous}"]`)?.focus({ preventScroll: true });
   };
+
+  // Category chips (workshop): show only the cards of the chosen kind.
+  root.querySelectorAll<HTMLElement>('[data-filter] [data-cat]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const cat = b.dataset.cat!;
+      b.closest('[data-filter]')!.querySelectorAll('[data-cat]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      b.closest('.vpanel')!.querySelectorAll<HTMLElement>('.pcard').forEach((c) => (c.hidden = cat !== 'all' && c.dataset.category !== cat));
+    }),
+  );
 
   let valley: any = null;
   let started = false;
@@ -339,6 +342,14 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
   html[data-night='true'] .vpanel { --p-bg: rgba(26, 30, 50, 0.78); --p-edge: rgba(255, 255, 255, 0.14); --p-line: rgba(255, 255, 255, 0.12); --p-ink: #eef0f7; --p-muted: #c3c7d6; --p-accent: #f0b58c; --p-link: #f3f1ea; --p-link-hover: #f6c49e; --p-card: rgba(255, 255, 255, 0.06); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
   .vpanel.small { bottom: auto; }
+  .vpanel.wide { width: min(680px, calc(100vw - 24px)); }
+  .vpanel { --p-on-ink: #fdfaf3; }
+  html[data-night='true'] .vpanel { --p-on-ink: #1a1e32; }
+  .vpanel .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 14px; }
+  .vpanel .chips button { font: 600 12px system-ui, sans-serif; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--p-line); background: var(--p-card); color: var(--p-ink); cursor: pointer; }
+  .vpanel .chips button[aria-pressed='true'] { background: var(--p-ink); border-color: var(--p-ink); color: var(--p-on-ink); }
+  .vpanel .chips button:focus-visible { outline: 2px solid var(--p-ink); outline-offset: 2px; }
+  .vpanel .pstack { display: grid; gap: 10px; }
   .vpanel[hidden] { display: none; }
   @keyframes vpanel-in { from { opacity: 0; transform: translateY(12px); } }
   /* Title and close stay put; only the body scrolls, fading out at the bottom edge. */
@@ -383,6 +394,6 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     .valley-controls { gap: 4px; }
     .valley-label { font-size: 9px; padding: 6px 9px; letter-spacing: .08em; }
     .valley-label[data-zone='dog'] { display: none; }
-    .vpanel, .vpanel.small { top: auto; left: 12px; right: 12px; width: auto; bottom: 12px; max-height: 62vh; }
+    .vpanel, .vpanel.small, .vpanel.wide { top: auto; left: 12px; right: 12px; width: auto; bottom: 12px; max-height: 62vh; }
   }
 </style>

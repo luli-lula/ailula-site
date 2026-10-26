@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import { localizedPath, t, type Lang } from '../lib/i18n';
-import { projectGroups, STATUS_KEY } from '../lib/content';
+import ProjectCard from '../components/ProjectCard.astro';
+import { t, type Lang } from '../lib/i18n';
+import { projectGroups } from '../lib/content';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -12,30 +13,13 @@ const groups = await projectGroups(lang);
   {groups.map(({ category, items }) => (
     <section>
       <h2>{t(lang, `cat_${category}`)}</h2>
-      <ul class="cards">
-        {items.map(({ slug, entry, fallback }) => (
-          <li class={entry.data.featured ? 'featured' : ''}>
-            {entry.data.image && <img class="thumb" src={entry.data.image} alt="" loading="lazy" width="480" height="300" />}
-            <h3><a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a></h3>
-            <p>{entry.data.summary}</p>
-            <p class="meta">
-              <span>{t(lang, STATUS_KEY[entry.data.status])}</span>
-              {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
-            </p>
-          </li>
-        ))}
-      </ul>
+      <div class="pgrid">
+        {items.map(({ slug, entry, fallback }) => <ProjectCard lang={lang} slug={slug} entry={entry} fallback={fallback} size={entry.data.featured ? 'large' : 'normal'} />)}
+      </div>
     </section>
   ))}
 </Base>
 
 <style>
   section h2 { margin-top: 32px; }
-  .cards { list-style: none; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
-  .cards li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px 16px 10px; overflow: hidden; }
-  .cards li.featured { grid-column: 1 / -1; border-color: var(--accent); }
-  .thumb { display: block; width: calc(100% + 32px); height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; margin: -4px -16px 8px; border-bottom: 1px solid var(--line); }
-  .cards h3 { font-size: 18px; margin: 12px 0 4px; }
-  .cards p { margin: 4px 0; }
-  .meta { display: flex; gap: 10px; color: var(--muted); font-size: 13px; }
 </style>

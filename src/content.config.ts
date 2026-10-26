@@ -33,6 +33,8 @@ const projects = defineCollection({
     // Phone screenshots for app projects, shown as a strip on the project page.
     gallery: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
+    // A row of headline numbers on the project page, e.g. { value: '151', label: 'plants' }.
+    facts: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
     // Position inside its group (lower first); unordered projects follow, newest first.
     order: z.number().optional(),
     // Content lula still has to write; shown while developing, collected into CONTENT-TODO.md.

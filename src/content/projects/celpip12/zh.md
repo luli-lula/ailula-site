@@ -1,8 +1,8 @@
 ---
-title: CELPIP12 - AI英语考试写作练习平台
+title: CELPIP12
 date: 2025-08-13 12:00:00+00:00
 lang: zh
-summary: 一个产品经理从自身需求出发，边学边做的CELPIP写作练习平台，记录了从零开始学习Web开发的完整过程
+summary: CELPIP 英语考试的写作练习平台：AI 给作文打分、点评，附 90 多篇官方范文。
 status: paused
 tags:
 - Next.js 14

@@ -1,5 +1,5 @@
 ---
-title: WildCard · Plant Discovery
+title: WildCard
 lang: en
 summary: 'An iOS app: photograph a plant and get a knowledge card for it.'
 status: wip

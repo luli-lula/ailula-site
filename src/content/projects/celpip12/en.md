@@ -1,9 +1,9 @@
 ---
-title: CELPIP12 - From Personal Pain Point to Full-Stack AI Solution
+title: CELPIP12
 date: 2025-08-13 12:00:00+00:00
 lang: en
-summary: A product manager's journey from identifying personal pain points to building
-  a full-stack AI-powered CELPIP writing practice platform
+summary: 'Writing practice for the CELPIP English test: AI scores and comments on
+  your essays, with 90+ official sample answers.'
 status: paused
 tags:
 - Next.js 14

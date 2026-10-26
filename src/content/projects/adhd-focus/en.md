@@ -1,5 +1,5 @@
 ---
-title: ADHDFocus - Focus Timer
+title: ADHDFocus
 date: 2025-04-01 12:00:00+00:00
 lang: en
 summary: A minimalist focus timer designed specifically for people with ADHD to help

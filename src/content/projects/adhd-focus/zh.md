@@ -1,8 +1,8 @@
 ---
-title: ADHDFocus - 专注计时器
+title: ADHDFocus
 date: 2025-04-01 12:00:00+00:00
 lang: zh
-summary: 一个以专为ADHD人群设计的简洁专注计时器，帮助提升注意力集中度
+summary: 为 ADHD 人群设计的极简专注计时器。
 status: paused
 tags:
 - Next.js 14

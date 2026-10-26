@@ -41,11 +41,6 @@ const d = entry.data;
   .ptitle { font-weight: 650; font-size: 16px; line-height: 1.3; }
   .ptag { font-size: 13.5px; line-height: 1.5; color: var(--p-muted, var(--muted)); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .pmeta { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--p-muted, var(--muted)); margin-top: 2px; }
-  .pstatus::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: currentColor; }
-  .pstatus[data-status='live']::before { background: #3f8f4f; }
-  .pstatus[data-status='wip']::before { background: #c98a1e; }
-  .pstatus[data-status='paused']::before { background: #8a8f88; }
-  .pstatus[data-status='done']::before { background: #3d6fa8; }
   .pcard.large .pimg { aspect-ratio: 2 / 1; }
   .pcard.large .ptitle { font-size: 19px; }
   .pcard.large .ptag { -webkit-line-clamp: 3; font-size: 14.5px; }

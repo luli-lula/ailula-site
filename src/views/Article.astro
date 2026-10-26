@@ -1,6 +1,7 @@
 ---
 // Shared reading page for posts and projects.
 import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
 import Placeholder from '../components/Placeholder.astro';
 import { render, type CollectionEntry } from 'astro:content';
 import { localizedPath, t, type Lang } from '../lib/i18n';
@@ -16,13 +17,18 @@ const links = project?.links ?? [];
 <Base title={entry.data.title} description={project?.summary} original={fallback ? localizedPath(Astro.url.pathname, entry.data.lang as Lang) : undefined}>
   <article lang={entry.data.lang}>
     <h1>{entry.data.title}</h1>
+    {project && <p class="ptagline">{project.summary}</p>}
     <p class="meta">
-      {project && <span class="status">{t(lang, STATUS_KEY[project.status])}</span>}
-      {date && <time>{date}</time>}
+      {project && <span class="pstatus" data-status={project.status}>{t(lang, STATUS_KEY[project.status])}</span>}
+      {project ? project.date && <span>{project.date.getUTCFullYear()}</span> : date && <time>{date}</time>}
+      {/* A whole page in the other language needs words, not the small list badge. */}
       {fallback && <span class="lang-label">{t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly')}</span>}
-      {project?.url && <a href={project.url}>{hostOf(project.url)} ↗</a>}
-      {links.map((l) => <a href={l.url}>{l.label} ↗</a>)}
+      {project?.url && <a class="visit" href={project.url}><Icon name="external" />{hostOf(project.url)}</a>}
+      {links.map((l) => <a class="visit" href={l.url}><Icon name={/github\.com/.test(l.url) ? 'github' : 'external'} />{l.label}</a>)}
     </p>
+    {project && project.facts.length > 0 && (
+      <dl class="facts">{project.facts.map((f) => <div><dd>{f.value}</dd><dt>{f.label}</dt></div>)}</dl>
+    )}
     {project?.image && <img class="shot" src={project.image} alt={`${entry.data.title} — screenshot`} width="960" height="600" />}
     {project && project.gallery.length > 0 && (
       <div class="gallery">{project.gallery.map((src) => <img src={src} alt={`${entry.data.title} — app screen`} loading="lazy" />)}</div>
@@ -34,8 +40,14 @@ const links = project?.links ?? [];
 
 <style>
   .meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 14px; }
-  .status { padding: 1px 10px; border-radius: 999px; background: var(--line); color: var(--fg); }
-  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 0 0 24px; }
+  .ptagline { font-size: 18px; line-height: 1.6; color: var(--muted); margin: -4px 0 10px; }
+  .visit { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; }
+  .visit:hover { border-color: var(--accent); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin: 18px 0 22px; }
+  .facts div { border-top: 2px solid var(--accent); padding-top: 8px; }
+  .facts dd { margin: 0; font: 700 28px/1.1 Georgia, 'Songti SC', serif; }
+  .facts dt { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 0 0 24px; align-items: start; }
   .gallery img { width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--line); }
   .shot { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; margin: 8px 0 20px; }
 </style>

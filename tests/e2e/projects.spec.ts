@@ -90,3 +90,35 @@ test.describe('workshop in hi-fi', () => {
     });
   });
 });
+
+test.describe('project page framework', () => {
+  test('the native plant care signs case study leads with its numbers and keeps the section order', async ({ page }) => {
+    await page.goto('/zh/projects/plant-care-signs/');
+    await expect(page.locator('main h1')).toHaveText('本土植物养护卡片');
+    await expect(page.locator('main .facts')).toContainText('151');
+    const order = ['为什么做', '我做了什么', '怎么做的', '结果', '学到了什么', '下一步'];
+    const h2s = (await page.locator('main article h2').allInnerTexts()).map((t) => t.trim()).filter((t) => order.includes(t));
+    expect(h2s.length).toBeGreaterThanOrEqual(4);
+    expect(h2s).toEqual(order.filter((o) => h2s.includes(o)));
+    await expect(page.locator('main .gallery img').first()).toBeVisible();
+  });
+
+  test('English case study has the same frame', async ({ page }) => {
+    await page.goto('/projects/plant-care-signs/');
+    await expect(page.locator('main h1')).toHaveText('Native Plant Care Signs');
+    await expect(page.locator('main .facts')).toContainText('151');
+    await expect(page.locator('main article h2').first()).toHaveText('Why');
+  });
+
+  test('the live-site link carries an external-link icon and its address', async ({ page }) => {
+    await page.goto('/projects/plant-care-signs/');
+    const link = page.locator('main a.visit');
+    await expect(link).toHaveAttribute('href', 'https://ailula.top/plant-care-signs/');
+    await expect(link.locator('svg')).toHaveCount(1);
+    await expect(link).toContainText('ailula.top/plant-care-signs');
+  });
+
+  test('a draft project has no page', async ({ request }) => {
+    expect((await request.get('/projects/research-workbench/')).status()).toBe(404);
+  });
+});

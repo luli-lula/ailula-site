@@ -32,6 +32,7 @@
 | 9 | CELPIP12、ADHD Focus | 已有旧文章 | 看一遍旧文章还准不准 |
 | 10 | 个人经历：滴滴、Shopee、携程 | 待口述 | 每段一两个具体的故事 |
 | 11 | 旧笔记和文章 | 待挑选 | 挑出想放在首页的 3–5 篇 |
+| 12 | DouDou 日记 | 待口述 | 它什么时候、怎么来的；名字的由来；它是什么样的狗；一件你们之间的小事 |
 
 不放：JustSay（2026-10-25 决定）、floating-thoughts（草稿）。
 以后再说：lishi-zupu、speaking-coach、hueduku、douban-data、geo-jobs、program-explorer、garden-consult、community-garden、aigc-movie、plant-pal、plantiemoji、agentlink、supermeeting、bugpin。

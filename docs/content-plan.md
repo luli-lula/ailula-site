@@ -33,6 +33,8 @@
 | 10 | 个人经历：滴滴、Shopee、携程 | 待口述 | 每段一两个具体的故事 |
 | 11 | 旧笔记和文章 | 待挑选 | 挑出想放在首页的 3–5 篇 |
 | 12 | DouDou 日记 | 待口述 | 它什么时候、怎么来的；名字的由来；它是什么样的狗；一件你们之间的小事 |
+| 13 | 巨杉时间线：住过的地方 | 待口述 | 每个城市和年份（河南写到市）；每章职业、生活各一两句；生活大事哪些公开；每章一张照片（可选） |
+| 14 | 游记 | 待梳理 | 去过的地方清单（地点、时间）；挑几次写成游记，带照片 |
 
 不放：JustSay（2026-10-25 决定）、floating-thoughts（草稿）。
 以后再说：lishi-zupu、speaking-coach、hueduku、douban-data、geo-jobs、program-explorer、garden-consult、community-garden、aigc-movie、plant-pal、plantiemoji、agentlink、supermeeting、bugpin。

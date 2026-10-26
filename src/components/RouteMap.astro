@@ -10,7 +10,13 @@ const { lang } = Astro.props;
 const ordered = chapters.filter((c) => c.coords).reverse(); // oldest first
 const insets = (['cn', 'us'] as const).map((region) => {
   const project = projector(region);
-  const dots = ordered.map((c, i) => ({ c, n: i + 1, xy: c.region === region ? project(c.coords!) : null })).filter((d) => d.xy);
+  const w = SIZE[region][0];
+  // A name goes to the right of its dot, or to the left when it would run off the map.
+  const width = (t: string) => [...t].reduce((n, ch) => n + (ch.charCodeAt(0) > 255 ? 30 : 17), 0);
+  const dots = ordered
+    .map((c, i) => ({ c, n: i + 1, xy: c.region === region ? project(c.coords!) : null, name: c.city?.[lang].split(/（| \(/)[0] ?? '' }))
+    .filter((d) => d.xy)
+    .map((d) => ({ ...d, flip: d.xy![0] + 34 + width(d.name) > w - 6 }));
   return { region, w: SIZE[region][0], h: SIZE[region][1], dots, line: dots.map((d, i) => `${i ? 'L' : 'M'}${d.xy![0]},${d.xy![1]}`).join('') };
 });
 ---
@@ -25,9 +31,9 @@ const insets = (['cn', 'us'] as const).map((region) => {
           <g class="dot" data-chapter={d.c.id} role="button" tabindex="0" aria-label={d.c.city ? d.c.city[lang] : d.c.years[lang]}>
             <circle cx={d.xy![0]} cy={d.xy![1]} r="22" />
             <text x={d.xy![0]} y={d.xy![1] + 9}>{d.n}</text>
-            {d.c.city && (d.xy![0] > w * 0.62
-              ? <text class="name" x={d.xy![0] - 30} y={d.xy![1] + 10} text-anchor="end">{d.c.city[lang].split(/（| \(/)[0]}</text>
-              : <text class="name" x={d.xy![0] + 30} y={d.xy![1] + 10}>{d.c.city[lang].split(/（| \(/)[0]}</text>)}
+            {d.name && (d.flip
+              ? <text class="name end" x={d.xy![0] - 34} y={d.xy![1] + 10}>{d.name}</text>
+              : <text class="name" x={d.xy![0] + 34} y={d.xy![1] + 10}>{d.name}</text>)}
           </g>
         ))}
       </svg>
@@ -44,5 +50,6 @@ const insets = (['cn', 'us'] as const).map((region) => {
   .route-map .dot circle { fill: #b4552e; stroke: #fff; stroke-width: 5; }
   .route-map .dot:hover circle, .route-map .dot:focus-visible circle { stroke: #1d2a20; }
   .route-map .dot text { font: 700 26px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
-  .route-map .dot text.name { font: 600 30px system-ui, 'PingFang SC', sans-serif; fill: #1d2a20; paint-order: stroke; stroke: #fff; stroke-width: 6px; }
+  .route-map .dot text.name { font: 600 30px system-ui, 'PingFang SC', sans-serif; fill: #1d2a20; text-anchor: start; paint-order: stroke; stroke: #fff; stroke-width: 6px; }
+  .route-map .dot text.name.end { text-anchor: end; }
 </style>

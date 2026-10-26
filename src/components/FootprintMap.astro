@@ -31,6 +31,8 @@ const views = VIEWS.map((id) => {
 });
 // Short place names beside the points on the regional views (the world view stays clean).
 const short = (name: string) => name.split(/（| \(| · /)[0];
+const flip = (p: { xy: [number, number] | null; card: { name: string } }, w: number) =>
+  p.xy![0] + 14 + [...short(p.card.name)].reduce((n, ch) => n + (ch.charCodeAt(0) > 255 ? 15 : 8.5), 0) > w - 6;
 const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: '美国' } : { world: 'World', cn: 'China', us: 'US' };
 ---
 <div class="fmap" data-fmap>
@@ -47,14 +49,14 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
       {others.map((p) => (
         <g class={`pt ${p.kind === 'lived' ? 'lived' : 'visited'} ${p.kind}`} data-point={p.id} data-card={JSON.stringify(p.card)} role="button" tabindex="0" aria-label={p.card.name}>
           <circle cx={p.xy![0]} cy={p.xy![1]} r="7" />
-          {v.id !== 'world' && <text class="name" x={p.xy![0] + (p.xy![0] > v.width * 0.7 ? -12 : 12)} y={p.xy![1] + 5} text-anchor={p.xy![0] > v.width * 0.7 ? 'end' : 'start'}>{short(p.card.name)}</text>}
+          {v.id !== 'world' && <text class={`name${flip(p, v.width) ? ' end' : ''}`} x={p.xy![0] + (flip(p, v.width) ? -13 : 13)} y={p.xy![1] + 5}>{short(p.card.name)}</text>}
         </g>
       ))}
       {route.map((p, n) => (
         <g class="pt lived" data-point={p.id} data-card={JSON.stringify(p.card)} role="button" tabindex="0" aria-label={p.card.name}>
           <circle cx={p.xy![0]} cy={p.xy![1]} r="8" />
           <text x={p.xy![0]} y={p.xy![1] + 3.5}>{n + 1}</text>
-          {v.id !== 'world' && <text class="name" x={p.xy![0] + (p.xy![0] > v.width * 0.7 ? -13 : 13)} y={p.xy![1] + 5} text-anchor={p.xy![0] > v.width * 0.7 ? 'end' : 'start'}>{short(p.card.name)}</text>}
+          {v.id !== 'world' && <text class={`name${flip(p, v.width) ? ' end' : ''}`} x={p.xy![0] + (flip(p, v.width) ? -14 : 14)} y={p.xy![1] + 5}>{short(p.card.name)}</text>}
         </g>
       ))}
     </svg>
@@ -93,7 +95,8 @@ const LABEL: Record<ViewId, string> = zh ? { world: '世界', cn: '中国', us: 
   .fmap .pt.note circle { fill: var(--m-note); }
   .fmap .pt.visited:not(.note) circle { fill: #fff; stroke: var(--m-note); stroke-width: 2.5; }
   .fmap .pt text { font: 700 9px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
-  .fmap .pt text.name { font: 600 15px system-ui, 'PingFang SC', sans-serif; fill: var(--m-ink); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .fmap .pt text.name { font: 600 15px system-ui, 'PingFang SC', sans-serif; fill: var(--m-ink); text-anchor: start; paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .fmap .pt text.name.end { text-anchor: end; }
   .fmap .pt:hover circle, .fmap .pt:focus-visible circle { stroke: var(--m-ink); stroke-width: 3; }
   .fmap-card { position: absolute; right: 12px; bottom: 40px; max-width: min(320px, calc(100% - 24px)); padding: 14px 16px; border-radius: 12px; background: #fffdf8; color: var(--m-ink); box-shadow: 0 10px 30px rgba(20, 30, 20, 0.2); }
   .fmap-card[hidden] { display: none; }

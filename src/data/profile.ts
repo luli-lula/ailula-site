@@ -6,7 +6,10 @@ export const profile = {
   email: 'imluli.me@gmail.com',
   resumePdf: '',
   // "Right now": what she is doing and looking for.
-  now: { zh: '在找产品经理的工作。', en: 'Looking for a product manager role.' },
+  now: {
+    zh: '一边做自己喜欢的产品，一边慢慢长向植物和生态。也欢迎聊产品相关的机会。',
+    en: 'Building products I care about, and slowly growing toward plants and ecology. Happy to talk about product roles.',
+  },
   dogName: 'DouDou',
   gaId: 'G-WMC06JHFDG',
 };

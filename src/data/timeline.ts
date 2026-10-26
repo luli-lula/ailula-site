@@ -84,8 +84,8 @@ export const timeline: Milestone[] = [
     years: '2026',
     title: { zh: '现在', en: 'Now' },
     detail: {
-      zh: '在[公司]做一个 auto-research 工具；业余在做植物收集 App Floradex 和这个网站。',
-      en: 'Building an auto-research tool at [company]; on the side, Floradex, a plant collection app, and this site.',
+      zh: '在做一个 auto-research 工具；业余在做植物收集 App Floradex 和这个网站。',
+      en: 'Building an auto-research tool; on the side, Floradex, a plant collection app, and this site.',
     },
   },
 ];

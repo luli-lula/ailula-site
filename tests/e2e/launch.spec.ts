@@ -118,7 +118,7 @@ test('place labels never cover the top bar or an open panel', async ({ page }) =
 test('lula’s answers show up: now, email, DouDou, and JustSay is off the site', async ({ page, request }) => {
   await page.addInitScript(() => localStorage.setItem('ailula-mode', 'lofi'));
   await page.goto('/');
-  await expect(page.locator('main').getByText('Looking for a product manager role.')).toBeVisible();
+  await expect(page.locator('main').getByText('Building products I care about, and slowly growing toward plants and ecology. Happy to talk about product roles.')).toBeVisible();
   await expect(page.locator('main a[href="mailto:imluli.me@gmail.com"]')).toBeVisible();
   await expect(page.getByRole('link', { name: 'JustSay' })).toHaveCount(0);
   expect((await request.get('/projects/justsay/')).status()).toBe(404);

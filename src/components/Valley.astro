@@ -156,6 +156,7 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
         <p>{profile.now[lang]}</p>
       </>
     ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
+    <p><button type="button" class="go" data-go="workshop">{t(lang, 'seeProjects')} →</button></p>
     <h3>{t(lang, 'sectionContact')}</h3>
     <Contact lang={lang} />
     </div>
@@ -283,6 +284,8 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
         }, reducedMotion ? 0 : 1100);
       });
       root.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+      // Links between places (the lookout's "see what I'm building" opens the workshop).
+      root.querySelectorAll<HTMLElement>('[data-go]').forEach((b) => b.addEventListener('click', () => v.select(b.dataset.go as ZoneId)));
       // Esc closes the open place, unless a card inside it (a film's details) is open: that closes first.
       addEventListener('keydown', (e) => e.key === 'Escape' && openZone && html.dataset.mode === 'hifi' && !document.querySelector('dialog[open]') && close());
       seasonButtons.forEach((b) =>
@@ -370,6 +373,8 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
   .vpanel .chips button[aria-pressed='true'] { background: var(--p-ink); border-color: var(--p-ink); color: var(--p-on-ink); }
   .vpanel .chips button:focus-visible { outline: 2px solid var(--p-ink); outline-offset: 2px; }
   .vpanel .pstack { display: grid; gap: 10px; }
+  .vpanel .go { font: 600 14px system-ui, sans-serif; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--p-line); background: var(--p-card); color: var(--p-ink); cursor: pointer; }
+  .vpanel .go:hover, .vpanel .go:focus-visible { border-color: var(--p-accent); color: var(--p-link-hover); }
   .vpanel[hidden] { display: none; }
   @keyframes vpanel-in { from { opacity: 0; transform: translateY(12px); } }
   /* Title and close stay put; only the body scrolls, fading out at the bottom edge. */

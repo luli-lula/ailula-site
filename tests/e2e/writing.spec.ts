@@ -68,3 +68,20 @@ test.describe('garden in hi-fi', () => {
     expect(transparent).toBe(0);
   });
 });
+
+test.describe('English translations', () => {
+  const SLUGS = ['009', '010', '011', '013', '015', '020', '021', '022', '024', '025', '026'];
+  test('the eleven chosen posts have English pages that say they are translated', async ({ page, request }) => {
+    const sitemap = await (await request.get('/sitemap-0.xml')).text();
+    for (const n of SLUGS) {
+      const m = sitemap.match(new RegExp(`https://ailula.top/writing/(${n}-[^<]+)</loc>`));
+      expect(m, `${n} in the English sitemap`).not.toBeNull();
+      await page.goto(`/writing/${decodeURIComponent(m![1])}`);
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+      await expect(page.locator('main article')).toHaveAttribute('lang', 'en');
+      await expect(page.locator('main .translated')).toHaveText(/Translated from Chinese/);
+      await expect(page.locator('main .translated a')).toHaveAttribute('href', new RegExp(`^/zh/writing/${n}-`));
+      await expect(page.locator('main')).not.toContainText('Chinese only');
+    }
+  });
+});

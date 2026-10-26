@@ -4,6 +4,7 @@
 import Placeholder from './Placeholder.astro';
 import Contact from './Contact.astro';
 import CloseButton from './CloseButton.astro';
+import LangBadge from './LangBadge.astro';
 import { timeline } from '../data/timeline';
 import { profile } from '../data/profile';
 import { community } from '../data/community';
@@ -22,7 +23,6 @@ const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
 const posts = (await localized('posts', lang)).sort(byDateDesc);
 const kinds = ['essay', 'notes', 'weekly', 'old-notes'] as const;
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
-const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
 ---
 <div class="valley-root" data-lang={lang}>
   <canvas class="valley-canvas" aria-hidden="true"></canvas>
@@ -49,19 +49,26 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   <p class="valley-hint">{t(lang, 'valleyHint')}</p>
 
   <section class="vpanel" data-panel="tree" role="dialog" aria-labelledby="vp-tree" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
+    <header class="vhead">
+      <h2 id="vp-tree" tabindex="-1">{label.tree}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'treeIntro')}</p>
     <ol class="rings">
       {timeline.map((m) => (
         <li><time>{m.years}</time><strong>{m.title[lang]}</strong><p class="detail">{m.detail[lang]}</p></li>
       ))}
     </ol>
+    </div>
   </section>
 
   <section class="vpanel" data-panel="hollow" role="dialog" aria-labelledby="vp-hollow" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
+    <header class="vhead">
+      <h2 id="vp-hollow" tabindex="-1">{label.hollow}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'hollowIntro')}</p>
     {topTen.length > 0 ? (
       <>
@@ -70,46 +77,58 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
       </>
     ) : <Placeholder note={lang === 'zh' ? '个人十佳电影（10 部）' : 'top-10 films'} />}
     <p class="muted">{t(lang, 'cinemaComing')} <a href={localizedPath('/cinema/', lang)}>{t(lang, 'readAll')} →</a></p>
+    </div>
   </section>
 
   <section class="vpanel" data-panel="workshop" role="dialog" aria-labelledby="vp-workshop" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
+    <header class="vhead">
+      <h2 id="vp-workshop" tabindex="-1">{label.workshop}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'workshopIntro')}</p>
     <ul class="cards">
       {workshopProjects.map(({ slug, entry, fallback }) => (
         <li>
           <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
           <p>{entry.data.summary}</p>
-          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <span class="lang-label">{only}</span>}</p>
+          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <LangBadge lang={lang} />}</p>
         </li>
       ))}
     </ul>
+    </div>
   </section>
 
   <section class="vpanel" data-panel="garden" role="dialog" aria-labelledby="vp-garden" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-garden" tabindex="-1">{label.garden}</h2>
+    <header class="vhead">
+      <h2 id="vp-garden" tabindex="-1">{label.garden}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'gardenIntro')}</p>
     {kinds.map((k) => {
       const group = posts.filter((p) => p.entry.data.kind === k).slice(0, 6);
       return group.length > 0 && (
         <>
           <h3>{t(lang, `kind_${k}`)}</h3>
-          <ul class="list">
+          <ul class="vlist">
             {group.map(({ slug, entry, fallback }) => (
-              <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>{fallback && <span class="lang-label">{only}</span>}</li>
+              <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><span class="title"><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a>{fallback && <LangBadge lang={lang} />}</span></li>
             ))}
           </ul>
         </>
       );
     })}
     <p><a href={localizedPath('/writing/', lang)}>{t(lang, 'allPosts')} →</a></p>
+    </div>
   </section>
 
   <section class="vpanel" data-panel="greenhouse" role="dialog" aria-labelledby="vp-greenhouse" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-greenhouse" tabindex="-1">{label.greenhouse}</h2>
+    <header class="vhead">
+      <h2 id="vp-greenhouse" tabindex="-1">{label.greenhouse}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'greenhouseIntro')}</p>
     <ul class="cards">
       {plantProjects.map(({ slug, entry, fallback }) => (
@@ -117,7 +136,7 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
           {entry.data.image && <img src={entry.data.image} alt="" loading="lazy" />}
           <a href={localizedPath(`/projects/${slug}/`, lang)}>{entry.data.title}</a>
           <p>{entry.data.summary}</p>
-          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <span class="lang-label">{only}</span>}</p>
+          <p class="meta">{t(lang, STATUS_KEY[entry.data.status])}{fallback && <LangBadge lang={lang} />}</p>
         </li>
       ))}
     </ul>
@@ -131,11 +150,15 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     </div>
     <p class="muted">{t(lang, 'photosCaption')}</p>
     <Placeholder note={lang === 'zh' ? '更多植物园照片' : 'more botanical garden photos'} />
+    </div>
   </section>
 
   <section class="vpanel" data-panel="lookout" role="dialog" aria-labelledby="vp-lookout" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
+    <header class="vhead">
+      <h2 id="vp-lookout" tabindex="-1">{label.lookout}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p class="intro">{t(lang, 'lookoutIntro')}</p>
     {profile.now[lang] ? (
       <>
@@ -145,14 +168,19 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
     ) : <Placeholder note={lang === 'zh' ? '此刻卡片：正在做什么、在找什么' : '"Right now": what I am doing and looking for'} />}
     <h3>{t(lang, 'sectionContact')}</h3>
     <Contact lang={lang} />
+    </div>
   </section>
 
   <section class="vpanel small" data-panel="dog" role="dialog" aria-labelledby="vp-dog" hidden>
-    <CloseButton lang={lang} />
-    <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
+    <header class="vhead">
+      <h2 id="vp-dog" tabindex="-1">🐕 {label.dog}</h2>
+      <CloseButton lang={lang} />
+    </header>
+    <div class="vbody">
     <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
     <div class="dog-photos">
       {['2', '1'].map((n) => <img src={`/assets/photos/doudou/${n}.webp`} alt={`${profile.dogName || label.dog}`} loading="lazy" />)}
+    </div>
     </div>
   </section>
 </div>
@@ -304,35 +332,50 @@ const only = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
   html[data-night='true'] [data-night-toggle] .moon { display: inline; }
   .valley-hint { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; margin: 0; font: 12px system-ui, sans-serif; opacity: 0.65; pointer-events: none; }
 
-  .vpanel { z-index: 4; position: absolute; top: 96px; right: clamp(12px, 3vw, 28px); bottom: 24px; width: min(400px, calc(100vw - 24px)); overflow-y: auto; background: rgba(255, 253, 248, 0.95); color: #1d2a20; border-radius: 16px; padding: 20px 22px; box-shadow: 0 18px 50px rgba(20, 30, 20, 0.25); backdrop-filter: blur(10px); box-sizing: border-box; animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
+  /* Panels: frosted glass over the scene, dark glass at night. Every colour is a token so night swaps them all. */
+  .vpanel { --p-bg: rgba(252, 249, 242, 0.8); --p-edge: rgba(255, 255, 255, 0.65); --p-line: rgba(110, 90, 60, 0.16); --p-ink: #1d2a20; --p-muted: #4f564c; --p-accent: #9a4f2e; --p-link: #1f3326; --p-link-hover: #a3452a; --p-card: rgba(255, 255, 255, 0.5);
+    z-index: 4; position: absolute; top: 96px; right: clamp(12px, 3vw, 28px); bottom: 24px; width: min(400px, calc(100vw - 24px)); display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box;
+    background: var(--p-bg); color: var(--p-ink); border: 1px solid var(--p-edge); border-radius: 18px; box-shadow: 0 12px 40px rgba(20, 30, 20, 0.16);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); animation: vpanel-in 0.45s cubic-bezier(.2,.8,.2,1); }
+  html[data-night='true'] .vpanel { --p-bg: rgba(26, 30, 50, 0.78); --p-edge: rgba(255, 255, 255, 0.14); --p-line: rgba(255, 255, 255, 0.12); --p-ink: #eef0f7; --p-muted: #c3c7d6; --p-accent: #f0b58c; --p-link: #f3f1ea; --p-link-hover: #f6c49e; --p-card: rgba(255, 255, 255, 0.06); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); }
   .vpanel.small { bottom: auto; }
   .vpanel[hidden] { display: none; }
   @keyframes vpanel-in { from { opacity: 0; transform: translateY(12px); } }
-  .vpanel h2 { font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 0 0 8px; padding-right: 64px; outline: none; }
-  .vpanel h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #9a4f2e; margin: 18px 0 6px; }
-  .vpanel .intro { color: #5b6157; margin: 0 0 8px; line-height: 1.6; }
-  .vpanel .muted { color: #5b6157; font-size: 14px; }
-  .vpanel .vclose { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 1px solid #ddd3c3; background: #fff; color: #2b2b26; border-radius: 999px; cursor: pointer; }
-  .vpanel .vclose:hover { background: #f3eee6; }
-  .vpanel .vclose:focus-visible { outline: 2px solid #2b2b26; outline-offset: 2px; }
+  /* Title and close stay put; only the body scrolls, fading out at the bottom edge. */
+  .vhead { display: flex; align-items: flex-start; gap: 12px; padding: 18px 14px 8px 22px; }
+  .vpanel h2 { flex: 1; font: 700 20px/1.3 Georgia, 'Songti SC', serif; margin: 6px 0 0; outline: none; }
+  .vbody { flex: 1; min-height: 0; overflow-y: auto; padding: 0 22px 28px; -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent); }
+  .vpanel h3 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--p-accent); margin: 20px 0 6px; }
+  .vpanel .intro { color: var(--p-muted); margin: 0 0 8px; line-height: 1.6; }
+  .vpanel .muted { color: var(--p-muted); font-size: 14px; }
+  .vpanel a { color: var(--p-link); text-decoration: none; }
+  .vpanel a:hover, .vpanel a:focus-visible { color: var(--p-link-hover); text-decoration: underline; text-underline-offset: 3px; }
+  .vpanel .vclose { flex: none; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 1px solid var(--p-line); background: var(--p-card); color: var(--p-ink); border-radius: 999px; cursor: pointer; }
+  .vpanel .vclose:hover { background: var(--p-line); }
+  .vpanel .vclose:focus-visible { outline: 2px solid var(--p-ink); outline-offset: 2px; }
+  .vpanel .vlist { list-style: none; padding: 0; margin: 0; }
+  .vpanel .vlist li { display: grid; grid-template-columns: 4.6em 1fr; column-gap: 12px; align-items: first baseline; padding: 7px 0; border-bottom: 1px solid var(--p-line); }
+  .vpanel .vlist time { font: 12px/1.6 ui-monospace, 'SF Mono', monospace; color: var(--p-muted); font-variant-numeric: tabular-nums; }
+  .vpanel .vlist .title { min-width: 0; line-height: 1.5; }
+  .zh-badge { display: inline-block; margin-left: 6px; font: 600 10px/1 system-ui, sans-serif; padding: 2px 4px; border: 1px solid currentColor; border-radius: 4px; color: var(--p-muted, #6b6f66); vertical-align: 2px; text-decoration: none; }
   .vpanel .rings { list-style: none; padding: 0; margin: 0; border-left: 2px solid #d9a978; }
   .vpanel .rings li { position: relative; padding: 6px 0 10px 16px; line-height: 1.6; }
   .vpanel .rings li::before { content: ''; position: absolute; left: -6px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: #b4552e; }
-  .vpanel .rings time { display: block; font: 600 12px ui-monospace, monospace; color: #9a4f2e; }
+  .vpanel .rings time { display: block; font: 600 12px ui-monospace, monospace; color: var(--p-accent); }
   .vpanel .rings strong { display: block; font-weight: 600; }
-  .vpanel .rings .detail { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: #5b6157; }
+  .vpanel .rings .detail { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: var(--p-muted); }
   .vpanel .cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .vpanel .cards li { border: 1px solid #e6dccb; border-radius: 12px; padding: 10px 12px; }
+  .vpanel .cards li { border: 1px solid var(--p-line); background: var(--p-card); border-radius: 12px; padding: 10px 12px; }
   .vpanel .cards a { font-weight: 600; }
-  .vpanel .cards p { margin: 4px 0 0; font-size: 14px; color: #4a4a44; }
-  .vpanel .cards li.featured { border-color: #b4552e; background: #fff8ef; }
+  .vpanel .cards p { margin: 4px 0 0; font-size: 14px; color: var(--p-muted); }
+  .vpanel .cards li.featured { border-color: var(--p-accent); }
   .vpanel .cards img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 8px; margin-bottom: 8px; }
   .dog-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
   .dog-photos img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; }
-  .vpanel .plain { padding-left: 18px; margin: 0; font-size: 14px; line-height: 1.6; color: #4a4a44; }
+  .vpanel .plain { padding-left: 18px; margin: 0; font-size: 14px; line-height: 1.6; color: var(--p-muted); }
   .vpanel .photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .vpanel .photos img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 8px; }
-  .vpanel .meta { display: flex; gap: 8px; font-size: 12px !important; color: #7b7f75 !important; }
+  .vpanel .meta { display: flex; gap: 8px; align-items: center; font-size: 12px !important; color: var(--p-muted) !important; }
   @media (max-width: 700px) {
     .valley-brand .slogan { display: none; }
     .seasons button { padding: 6px 7px; font-size: 10px; letter-spacing: .04em; }

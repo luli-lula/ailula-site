@@ -1,0 +1,9 @@
+---
+// Small marker for an entry shown in the other language: "中" on the English site, "EN" on the Chinese one.
+import { t, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const label = t(lang, lang === 'en' ? 'chineseOnly' : 'englishOnly');
+---
+<span class="zh-badge" title={label} aria-label={label}>{lang === 'en' ? '中' : 'EN'}</span>

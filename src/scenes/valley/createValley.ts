@@ -15,9 +15,15 @@ export interface Part {
   update?(t: number, dt: number): void;
   // Objects that select a zone when clicked.
   picks?: { object: THREE.Object3D; zone: ZoneId }[];
+  // Places that move (DouDou): where their label sits now. The camera also flies to the live spot.
+  anchors?: Partial<Record<ZoneId, () => THREE.Vector3>>;
+  dogState?: () => { state: string; position: [number, number, number] };
 }
 
-export type PartBuilder = (p: Palette, ctx: { quality: 'high' | 'low'; night: boolean; season: Season }) => Part;
+// What scene parts may read about the visitor: the open place, the place under the pointer, the camera.
+export interface ValleyWorld { focused(): ZoneId | null; hovered(): ZoneId | null; camera: THREE.Camera }
+
+export type PartBuilder = (p: Palette, ctx: { quality: 'high' | 'low'; night: boolean; season: Season; reduced: boolean; world: ValleyWorld }) => Part;
 
 export interface ValleyOptions {
   lang: Lang;
@@ -68,7 +74,8 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
   const sequoia = createSequoia(pal, years);
   scene.add(sequoia.group);
 
-  const ctx = { quality: opts.quality, night, season };
+  const world: ValleyWorld = { focused: () => focused, hovered: () => hovered, camera };
+  const ctx = { quality: opts.quality, night, season, reduced, world };
   const parts: Part[] = [
     { group: sequoia.group, setPalette: (p, n) => sequoia.setPalette(p, n), update: (_t, dt) => sequoia.update(dt), picks: [{ object: sequoia.pickTree, zone: 'tree' }] },
     ...(opts.extraParts ?? []).map((build) => build(pal, ctx)),
@@ -89,7 +96,9 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     return { el, y };
   });
 
-  // Labels: pill buttons pinned to each zone.
+  // Labels: pill buttons pinned to each zone (a moving place's label follows it, see the tick).
+  const labelObjects = new Map<ZoneId, CSS2DObject>();
+  const labelButtons = new Map<ZoneId, HTMLButtonElement>(); // in the DOM only after the first render
   const selectHandlers: ((id: ZoneId) => void)[] = [];
   const select = (id: ZoneId) => selectHandlers.forEach((h) => h(id));
   for (const z of ZONES) {
@@ -106,7 +115,10 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     const obj = new CSS2DObject(b);
     obj.position.set(...z.anchor);
     scene.add(obj);
+    labelObjects.set(z.id, obj);
+    labelButtons.set(z.id, b);
   }
+  const liveAnchor = (id: ZoneId) => parts.find((p) => p.anchors?.[id])?.anchors?.[id]?.();
 
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(...HOME_VIEW.target);
@@ -209,7 +221,11 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
       return;
     }
     const z = ZONES.find((zz) => zz.id === id)!;
-    const f = fly(z.view.position, z.view.target);
+    // A place that moves is framed where it is now, from the same angle as its fixed view.
+    const live = liveAnchor(id);
+    const target = live ? [live.x, live.y - 0.9, live.z] : z.view.target;
+    const position = live ? z.view.position.map((v, i) => target[i] + v - z.view.target[i]) : z.view.position;
+    const f = fly(position, target);
     if (id === 'tree') {
       // Rise slowly along the trunk past the ring bands, from the roots (2017) to the crown (now).
       // Start close on the lowest rings (2017), then rise and pull back until the whole crown (now) is in view.
@@ -233,6 +249,9 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     parts.forEach((p) => p.setPalette(pal, night, season));
     document.documentElement.dataset.season = season;
     document.documentElement.dataset.night = String(night);
+    // DouDou sleeps at night, and her label says so.
+    const dogLabel = labelButtons.get('dog');
+    if (dogLabel) dogLabel.textContent = ZONES.find((z) => z.id === 'dog')!.label[opts.lang] + (night ? ' · zzz' : '');
   };
   applyPalette();
 
@@ -324,6 +343,7 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     const safe = keepOutsideTree(camera.position);
     if (safe !== camera.position) camera.position.set(safe.x, safe.y, safe.z);
     for (const tag of ringTags) tag.el.classList.toggle('on', focused === 'tree' && rising && camera.position.y >= tag.y - 3);
+    for (const part of parts) for (const [id, at] of Object.entries(part.anchors ?? {})) labelObjects.get(id as ZoneId)?.position.copy(at!());
     if (frames % 6 === 0) declutter();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
@@ -352,6 +372,8 @@ export function createValley(canvas: HTMLCanvasElement, labelsEl: HTMLElement, o
     pause() { paused = true; stop(); flight?.kill(); },
     resume() { paused = false; resize(); schedule(); },
     frames: () => frames,
+    dogState: () => parts.find((p) => p.dogState)?.dogState?.() ?? null,
+    labelAnchor: (id: ZoneId) => labelObjects.get(id)?.position.toArray() ?? null,
     ringOpacity: () => sequoia.ringOpacity(),
     cameraPosition: () => camera.position.toArray() as [number, number, number],
     drawCalls: () => renderer.info.render.calls,

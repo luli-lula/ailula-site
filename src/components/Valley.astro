@@ -26,6 +26,8 @@ const allProjects = groups.flatMap((g) => g.items).sort((a, b) => Number(b.entry
 const plantProjects = groups.find((g) => g.category === 'plants')?.items ?? [];
 // The garden lists the posts written (or translated) in this language; the English one links to the rest.
 const gardenPosts = (await localized('posts', lang)).filter((p) => !p.fallback).sort(byDateDesc);
+// DouDou's diary: posts tagged DouDou, newest first.
+const dogPosts = gardenPosts.filter((p) => p.entry.data.tags.includes('DouDou'));
 const gardenTopics = TOPICS.filter((tp) => gardenPosts.some((p) => p.entry.data.topics.includes(tp)));
 const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
 ---
@@ -166,6 +168,9 @@ const label = Object.fromEntries(ZONES.map((z) => [z.id, z.label[lang]]));
     </header>
     <div class="vbody" data-filter-scope>
     <p>{profile.dogName ? t(lang, 'dogNamed').replace('{name}', profile.dogName) : <>{t(lang, 'dogNote')}<Placeholder note={lang === 'zh' ? '小狗的名字' : "the dog's name"} /></>}</p>
+    {dogPosts.length > 0 ? (
+      <ul class="vlist">{dogPosts.map(({ slug, entry }) => <li><time>{entry.data.date.toISOString().slice(0, 7)}</time><span class="title"><a href={localizedPath(`/writing/${slug}/`, lang)}>{entry.data.title}</a></span></li>)}</ul>
+    ) : <Placeholder note={lang === 'zh' ? 'DouDou 日记（等 lula 口述）' : "DouDou's diary (lula to tell it)"} />}
     <div class="dog-photos">
       {['2', '1'].map((n) => <img src={`/assets/photos/doudou/${n}.webp`} alt={`${profile.dogName || label.dog}`} loading="lazy" />)}
     </div>

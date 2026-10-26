@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import type { Part } from './createValley';
+import type { Part, ValleyWorld } from './createValley';
 import { heightAt, PATHS } from './island';
 import { faceted, jitter, material, merge, mesh, rng } from './lowpoly';
 import type { Palette, Season } from './palette';
@@ -94,7 +94,7 @@ function buildCrops(rnd: () => number): Record<Season, THREE.Group> {
   return { spring: season(spring), summer: season(summer), autumn: season(autumn), winter: season(winter) };
 }
 
-export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; season: Season }): Part {
+export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; night: boolean; season: Season; reduced: boolean; world: ValleyWorld }): Part {
   const rnd = rng(2025);
   const group = new THREE.Group();
   group.name = 'structures';
@@ -250,21 +250,42 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; sea
   const lampMat = material(WINDOW, { emissive: WINDOW, emissiveIntensity: 0.1 });
   group.add(mesh(faceted(merge(lanternPosts), rnd, 0.1), darkMat), mesh(faceted(merge(lanternLamps), rnd, 0), lampMat, false));
 
-  // The dog is DouDou, lula's black tricolour shepherd: black coat, white chest, muzzle and paws, tail wagging.
+  // The dog is DouDou, lula's black tricolour shepherd: black coat, white chest, muzzle and paws. By day she
+  // walks a small loop near the plaza, stopping to sniff or sit; a visitor's pointer makes her stop and look,
+  // and choosing her makes her sit. At night she sleeps curled up by the lantern near the hollow. With
+  // reduced motion she lies still.
   const dog = new THREE.Group();
+  const dogHead = new THREE.Group();
+  const dogLegs: THREE.Object3D[] = [];
+  const home = zoneAt('dog');
+  const LOOP = new THREE.CatmullRomCurve3(
+    [[0, -1.9], [2.3, -0.6], [1.6, 1.7], [-1.2, 1.9], [-2.4, 0.2], [-1.2, -1.6]].map(([dx, dz]) => new THREE.Vector3(home.x + dx, 0, home.z + dz)),
+    true,
+  );
+  const LOOP_LEN = LOOP.getLength();
+  const toHollow = new THREE.Vector3(-home.x, 0, 5.2 - home.z).normalize();
+  const bed = new THREE.Vector3(home.x + toHollow.x * 2.2, 0, home.z + toHollow.z * 2.2);
   {
-    const at = zoneAt('dog');
-    dog.position.copy(at);
-    dog.rotation.y = facing(at) + 0.8;
     const fur = material('#262321');
     const white = material('#f1ece2');
     const body = faceted(jitter(new THREE.IcosahedronGeometry(0.55, 1).scale(1.5, 0.75, 0.85), 0.04, rnd).translate(0, 0.55, 0), rnd, 0.06);
-    const head = faceted(new THREE.IcosahedronGeometry(0.34, 1).translate(0.85, 0.95, 0), rnd, 0.06);
-    const snout = faceted(strip(new THREE.ConeGeometry(0.17, 0.35, 6).rotateZ(-Math.PI / 2).translate(1.22, 0.9, 0)), rnd, 0.05);
-    const ears = faceted(merge([new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(0.4).translate(0.82, 1.25, 0.18), new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(-0.4).translate(0.82, 1.25, -0.18)].map(strip)), rnd, 0.05);
-    const legs = faceted(merge([[0.5, 0.25], [0.5, -0.25], [-0.5, 0.25], [-0.5, -0.25]].map(([x, z]) => strip(box(0.16, 0.4, 0.16, x, 0, z)))), rnd, 0.05);
     const chest = faceted(new THREE.IcosahedronGeometry(0.3, 1).scale(0.8, 1.1, 1).translate(0.62, 0.62, 0), rnd, 0.05);
-    dog.add(mesh(body, fur), mesh(head, fur), mesh(snout, white), mesh(chest, white), mesh(ears, fur), mesh(legs, white));
+    // Head parts are built around the neck (0.7, 0.85) so the head can turn and dip as one.
+    const head = faceted(new THREE.IcosahedronGeometry(0.34, 1).translate(0.15, 0.1, 0), rnd, 0.06);
+    const snout = faceted(strip(new THREE.ConeGeometry(0.17, 0.35, 6).rotateZ(-Math.PI / 2).translate(0.52, 0.05, 0)), rnd, 0.05);
+    const ears = faceted(merge([new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(0.4).translate(0.12, 0.4, 0.18), new THREE.ConeGeometry(0.11, 0.3, 4).rotateX(-0.4).translate(0.12, 0.4, -0.18)].map(strip)), rnd, 0.05);
+    dogHead.position.set(0.7, 0.85, 0);
+    dogHead.add(mesh(head, fur), mesh(snout, white), mesh(ears, fur));
+    dog.add(mesh(body, fur), mesh(chest, white), dogHead);
+    // Each leg hangs from a hip pivot so it can swing.
+    const legGeo = faceted(strip(box(0.16, 0.4, 0.16, 0, -0.4, 0)), rnd, 0.05);
+    for (const [x, z] of [[0.5, 0.25], [0.5, -0.25], [-0.5, 0.25], [-0.5, -0.25]]) {
+      const hip = new THREE.Group();
+      hip.position.set(x, 0.4, z);
+      hip.add(mesh(legGeo, white));
+      dog.add(hip);
+      dogLegs.push(hip);
+    }
     const tail = mesh(faceted(strip(new THREE.ConeGeometry(0.08, 0.6, 5).translate(0, 0.3, 0)), rnd, 0.05), fur);
     tail.position.set(-0.8, 0.75, 0);
     tail.rotation.z = 0.9;
@@ -273,11 +294,31 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; sea
     group.add(dog);
     picks.push({ object: dog, zone: 'dog' });
   }
+  let dogNight = ctx.night;
+  let dogState = 'walk';
+  let loopAt = 0; // distance travelled round the loop
+  const place = (at: THREE.Vector3) => dog.position.set(at.x, heightAt(at.x, at.z), at.z);
+  const face = (dx: number, dz: number, ease = 1) => {
+    const want = Math.atan2(-dz, dx);
+    const d = Math.atan2(Math.sin(want - dog.rotation.y), Math.cos(want - dog.rotation.y));
+    dog.rotation.y += d * ease;
+  };
+  const pose = (name: string) => {
+    dogState = name;
+    const lying = name === 'sleep' || name === 'lie';
+    dog.scale.y = lying ? 0.62 : 1;
+    dogLegs.forEach((l, i) => (l.rotation.z = lying ? (i < 2 ? -1.35 : 1.35) : name === 'sit' && i >= 2 ? 1.1 : 0));
+    dog.rotation.z = name === 'sit' ? 0.32 : 0;
+    dogHead.rotation.z = name === 'sniff' ? -0.75 : lying ? -0.35 : 0;
+  };
+  place(LOOP.getPointAt(0));
+  if (ctx.reduced) pose('lie');
 
   return {
     group,
     picks,
     setPalette(_next, night, season) {
+      dogNight = night;
       for (const s of ['spring', 'summer', 'autumn', 'winter'] as const) group.getObjectByName(`crops-${s}`)!.visible = s === season;
       glowMat.emissiveIntensity = night ? 1.6 : 0.2;
       lampMat.emissiveIntensity = night ? 2.2 : 0.05;
@@ -286,9 +327,38 @@ export function createStructures(p: Palette, ctx: { quality: 'high' | 'low'; sea
       ((group.userData.hollowGlow as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = night ? 1.4 : 0.05;
       for (const l of nightLights) l.intensity = night ? (l.userData.on as number) : 0;
     },
-    update(t) {
+    update(t, dt) {
       const tail = dog.userData.tail as THREE.Mesh;
+      if (ctx.reduced) return pose('lie');
+      if (dogNight) {
+        place(bed);
+        dog.rotation.y = Math.atan2(toHollow.z, -toHollow.x);
+        tail.rotation.x = 0;
+        return pose('sleep');
+      }
+      const w = ctx.world;
+      if (w.focused() === 'dog' || w.hovered() === 'dog') {
+        // Stop and turn to the visitor; sit while she is the open place.
+        const cam = w.camera.position;
+        face(cam.x - dog.position.x, cam.z - dog.position.z, Math.min(1, dt * 4));
+        tail.rotation.x = Math.sin(t * 14) * 0.6;
+        return pose(w.focused() === 'dog' ? 'sit' : 'look');
+      }
+      // A 14-second rhythm: walk, stop to sniff, walk on; every third round she sits for a moment instead.
+      const phase = t % 14, round = Math.floor(t / 14) % 3;
+      const pausing = phase > 9 && phase < 11.5;
       tail.rotation.x = Math.sin(t * 9) * 0.45;
+      if (pausing) return pose(round === 2 ? 'sit' : 'sniff');
+      loopAt = (loopAt + dt * 0.7) % LOOP_LEN;
+      const u = loopAt / LOOP_LEN;
+      const at = LOOP.getPointAt(u), ahead = LOOP.getTangentAt(u);
+      place(at);
+      face(ahead.x, ahead.z, Math.min(1, dt * 6));
+      pose('walk');
+      dogLegs.forEach((l, i) => (l.rotation.z = Math.sin(t * 9 + (i === 0 || i === 3 ? 0 : Math.PI)) * 0.5));
+      dog.position.y += Math.abs(Math.sin(t * 9)) * 0.04;
     },
+    anchors: { dog: () => dog.position.clone().add(new THREE.Vector3(0, 1.7, 0)) },
+    dogState: () => ({ state: dogState, position: dog.position.toArray() as [number, number, number] }),
   };
 }

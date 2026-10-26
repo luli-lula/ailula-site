@@ -16,7 +16,7 @@ const insets = (['cn', 'us'] as const).map((region) => {
   const dots = ordered
     .map((c, i) => ({ c, n: i + 1, xy: c.region === region ? project(c.coords!) : null, name: c.city?.[lang].split(/（| \(/)[0] ?? '' }))
     .filter((d) => d.xy)
-    .map((d) => ({ ...d, flip: d.xy![0] + 34 + width(d.name) > w - 6 }));
+    .map((d) => ({ ...d, flip: d.xy![0] + 34 + width(d.name) > w - 6, span: 34 + width(d.name) }));
   return { region, w: SIZE[region][0], h: SIZE[region][1], dots, line: dots.map((d, i) => `${i ? 'L' : 'M'}${d.xy![0]},${d.xy![1]}`).join('') };
 });
 ---
@@ -29,6 +29,7 @@ const insets = (['cn', 'us'] as const).map((region) => {
         {line && <path class="route" d={line} />}
         {dots.map((d) => (
           <g class="dot" data-chapter={d.c.id} role="button" tabindex="0" aria-label={d.c.city ? d.c.city[lang] : d.c.years[lang]}>
+            <rect class="hit" x={d.flip ? d.xy![0] - d.span : d.xy![0] - 24} y={d.xy![1] - 24} width={d.span + 24} height="48" />
             <circle cx={d.xy![0]} cy={d.xy![1]} r="22" />
             <text x={d.xy![0]} y={d.xy![1] + 9}>{d.n}</text>
             {d.name && (d.flip
@@ -46,7 +47,9 @@ const insets = (['cn', 'us'] as const).map((region) => {
   .route-map .inset { flex: 1 1 0; min-width: 0; height: auto; background: #dfe9ec; border-radius: 10px; }
   .route-map .pacific { flex: 0 0 22px; border-top: 2px dashed #b4552e; }
   .route-map .route { fill: none; stroke: #b4552e; stroke-width: 5; stroke-dasharray: 14 10; }
+  .route-map image { pointer-events: none; }
   .route-map .dot { cursor: pointer; outline: none; }
+  .route-map .dot .hit { fill: transparent; pointer-events: all; }
   .route-map .dot circle { fill: #b4552e; stroke: #fff; stroke-width: 5; }
   .route-map .dot:hover circle, .route-map .dot:focus-visible circle { stroke: #1d2a20; }
   .route-map .dot text { font: 700 26px system-ui, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }

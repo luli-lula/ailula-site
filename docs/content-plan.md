@@ -26,7 +26,7 @@
 | 3 | 植物标牌（plant-care-signs） | 待口述 | |
 | 4 | Wild Ones 指南 | 待口述 | |
 | 5 | FactReview | 角色已写 | factreview.ailula.top 上的引用要改成 Yue et al. |
-| 6 | [公司] auto-research 工具 | 待定：要不要单独做一个项目页 | |
+| 6 | Research Workbench（auto-research 工具，不写公司名） | 待口述 | 能不能放截图 |
 | 7 | TOEFL | 待口述 | 换一张不是登录页的截图 |
 | 8 | 钢琴练习 | 待口述 | |
 | 9 | CELPIP12、ADHD Focus | 已有旧文章 | 看一遍旧文章还准不准 |
